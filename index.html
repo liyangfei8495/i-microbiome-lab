@@ -650,7 +650,14 @@ document.addEventListener("DOMContentLoaded",function(){
 
   // load data（优先内嵌数据，fetch 兜底）
   var __d=window.__DATA;
-  if(__d){DATA=__d;renderAll(__d);}
+  if(__d){
+    // 合并本地保存的修改（普通访客刷新后也能看到改后内容）
+    try{
+      var savedEd=localStorage.getItem(ED_KEY);
+      if(savedEd){var _s=JSON.parse(savedEd);if(_s&&typeof _s==="object"){__d=deepMerge(__d,_s);}}
+    }catch(e){}
+    DATA=__d;renderAll(__d);
+  }
   else{
     fetch("content.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
       .then(function(d){DATA=d;renderAll(d);})
@@ -901,6 +908,16 @@ function setByPath(obj,path,val){
   var last=parts[parts.length-1];
   if(/^\d+$/.test(last))cur[parseInt(last,10)]=val;
   else cur[last]=val;
+}
+// 深合并：把本地保存的修改覆盖到原始数据（用于初始化加载）
+function deepMerge(base,over){
+  if(Array.isArray(over))return over;
+  if(over&&typeof over==="object"&&base&&typeof base==="object"){
+    var out=Array.isArray(base)?base.slice():Object.assign({},base);
+    for(var k in over){out[k]=deepMerge(base?base[k]:undefined,over[k]);}
+    return out;
+  }
+  return over===undefined?base:over;
 }
 /* 导航菜单数据（window.__NAV）的读写，独立于内容数据 */
 function _navGet(p){
