@@ -261,6 +261,7 @@ footer p{margin:4px 0}
 <script>
 (function(){
 "use strict";
+var ED_KEY="__EDITED_DATA";   // 与编辑器脚本共享的 localStorage key（上移避免跨 IIFE 未定义）
 var DATA=null,modal,modalContent,toast;
 
 function z(o){return o!=null?o:"";}
@@ -352,7 +353,7 @@ function newsBlocksHtml(n){
 
 // ============ openDetail ============
 function openDetail(type,id){
-  var d=DATA,html="";
+  var d=(window.__DATA)||DATA,html="";
   if(type==="pillar"){
     var p=find(d.research.pillars,id);if(!p)return showToast("未找到："+id);
     html+=img(p.image,"modal-banner");
@@ -673,10 +674,31 @@ document.addEventListener("DOMContentLoaded",function(){
 
   // load data（优先内嵌数据，fetch 兜底）
   var __d=window.__DATA;
-  if(__d){DATA=__d;renderAll(__d);}
+  // load data（优先内嵌数据 + localStorage 修改合并，fetch 兜底）
+  function deepMerge(base,over){
+    if(over==null)return base;
+    if(Array.isArray(over))return over;
+    if(typeof over==="object"&&typeof base==="object"&&base&&over){
+      var out=Array.isArray(base)?base.slice():Object.assign({},base);
+      for(var k in over){ out[k]=deepMerge(base?base[k]:undefined,over[k]); }
+      return out;
+    }
+    return over;
+  }
+  window.__deepMerge=deepMerge;
+  var __d=window.__DATA;
+  if(__d){
+    var __saved=null;
+    try{var _s=localStorage.getItem(ED_KEY);if(_s)__saved=JSON.parse(_s);}catch(e){}
+    if(__saved){ __d=deepMerge(__d,__saved); }
+    DATA=__d;renderAll(__d);
+  }
   else{
     fetch("content.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
-      .then(function(d){DATA=d;renderAll(d);})
+      .then(function(d){
+        try{var _s=localStorage.getItem(ED_KEY);if(_s)d=deepMerge(d,JSON.parse(_s));}catch(e){}
+        DATA=d;renderAll(d);
+      })
       .catch(function(){var e=document.getElementById("load-error");if(e)e.style.display="block";});
   }
 });
@@ -1217,10 +1239,21 @@ document.getElementById("be-save").onclick=function(){
   try{
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
   }catch(e){showToast("保存失败："+e.message);return;}
+  DATA=edData;
   window.renderAll(edData);
+  try{
+    var scripts=document.querySelectorAll("script");
+    for(var i=0;i<scripts.length;i++){
+      var t=scripts[i].textContent||"";
+      if(t.indexOf("window.__DATA=")===0||/^\s*window\.__DATA=/.test(t)){
+        scripts[i].textContent="window.__DATA="+JSON.stringify(edData)+";";
+        break;
+      }
+    }
+  }catch(e){}
   setTimeout(function(){injectEditButtons();},50);
   apClose(beModal);
-  showToast("已保存此项并更新预览，刷新后仍生效");
+  showToast("已保存并更新预览，刷新后永久生效");
 };
 
 })();
