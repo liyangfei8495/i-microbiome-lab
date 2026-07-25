@@ -740,6 +740,7 @@ document.addEventListener("DOMContentLoaded",function(){
         <button id="gh-test" class="ap-btn ap-btn-sec" title="测试代理在你浏览器中能否访问" style="white-space:nowrap;">测试连接</button>
       </div>
       <div style="font-size:11px;color:#8a8a8e;margin-top:4px;">Token 需有该仓库 Contents 写权限。若直连 api.github.com 发布失败（国内常见），可填 Cloudflare Worker 代理地址。也可点「导出」把改好的网页下载下来发我，由我帮你发布。</div>
+      <div id="publish-status" style="font-size:12px;min-height:18px;margin-top:6px;padding:5px 8px;background:#f5f5f7;border-radius:6px;color:#1a73e8;word-break:break-all;"></div>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:10px;border-top:1px solid #e5e5ea;">
       <button id="be-export" class="ap-btn ap-btn-sec" title="下载当前完整网页文件">导出 index.html</button>
@@ -1285,13 +1286,19 @@ function getGhProxy(){
   if(p){ p=p.replace(/\/+$/,""); }
   return p;
 }
-function publishToGitHub(){
+function setPubStatus(msg,type){
+  var el=document.getElementById("publish-status");
+  if(!el) return;
+  el.textContent=msg||"";
+  el.style.color = (type==="err")?"#c0392b":(type==="ok")?"#0a7d3b":"#1a73e8";
+}
+function publishToGitHub(onDone){
   var token=getGhToken();
-  if(!token){ showToast("请先在上方填入 GitHub Token 并点“记住”"); var gi=document.getElementById("gh-token"); if(gi) gi.focus(); return; }
+  if(!token){ setPubStatus("❌ 请先填 GitHub Token 并点“记住”","err"); var gi=document.getElementById("gh-token"); if(gi){try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus();} if(onDone)onDone(false,"请先填 GitHub Token"); return; }
   var repo="liyangfei8495/i-microbiome-lab", path="index.html";
   var proxy=getGhProxy();
   var base=proxy||"https://api.github.com";
-  showToast(proxy?("正在通过代理发布（"+proxy+"）…"):"正在直连 GitHub 发布…");
+  setPubStatus(proxy?("正在通过代理发布（"+proxy+"）…"):"正在直连 GitHub 发布…","info");
   var ctrl=new AbortController();
   var to=setTimeout(function(){ ctrl.abort(); }, 12000);
   fetch(base+"/repos/"+repo+"/contents/"+path,{
@@ -1302,7 +1309,8 @@ function publishToGitHub(){
      var oldHtml=b64decode(meta.content);
      var newData="window.__DATA="+JSON.stringify(edData)+";\n";
      var newHtml=oldHtml.replace(/window\.__DATA=\{[\s\S]*?\};\s*<\/script>/, function(m){ return newData+"<\/script>"; });
-     if(newHtml===oldHtml){ clearTimeout(to); throw new Error("未检测到数据段，发布中止"); }
+     if(newHtml===oldHtml){ clearTimeout(to); setPubStatus("⚠️ 未检测到数据段，发布中止","err"); if(onDone)onDone(false,"未检测到数据段"); return; }
+     setPubStatus("已读取文件，正在上传更新…","info");
      return fetch(base+"/repos/"+repo+"/contents/"+path,{
        method:"PUT",
        headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
@@ -1310,12 +1318,12 @@ function publishToGitHub(){
      });
    })
    .then(function(r){ if(!r.ok) throw new Error("发布失败("+r.status+")"); return r.json(); })
-   .then(function(){ clearTimeout(to); showToast("已发布，1–2 分钟全网生效"); })
+   .then(function(){ clearTimeout(to); var m="✅ 已发布，1–2 分钟全网生效"; setPubStatus(m,"ok"); showToast(m); if(onDone)onDone(true,m); })
    .catch(function(e){
      clearTimeout(to);
      var msg=(e&&e.name==="AbortError")?"连接超时（你浏览器可能连不上该地址）":(e&&e.message?e.message:"未知错误");
-     showToast("发布出错："+msg+"（已自动导出文件，发我即可发布）");
-     // 直连 GitHub 失败（国内常见）时，自动把改好的网页下载下来，用户发我即可上线
+     var full="❌ 发布出错："+msg+"（已自动导出文件，发我即可发布）";
+     setPubStatus(full,"err"); showToast(full); if(onDone)onDone(false,msg);
      try{
        var url=location.href.split("#")[0];
        fetch(url).then(function(r2){return r2.text();}).then(function(oldHtml){
@@ -1331,13 +1339,13 @@ function publishToGitHub(){
 }
 function testConnection(){
   var base=getGhProxy();
-  if(!base){ showToast("请先填代理地址并点“记住”"); var pi=document.getElementById("gh-proxy"); if(pi) pi.focus(); return; }
-  showToast("正在测试代理连通性…");
+  if(!base){ setPubStatus("请先填代理地址并点“记住”","err"); var pi=document.getElementById("gh-proxy"); if(pi) pi.focus(); return; }
+  setPubStatus("正在测试代理连通性…","info");
   var ctrl=new AbortController();
   var to=setTimeout(function(){ ctrl.abort(); }, 8000);
   fetch(base+"/repos/liyangfei8495/i-microbiome-lab", { signal: ctrl.signal })
-    .then(function(r){ clearTimeout(to); if(r.ok){ showToast("代理连通正常 ✅ 可发布"); } else { showToast("代理有响应但状态异常("+r.status+")"); } })
-    .catch(function(e){ clearTimeout(to); if(e&&e.name==="AbortError"){ showToast("代理连接超时 ❌ 你浏览器连不上该 Worker（很可能 workers.dev 被墙）"); } else { showToast("代理连接失败 ❌ "+(e&&e.message?e.message:e)); } });
+    .then(function(r){ clearTimeout(to); if(r.ok){ var m="✅ 代理连通正常，可发布"; setPubStatus(m,"ok"); showToast(m); } else { var m2="代理有响应但状态异常("+r.status+")"; setPubStatus(m2,"err"); showToast(m2); } })
+    .catch(function(e){ clearTimeout(to); var m3=(e&&e.name==="AbortError")?"❌ 代理连接超时（很可能 workers.dev 被墙）":"❌ 代理连接失败 "+(e&&e.message?e.message:e); setPubStatus(m3,"err"); showToast(m3); });
 }
 document.getElementById("gh-test").onclick=testConnection;
 document.getElementById("gh-token-save").onclick=function(){
@@ -1366,14 +1374,13 @@ document.getElementById("be-save").onclick=function(){
 };
 document.getElementById("be-publish").onclick=function(){
   var tk=getGhToken();
-  if(!tk){
-    showToast("❌ 还没填 GitHub Token！请在弹窗里填 ghp_ 开头的 Token 并点“记住”，再点发布");
-    var gi=document.getElementById("gh-token"); if(gi){ try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus(); }
-    return;
-  }
-  if(!saveEdits()) return;
-  apClose(beModal);
-  publishToGitHub();
+  if(!tk){ setPubStatus("❌ 还没填 GitHub Token！请填 ghp_ 开头的 Token 并点“记住”","err"); var gi=document.getElementById("gh-token"); if(gi){try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus();} return; }
+  setPubStatus("正在保存修改…","info");
+  if(!saveEdits()){ setPubStatus("保存失败","err"); return; }
+  setPubStatus("正在发布到 GitHub…","info");
+  publishToGitHub(function(ok,msg){
+    if(ok){ setTimeout(function(){ try{apClose(beModal);}catch(e){} }, 1800); }
+  });
 };
 // 初始化填充已记住的 Token / 代理
 (function(){ var t=localStorage.getItem("GH_TOKEN"); if(t){ var inp=document.getElementById("gh-token"); if(inp) inp.value=t; }
