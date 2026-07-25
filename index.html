@@ -320,6 +320,7 @@ function relAuto(ids){
 
 // ============ news blocks 渲染辅助 ============
 function newsCover(n){
+  // 取第一张图片块做封面
   if(n.blocks){
     for(var i=0;i<n.blocks.length;i++){ if(n.blocks[i].type==="image"&&n.blocks[i].src) return n.blocks[i].src; }
   }
@@ -339,6 +340,7 @@ function newsSummary(n,max){
 }
 function newsBlocksHtml(n){
   if(!n.blocks||!n.blocks.length){
+    // 兼容旧结构
     var h="";
     if(n.image) h+=img(n.image,"modal-banner");
     if(n.bodyZh||n.bodyEn) h+='<div class="modal-block"><p>'+both(n.bodyZh,n.bodyEn)+'</p></div>';
@@ -672,12 +674,10 @@ document.addEventListener("DOMContentLoaded",function(){
   // ESC close modal
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!modal.hasAttribute("hidden"))closeModal();});
 
-  // load data（优先内嵌数据，fetch 兜底）
-  var __d=window.__DATA;
   // load data（优先内嵌数据 + localStorage 修改合并，fetch 兜底）
   function deepMerge(base,over){
     if(over==null)return base;
-    if(Array.isArray(over))return over;
+    if(Array.isArray(over))return over;            // 数组直接覆盖
     if(typeof over==="object"&&typeof base==="object"&&base&&over){
       var out=Array.isArray(base)?base.slice():Object.assign({},base);
       for(var k in over){ out[k]=deepMerge(base?base[k]:undefined,over[k]); }
@@ -690,14 +690,14 @@ document.addEventListener("DOMContentLoaded",function(){
   if(__d){
     var __saved=null;
     try{var _s=localStorage.getItem(ED_KEY);if(_s)__saved=JSON.parse(_s);}catch(e){}
-    if(__saved){ __d=deepMerge(__d,__saved); }
+    if(__saved){ __d=deepMerge(__d,__saved); window.__DATA=__d; }
     DATA=__d;renderAll(__d);
   }
   else{
     fetch("content.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
       .then(function(d){
         try{var _s=localStorage.getItem(ED_KEY);if(_s)d=deepMerge(d,JSON.parse(_s));}catch(e){}
-        DATA=d;renderAll(d);
+        window.__DATA=d;DATA=d;renderAll(d);
       })
       .catch(function(){var e=document.getElementById("load-error");if(e)e.style.display="block";});
   }
@@ -1239,8 +1239,10 @@ document.getElementById("be-save").onclick=function(){
   try{
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
   }catch(e){showToast("保存失败："+e.message);return;}
-  DATA=edData;
+  DATA=edData;                              // 同步模块级 DATA，使详情弹窗读到最新
+  window.__DATA=edData;                     // 同步全局数据对象，当前页面不刷新也能读到最新
   window.renderAll(edData);
+  // 固化内嵌数据：把整份 edData 写回 window.__DATA 的 script 节点，刷新/换设备永久生效
   try{
     var scripts=document.querySelectorAll("script");
     for(var i=0;i<scripts.length;i++){
@@ -1250,7 +1252,7 @@ document.getElementById("be-save").onclick=function(){
         break;
       }
     }
-  }catch(e){}
+  }catch(e){/* 内嵌固化失败不阻断，localStorage 仍生效 */}
   setTimeout(function(){injectEditButtons();},50);
   apClose(beModal);
   showToast("已保存并更新预览，刷新后永久生效");
