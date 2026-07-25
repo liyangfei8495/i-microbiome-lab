@@ -737,6 +737,7 @@ document.addEventListener("DOMContentLoaded",function(){
       <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
         <input id="gh-proxy" placeholder="代理地址（可选，填空=直连。中国大陆建议填 Cloudflare Worker 地址）" style="flex:1;padding:7px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:12px;font-family:inherit;box-sizing:border-box;">
         <button id="gh-proxy-save" class="ap-btn ap-btn-sec" title="记住代理地址">记住</button>
+        <button id="gh-test" class="ap-btn ap-btn-sec" title="测试代理在你浏览器中能否访问" style="white-space:nowrap;">测试连接</button>
       </div>
       <div style="font-size:11px;color:#8a8a8e;margin-top:4px;">Token 需有该仓库 Contents 写权限。若直连 api.github.com 发布失败（国内常见），可填 Cloudflare Worker 代理地址。也可点「导出」把改好的网页下载下来发我，由我帮你发布。</div>
     </div>
@@ -1290,14 +1291,17 @@ function publishToGitHub(){
   var repo="liyangfei8495/i-microbiome-lab", path="index.html";
   var base=getGhProxy()||"https://api.github.com";
   showToast("正在发布到 GitHub…");
+  var ctrl=new AbortController();
+  var to=setTimeout(function(){ ctrl.abort(); }, 12000);
   fetch(base+"/repos/"+repo+"/contents/"+path,{
-    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }
+    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
+    signal: ctrl.signal
   }).then(function(r){ if(!r.ok) throw new Error("获取文件失败("+r.status+")"); return r.json(); })
    .then(function(meta){
      var oldHtml=b64decode(meta.content);
      var newData="window.__DATA="+JSON.stringify(edData)+";\n";
      var newHtml=oldHtml.replace(/window\.__DATA=\{[\s\S]*?\};\s*<\/script>/, function(m){ return newData+"<\/script>"; });
-     if(newHtml===oldHtml){ throw new Error("未检测到数据段，发布中止"); }
+     if(newHtml===oldHtml){ clearTimeout(to); throw new Error("未检测到数据段，发布中止"); }
      return fetch(base+"/repos/"+repo+"/contents/"+path,{
        method:"PUT",
        headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
@@ -1305,9 +1309,11 @@ function publishToGitHub(){
      });
    })
    .then(function(r){ if(!r.ok) throw new Error("发布失败("+r.status+")"); return r.json(); })
-   .then(function(){ showToast("已发布，1–2 分钟全网生效"); })
+   .then(function(){ clearTimeout(to); showToast("已发布，1–2 分钟全网生效"); })
    .catch(function(e){
-     showToast("发布出错："+e.message+"（已自动导出文件，发我即可发布）");
+     clearTimeout(to);
+     var msg=(e&&e.name==="AbortError")?"连接超时（你浏览器可能连不上该地址）":(e&&e.message?e.message:"未知错误");
+     showToast("发布出错："+msg+"（已自动导出文件，发我即可发布）");
      // 直连 GitHub 失败（国内常见）时，自动把改好的网页下载下来，用户发我即可上线
      try{
        var url=location.href.split("#")[0];
@@ -1322,6 +1328,17 @@ function publishToGitHub(){
      }catch(_){}
    });
 }
+function testConnection(){
+  var base=getGhProxy();
+  if(!base){ showToast("请先填代理地址并点“记住”"); var pi=document.getElementById("gh-proxy"); if(pi) pi.focus(); return; }
+  showToast("正在测试代理连通性…");
+  var ctrl=new AbortController();
+  var to=setTimeout(function(){ ctrl.abort(); }, 8000);
+  fetch(base+"/repos/liyangfei8495/i-microbiome-lab", { signal: ctrl.signal })
+    .then(function(r){ clearTimeout(to); if(r.ok){ showToast("代理连通正常 ✅ 可发布"); } else { showToast("代理有响应但状态异常("+r.status+")"); } })
+    .catch(function(e){ clearTimeout(to); if(e&&e.name==="AbortError"){ showToast("代理连接超时 ❌ 你浏览器连不上该 Worker（很可能 workers.dev 被墙）"); } else { showToast("代理连接失败 ❌ "+(e&&e.message?e.message:e)); } });
+}
+document.getElementById("gh-test").onclick=testConnection;
 document.getElementById("gh-token-save").onclick=function(){
   var v=document.getElementById("gh-token").value.trim();
   if(!v){ showToast("请输入 Token"); return; }
