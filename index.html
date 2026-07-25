@@ -82,6 +82,15 @@ section h2{font-size:34px;text-align:center;margin:0 0 14px}
 .member-photo,.m-avatar{width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block;background:var(--section-bg)}
 .member-role{color:var(--primary);font-size:12px;font-weight:600;margin-bottom:8px}
 .member-bio{color:var(--light-text-color);font-size:13px;margin:0;line-height:1.5}
+/* 关联选择控件（多选 checkbox / 单选 select） */
+.rel-list{max-height:180px;overflow:auto;border:1px solid var(--border-color,#d0d0d5);border-radius:10px;padding:8px;background:var(--bg,#fff)}
+.rel-list.rel-empty{color:var(--light-text-color,#86868b);font-size:12px;max-height:none}
+.rel-opt{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:6px;cursor:pointer;font-size:13px}
+.rel-opt:hover{background:rgba(0,0,0,.04)}
+.rel-opt input{margin:0}
+.rel-name{flex:1}
+.rel-id{color:var(--light-text-color,#86868b);font-size:11px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.rel-select{width:100%;padding:8px 10px;border:1px solid var(--border-color,#d0d0d5);border-radius:8px;font-size:13px;background:var(--bg,#fff);color:var(--text-color,#1d1d1f)}
 
 /* publications */
 .publications-grid{margin-top:30px}
@@ -1011,11 +1020,34 @@ function setByPath(obj,path,val){
   else cur[last]=val;
 }
 
+function relMultiField(path,label,options,selected){
+  if(!options||!options.length)return '<div class="ap-field"><label>'+esc(label)+'</label><div class="rel-list rel-empty">（暂无可选项）</div></div>';
+  var sel=selected||[];
+  var boxes=options.map(function(o){
+    var checked=sel.indexOf(o.id)>=0?"checked":"";
+    return '<label class="rel-opt"><input type="checkbox" data-rel-multi="'+escAttr(path)+'" value="'+escAttr(o.id)+'" '+checked+'><span class="rel-name">'+esc(o.name)+'</span><span class="rel-id">'+escAttr(o.id)+'</span></label>';
+  }).join("");
+  return '<div class="ap-field"><label>'+esc(label)+'</label><div class="rel-list">'+boxes+'</div></div>';
+}
+function relSingleField(path,label,options,selected){
+  var opts='<option value="">（无）</option>';
+  (options||[]).forEach(function(o){
+    var s=(o.id===selected)?"selected":"";
+    opts+='<option value="'+escAttr(o.id)+'" '+s+'>'+esc(o.name)+'</option>';
+  });
+  return '<div class="ap-field"><label>'+esc(label)+'</label><select class="rel-select" data-rel-single="'+escAttr(path)+'">'+opts+'</select></div>';
+}
 function openBlockEditor(type,label){
   currentEdit=type;
   beTitle.innerHTML='<i class="fas fa-edit" style="color:var(--primary,#0066cc);"></i> 编辑：'+label;
   var h="";
   var d=edData;
+  var relOpts={
+    members:(d.members||[]).map(function(m){return {id:m.id,name:m.nameZh||m.nameEn||m.id};}),
+    pubs:(d.publications||[]).map(function(p){return {id:p.id,name:p.titleZh||p.titleEn||p.id};}),
+    projs:(d.research.projects||[]).map(function(pr){return {id:pr.id,name:pr.titleZh||pr.titleEn||pr.id};}),
+    pillars:(d.research.pillars||[]).map(function(p){return {id:p.id,name:p.zh||p.en||p.id};})
+  };
   if(type==="hero"){
     h+=field("lab.name","实验室名称",d.lab.name);
     h+=field("lab.taglineZh","中文标语",d.lab.taglineZh);
@@ -1062,8 +1094,9 @@ function openBlockEditor(type,label){
         field("research.projects."+i+".goalsEn","研究目标(英)",pr.goalsEn,"textarea"),
         field("research.projects."+i+".progressZh","研究进展(中)",pr.progressZh,"textarea"),
         field("research.projects."+i+".progressEn","研究进展(英)",pr.progressEn,"textarea"),
-        field("research.projects."+i+".memberIds","参与成员ID(逗号分隔)",(pr.memberIds||[]).join(", "),"text"),
-        field("research.projects."+i+".pubIds","相关论文ID(逗号分隔)",(pr.pubIds||[]).join(", "),"text")
+        relSingleField("research.projects."+i+".pillarId","所属研究方向",relOpts.pillars,pr.pillarId),
+        relMultiField("research.projects."+i+".memberIds","参与成员",relOpts.members,pr.memberIds||[]),
+        relMultiField("research.projects."+i+".pubIds","相关论文",relOpts.pubs,pr.pubIds||[])
       ].join(""),"research.projects",i);
       h+=subBox("课题 Logo",imgField("research.projects."+i+".logo","课题 Logo",pr.logo,"images/projects"));
       h+=subBox("课题配图",imgListField("research.projects."+i+".images","课题配图",pr.images||[],"images/projects"));
@@ -1080,8 +1113,8 @@ function openBlockEditor(type,label){
         field("facilities."+i+".descEn","描述(英)",f.descEn,"textarea"),
         field("facilities."+i+".introZh","详细介绍(中)",f.introZh,"textarea"),
         field("facilities."+i+".introEn","详细介绍(英)",f.introEn,"textarea"),
-        field("facilities."+i+".pillarId","所属研究方向ID",f.pillarId,"text"),
-        field("facilities."+i+".memberIds","常用成员ID(逗号分隔)",(f.memberIds||[]).join(", "),"text"),
+        relSingleField("facilities."+i+".pillarId","所属研究方向",relOpts.pillars,f.pillarId),
+        relMultiField("facilities."+i+".memberIds","常用成员",relOpts.members,f.memberIds||[]),
         imgField("facilities."+i+".image","配图",f.image,"images/facilities")
       ].join(""),"facilities",i);
     });
@@ -1151,8 +1184,8 @@ function openBlockEditor(type,label){
         field("publications."+i+".doi","DOI链接",pp.doi,"text"),
         field("publications."+i+".abstractZh","摘要(中)",pp.abstractZh,"textarea"),
         field("publications."+i+".abstractEn","摘要(英)",pp.abstractEn,"textarea"),
-        field("publications."+i+".projectIds","相关课题ID(逗号分隔)",(pp.projectIds||[]).join(", "),"text"),
-        field("publications."+i+".memberIds","参与成员ID(逗号分隔)",(pp.memberIds||[]).join(", "),"text"),
+        relMultiField("publications."+i+".projectIds","相关课题",relOpts.projs,pp.projectIds||[]),
+        relMultiField("publications."+i+".memberIds","参与成员",relOpts.members,pp.memberIds||[]),
         imgField("publications."+i+".image","配图",pp.image,"images/publications")
       ].join(""),"publications",i);
     });
@@ -1219,12 +1252,24 @@ function bindBlockEditorEvents(){
       }else if(/\.images$/.test(path)){
         var arr=val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;});
         setByPath(edData,path,arr);
-      }else if(/(memberIds|pubIds|projectIds|facilityIds)$/.test(path)){
-        var arr=val.split(/[,，]/).map(function(s){return s.trim();}).filter(function(s){return s;});
-        setByPath(edData,path,arr);
       }else{
         setByPath(edData,path,val);
       }
+    };
+  });
+  // 关联字段（多选 checkbox）
+  beBody.querySelectorAll("[data-rel-multi]").forEach(function(cb){
+    cb.onchange=function(){
+      var path=this.getAttribute("data-rel-multi");
+      var vals=[].slice.call(beBody.querySelectorAll('[data-rel-multi="'+path+'"]:checked')).map(function(x){return x.value;});
+      setByPath(edData,path,vals);
+    };
+  });
+  // 关联字段（单选 select）
+  beBody.querySelectorAll("[data-rel-single]").forEach(function(sel){
+    sel.onchange=function(){
+      var path=this.getAttribute("data-rel-single");
+      setByPath(edData,path,this.value);
     };
   });
   beBody.querySelectorAll("[data-del]").forEach(function(btn){
