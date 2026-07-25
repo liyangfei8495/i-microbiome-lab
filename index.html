@@ -729,8 +729,16 @@ document.addEventListener("DOMContentLoaded",function(){
     <button class="admin-close" data-be-close aria-label="关闭"><i class="fas fa-times"></i></button>
     <h2 id="be-title" style="margin:0 0 14px;font-size:17px;display:flex;align-items:center;gap:8px;"><i class="fas fa-edit" style="color:var(--primary,#0066cc);"></i> 编辑</h2>
     <div id="be-body" style="flex:1;overflow-y:auto;padding:4px 4px 16px;"></div>
+    <div style="padding-top:8px;border-top:1px dashed #e5e5ea;margin-top:2px;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="gh-token" type="password" placeholder="GitHub Token（仅首次填，存本机浏览器，不公开）" style="flex:1;padding:7px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;">
+        <button id="gh-token-save" class="ap-btn ap-btn-sec" title="记住 Token">记住</button>
+      </div>
+      <div style="font-size:11px;color:#8a8a8e;margin-top:4px;">Token 需有该仓库 Contents 写权限（fine-grained，仅授权 liyangfei8495/i-microbiome-lab）。点“保存并发布”即全网生效。</div>
+    </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:10px;border-top:1px solid #e5e5ea;">
       <button id="be-cancel" class="ap-btn ap-btn-sec">取消</button>
+      <button id="be-publish" class="ap-btn ap-btn-pri" style="background:#0a7d3b;">保存并发布</button>
       <button id="be-save" class="ap-btn ap-btn-pri">保存此项</button>
     </div>
   </div>
@@ -1235,14 +1243,14 @@ function handleImgUpload(file,zone){
   reader.readAsDataURL(file);
 }
 
-document.getElementById("be-save").onclick=function(){
+// 保存编辑到本机（localStorage + 当前页面内存 + 内嵌固化）
+function saveEdits(){
   try{
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
-  }catch(e){showToast("保存失败："+e.message);return;}
-  DATA=edData;                              // 同步模块级 DATA，使详情弹窗读到最新
-  window.__DATA=edData;                     // 同步全局数据对象，当前页面不刷新也能读到最新
+  }catch(e){showToast("保存失败："+e.message);return false;}
+  DATA=edData;
+  window.__DATA=edData;
   window.renderAll(edData);
-  // 固化内嵌数据：把整份 edData 写回 window.__DATA 的 script 节点，刷新/换设备永久生效
   try{
     var scripts=document.querySelectorAll("script");
     for(var i=0;i<scripts.length;i++){
@@ -1254,9 +1262,55 @@ document.getElementById("be-save").onclick=function(){
     }
   }catch(e){/* 内嵌固化失败不阻断，localStorage 仍生效 */}
   setTimeout(function(){injectEditButtons();},50);
-  apClose(beModal);
-  showToast("已保存并更新预览，刷新后永久生效");
+  return true;
+}
+// GitHub 发布工具
+function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
+function b64decode(b64){ return decodeURIComponent(escape(atob(b64))); }
+function getGhToken(){
+  var inp=document.getElementById("gh-token");
+  var t=(inp&&inp.value)?inp.value.trim():(localStorage.getItem("GH_TOKEN")||"");
+  return t;
+}
+function publishToGitHub(){
+  var token=getGhToken();
+  if(!token){ showToast("请先在上方填入 GitHub Token 并点“记住”"); var gi=document.getElementById("gh-token"); if(gi) gi.focus(); return; }
+  var repo="liyangfei8495/i-microbiome-lab", path="index.html";
+  showToast("正在发布到 GitHub…");
+  fetch("https://api.github.com/repos/"+repo+"/contents/"+path,{
+    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }
+  }).then(function(r){ if(!r.ok) throw new Error("获取文件失败("+r.status+")"); return r.json(); })
+   .then(function(meta){
+     var oldHtml=b64decode(meta.content);
+     var newData="window.__DATA="+JSON.stringify(edData)+";\n";
+     var newHtml=oldHtml.replace(/window\.__DATA=\{[\s\S]*?\};\s*<\/script>/, function(m){ return newData+"<\/script>"; });
+     if(newHtml===oldHtml){ throw new Error("未检测到数据段，发布中止"); }
+     return fetch("https://api.github.com/repos/"+repo+"/contents/"+path,{
+       method:"PUT",
+       headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
+       body: JSON.stringify({ message:"site: 管理员发布更新", content:b64encode(newHtml), sha:meta.sha })
+     });
+   })
+   .then(function(r){ if(!r.ok) throw new Error("发布失败("+r.status+")"); return r.json(); })
+   .then(function(){ showToast("已发布，1–2 分钟全网生效"); })
+   .catch(function(e){ showToast("发布出错："+e.message); });
+}
+document.getElementById("gh-token-save").onclick=function(){
+  var v=document.getElementById("gh-token").value.trim();
+  if(!v){ showToast("请输入 Token"); return; }
+  localStorage.setItem("GH_TOKEN",v); showToast("Token 已记住（仅存本机浏览器）");
 };
+document.getElementById("be-save").onclick=function(){
+  if(saveEdits()){ apClose(beModal); showToast("已保存并更新预览，刷新后永久生效"); }
+};
+document.getElementById("be-publish").onclick=function(){
+  if(!saveEdits()) return;
+  apClose(beModal);
+  publishToGitHub();
+};
+// 初始化填充已记住的 Token
+(function(){ var t=localStorage.getItem("GH_TOKEN"); if(t){ var inp=document.getElementById("gh-token"); if(inp) inp.value=t; } })();
+
 
 })();
 </script>
