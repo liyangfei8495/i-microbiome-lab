@@ -1021,21 +1021,21 @@ function setByPath(obj,path,val){
 }
 
 function relMultiField(path,label,options,selected){
-  if(!options||!options.length)return '<div class="ap-field"><label>'+esc(label)+'</label><div class="rel-list rel-empty">（暂无可选项）</div></div>';
+  if(!options||!options.length)return '<div class="ap-field"><label>'+escAttr(label)+'</label><div class="rel-list rel-empty">（暂无可选项）</div></div>';
   var sel=selected||[];
   var boxes=options.map(function(o){
     var checked=sel.indexOf(o.id)>=0?"checked":"";
-    return '<label class="rel-opt"><input type="checkbox" data-rel-multi="'+escAttr(path)+'" value="'+escAttr(o.id)+'" '+checked+'><span class="rel-name">'+esc(o.name)+'</span><span class="rel-id">'+escAttr(o.id)+'</span></label>';
+    return '<label class="rel-opt"><input type="checkbox" data-rel-multi="'+escAttr(path)+'" value="'+escAttr(o.id)+'" '+checked+'><span class="rel-name">'+escAttr(o.name)+'</span><span class="rel-id">'+escAttr(o.id)+'</span></label>';
   }).join("");
-  return '<div class="ap-field"><label>'+esc(label)+'</label><div class="rel-list">'+boxes+'</div></div>';
+  return '<div class="ap-field"><label>'+escAttr(label)+'</label><div class="rel-list">'+boxes+'</div></div>';
 }
 function relSingleField(path,label,options,selected){
   var opts='<option value="">（无）</option>';
   (options||[]).forEach(function(o){
     var s=(o.id===selected)?"selected":"";
-    opts+='<option value="'+escAttr(o.id)+'" '+s+'>'+esc(o.name)+'</option>';
+    opts+='<option value="'+escAttr(o.id)+'" '+s+'>'+escAttr(o.name)+'</option>';
   });
-  return '<div class="ap-field"><label>'+esc(label)+'</label><select class="rel-select" data-rel-single="'+escAttr(path)+'">'+opts+'</select></div>';
+  return '<div class="ap-field"><label>'+escAttr(label)+'</label><select class="rel-select" data-rel-single="'+escAttr(path)+'">'+opts+'</select></div>';
 }
 function openBlockEditor(type,label){
   currentEdit=type;
@@ -1087,7 +1087,6 @@ function openBlockEditor(type,label){
         field("research.projects."+i+".titleZh","标题(中)",pr.titleZh),
         field("research.projects."+i+".titleEn","标题(英)",pr.titleEn),
         field("research.projects."+i+".lead","负责人",pr.lead,"text"),
-        field("research.projects."+i+".pillarId","所属研究方向ID",pr.pillarId,"text"),
         field("research.projects."+i+".contentZh","研究内容(中)",pr.contentZh,"textarea"),
         field("research.projects."+i+".contentEn","研究内容(英)",pr.contentEn,"textarea"),
         field("research.projects."+i+".goalsZh","研究目标(中)",pr.goalsZh,"textarea"),
