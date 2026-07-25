@@ -1283,6 +1283,7 @@ function getGhToken(){
 function getGhProxy(){
   var inp=document.getElementById("gh-proxy");
   var p=(inp&&inp.value)?inp.value.trim():(localStorage.getItem("GH_PROXY")||"");
+  if(!p){ p="https://github-proxy.liyangfei8495.workers.dev"; }
   if(p){ p=p.replace(/\/+$/,""); }
   return p;
 }
@@ -1340,12 +1341,21 @@ function publishToGitHub(onDone){
 function testConnection(){
   var base=getGhProxy();
   if(!base){ setPubStatus("请先填代理地址并点“记住”","err"); var pi=document.getElementById("gh-proxy"); if(pi) pi.focus(); return; }
-  setPubStatus("正在测试代理连通性…","info");
+  var token=getGhToken();
+  if(!token){ setPubStatus("✅ 代理正常，但⚠️ 还没填 GitHub Token，无法发布","err"); showToast("代理通，但缺 Token"); return; }
+  setPubStatus("正在测试代理 + Token…","info");
   var ctrl=new AbortController();
   var to=setTimeout(function(){ ctrl.abort(); }, 8000);
-  fetch(base+"/repos/liyangfei8495/i-microbiome-lab", { signal: ctrl.signal })
-    .then(function(r){ clearTimeout(to); if(r.ok){ var m="✅ 代理连通正常，可发布"; setPubStatus(m,"ok"); showToast(m); } else { var m2="代理有响应但状态异常("+r.status+")"; setPubStatus(m2,"err"); showToast(m2); } })
-    .catch(function(e){ clearTimeout(to); var m3=(e&&e.name==="AbortError")?"❌ 代理连接超时（很可能 workers.dev 被墙）":"❌ 代理连接失败 "+(e&&e.message?e.message:e); setPubStatus(m3,"err"); showToast(m3); });
+  fetch(base+"/repos/liyangfei8495/i-microbiome-lab/contents/index.html", {
+    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
+    signal: ctrl.signal
+  })
+    .then(function(r){ clearTimeout(to);
+      if(r.ok){ var m="✅ 代理通 + Token有效，可以发布"; setPubStatus(m,"ok"); showToast(m); }
+      else if(r.status===401||r.status===403){ var m2="代理通，但❌ Token无效/无权限("+r.status+")"; setPubStatus(m2,"err"); showToast(m2); }
+      else { var m3="代理通，但状态异常("+r.status+")"; setPubStatus(m3,"err"); showToast(m3); }
+    })
+    .catch(function(e){ clearTimeout(to); var m4=(e&&e.name==="AbortError")?"❌ 代理连接超时（很可能 workers.dev 被墙）":"❌ 连接失败 "+(e&&e.message?e.message:e); setPubStatus(m4,"err"); showToast(m4); });
 }
 document.getElementById("gh-test").onclick=testConnection;
 document.getElementById("gh-token-save").onclick=function(){
@@ -1357,7 +1367,7 @@ document.getElementById("gh-proxy-save").onclick=function(){
   var v=document.getElementById("gh-proxy").value.trim();
   localStorage.setItem("GH_PROXY",v); showToast("代理地址已记住（仅存本机浏览器）");
 };
-document.getElementById("be-export").onclick=function(){
+function doExportIndex(){
   if(!saveEdits()) return;
   var url=location.href.split("#")[0];
   fetch(url).then(function(r){return r.text();}).then(function(oldHtml){
@@ -1368,13 +1378,19 @@ document.getElementById("be-export").onclick=function(){
     var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="index.html"; a.click();
     showToast("已导出 index.html，可发我帮你发布（或填代理后直接发布）");
   }).catch(function(e){ showToast("导出失败："+e.message); });
-};
+}
+document.getElementById("be-export").onclick=doExportIndex;
 document.getElementById("be-save").onclick=function(){
   if(saveEdits()){ apClose(beModal); showToast("已保存并更新预览，刷新后永久生效"); }
 };
 document.getElementById("be-publish").onclick=function(){
   var tk=getGhToken();
-  if(!tk){ setPubStatus("❌ 还没填 GitHub Token！请填 ghp_ 开头的 Token 并点“记住”","err"); var gi=document.getElementById("gh-token"); if(gi){try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus();} return; }
+  if(!tk){
+    setPubStatus("⚠️ 未填 GitHub Token，无法直连发布。已为你导出改好的网页，发我即可发布","err");
+    showToast("未填Token：已自动导出 index.html，发我即可发布");
+    doExportIndex();
+    return;
+  }
   setPubStatus("正在保存修改…","info");
   if(!saveEdits()){ setPubStatus("保存失败","err"); return; }
   setPubStatus("正在发布到 GitHub…","info");
@@ -1382,9 +1398,12 @@ document.getElementById("be-publish").onclick=function(){
     if(ok){ setTimeout(function(){ try{apClose(beModal);}catch(e){} }, 1800); }
   });
 };
-// 初始化填充已记住的 Token / 代理
-(function(){ var t=localStorage.getItem("GH_TOKEN"); if(t){ var inp=document.getElementById("gh-token"); if(inp) inp.value=t; }
-  var p=localStorage.getItem("GH_PROXY"); if(p){ var pinp=document.getElementById("gh-proxy"); if(pinp) pinp.value=p; } })();
+// 初始化填充已记住的 Token / 代理（代理可默认，Token 需用户自备，不硬编码进源码）
+(function(){
+  var p=localStorage.getItem("GH_PROXY"); if(!p){ p="https://github-proxy.liyangfei8495.workers.dev"; localStorage.setItem("GH_PROXY",p); }
+  var pinp=document.getElementById("gh-proxy"); if(pinp) pinp.value=p;
+  var t=localStorage.getItem("GH_TOKEN"); if(t){ var inp=document.getElementById("gh-token"); if(inp) inp.value=t; }
+})();
 
 
 })();
