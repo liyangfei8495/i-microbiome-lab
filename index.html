@@ -1122,16 +1122,9 @@ function openBlockEditor(type,label){
         field("members."+i+".contactZh","联系方式(中)",m.contactZh,"textarea"),
         field("members."+i+".contactEn","联系方式(英)",m.contactEn,"textarea")
       ].join("");
-      var relFields=[
-        field("members."+i+".pillarIds","研究方向ID(逗号分隔,对应“研究主题”模块的ID)",(m.pillarIds||[]).join(", "),"text"),
-        field("members."+i+".pubIds","代表性论文ID(逗号分隔,对应“论文成果”模块的ID)",(m.pubIds||[]).join(", "),"text"),
-        field("members."+i+".projectIds","参与课题ID(逗号分隔)",(m.projectIds||[]).join(", "),"text"),
-        field("members."+i+".facilityIds","使用设施ID(逗号分隔)",(m.facilityIds||[]).join(", "),"text")
-      ].join("");
       h+=itemBox((m.nameZh||("成员 "+(i+1))),
         baseFields +
-        '<div class="ap-detail-group"><div class="ap-group-title">📋 详情页板块（可编辑 · 对应成员详情页 9 大板块）</div>'+detailFields+'</div>' +
-        '<div class="ap-detail-group" style="border-color:#d9c8e5;background:#fbf7ff;"><div class="ap-group-title" style="color:#7a3cc0;">🔗 关联内容（填对应模块的 ID，逗号分隔）</div>'+relFields+'</div>'
+        '<div class="ap-detail-group"><div class="ap-group-title">📋 详情页板块（可编辑 · 对应成员详情页 9 大板块）</div>'+detailFields+'</div>'
       ,"members",i);
     });
     h+='<button class="ap-add" data-add="members">+ 添加成员</button>';
@@ -1210,9 +1203,6 @@ function bindBlockEditorEvents(){
         edData.labLife=val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;});
       }else if(/\.images$/.test(path)){
         var arr=val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;});
-        setByPath(edData,path,arr);
-      }else if(/(pillarIds|pubIds|projectIds|facilityIds)$/.test(path)){
-        var arr=val.split(/[,，]/).map(function(s){return s.trim();}).filter(function(s){return s;});
         setByPath(edData,path,arr);
       }else{
         setByPath(edData,path,val);
