@@ -1256,9 +1256,13 @@ function saveEdits(){
   try{
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
   }catch(e){showToast("保存失败："+e.message);return false;}
-  DATA=edData;
-  window.__DATA=edData;
-  window.renderAll(edData);
+  try{
+    DATA=edData;
+    window.__DATA=edData;
+    if(typeof window.renderAll==="function"){ window.renderAll(edData); }
+  }catch(e){
+    showToast("预览渲染出错（数据已保存）："+(e&&e.message?e.message:e));
+  }
   try{
     var scripts=document.querySelectorAll("script");
     for(var i=0;i<scripts.length;i++){
@@ -1268,8 +1272,8 @@ function saveEdits(){
         break;
       }
     }
-  }catch(e){/* 内嵌固化失败不阻断，localStorage 仍生效 */}
-  setTimeout(function(){injectEditButtons();},50);
+  }catch(e){/* 内嵌固化失败不阻断 */}
+  setTimeout(function(){ try{injectEditButtons();}catch(e){} },50);
   return true;
 }
 // GitHub 发布工具
@@ -1384,19 +1388,26 @@ document.getElementById("be-save").onclick=function(){
   if(saveEdits()){ apClose(beModal); showToast("已保存并更新预览，刷新后永久生效"); }
 };
 document.getElementById("be-publish").onclick=function(){
-  var tk=getGhToken();
-  if(!tk){
-    setPubStatus("⚠️ 未填 GitHub Token，无法直连发布。已为你导出改好的网页，发我即可发布","err");
-    showToast("未填Token：已自动导出 index.html，发我即可发布");
-    doExportIndex();
-    return;
+  try{
+    var tk=getGhToken();
+    if(!tk){
+      setPubStatus("⚠️ 未填 GitHub Token，无法直连发布。已为你导出改好的网页，发我即可发布","err");
+      showToast("未填Token：已自动导出 index.html，发我即可发布");
+      doExportIndex();
+      return;
+    }
+    setPubStatus("正在保存修改…","info");
+    if(!saveEdits()){ setPubStatus("保存失败","err"); return; }
+    setPubStatus("正在发布到 GitHub…","info");
+    publishToGitHub(function(ok,msg){
+      if(ok){ setTimeout(function(){ try{apClose(beModal);}catch(e){} }, 1800); }
+    });
+  }catch(err){
+    var em=(err&&err.message)?err.message:(""+err);
+    setPubStatus("❌ 发布流程异常："+em+"（已自动导出，发我即可发布）","err");
+    showToast("发布异常，已为你导出文件");
+    try{doExportIndex();}catch(e){}
   }
-  setPubStatus("正在保存修改…","info");
-  if(!saveEdits()){ setPubStatus("保存失败","err"); return; }
-  setPubStatus("正在发布到 GitHub…","info");
-  publishToGitHub(function(ok,msg){
-    if(ok){ setTimeout(function(){ try{apClose(beModal);}catch(e){} }, 1800); }
-  });
 };
 // 初始化填充已记住的 Token / 代理（代理可默认，Token 需用户自备，不硬编码进源码）
 (function(){
