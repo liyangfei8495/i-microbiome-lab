@@ -582,6 +582,7 @@ function renderAll(d){
   bindAll();
   applyLang(window.__lang||"zh");
 }
+window.renderAll=renderAll;  // 暴露给编辑器脚本（script2）调用，修复"保存后页面不刷新/保存无效"
 
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
@@ -1282,7 +1283,7 @@ document.getElementById("be-save").onclick=function(){
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
     localStorage.setItem("lab_nav",JSON.stringify(window.__NAV||[]));
   }catch(e){}
-  DATA=edData;renderAll(edData);
+  window.renderAll(edData);
   setTimeout(function(){injectEditButtons();},50);
   apClose(beModal);
   showToast("已保存此项并更新预览");
@@ -1291,7 +1292,7 @@ document.getElementById("ab-save").onclick=function(){
   try{
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
     localStorage.setItem("lab_nav",JSON.stringify(window.__NAV||[]));
-    DATA=edData;renderAll(edData);
+    window.renderAll(edData);
     setTimeout(function(){injectEditButtons();},50);
     showToast("已保存，刷新后仍生效");
   }catch(e){showToast("保存失败："+e.message);}
@@ -1308,7 +1309,7 @@ document.getElementById("ab-reset").onclick=function(){
   if(!confirm("确定清除本地所有修改，恢复原始内容？"))return;
   localStorage.removeItem(ED_KEY);
   edData=JSON.parse(JSON.stringify(window.__DATA));
-  DATA=edData;renderAll(edData);
+  window.renderAll(edData);
   setTimeout(function(){injectEditButtons();},50);
   showToast("已恢复原始内容");
 };
