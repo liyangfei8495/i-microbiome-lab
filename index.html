@@ -397,16 +397,32 @@ function openDetail(type,id){
     var ph=m.photo?img(m.photo,"modal-photo"):avatar(m.nameZh||m.nameEn||"?");
     html+=ph+'<h2 style="text-align:center;">'+esc(m.nameZh)+' '+en(m.nameEn)+'</h2>';
     html+='<p class="modal-role" style="text-align:center;">'+both(m.roleZh,m.roleEn)+'</p>';
-    html+='<div class="modal-block"><h3>'+both("简介","Bio")+'</h3><p>'+both(m.bioZh,m.bioEn)+'</p></div>';
+    // 1. 个人简介
+    html+='<div class="modal-block"><h3>'+both("个人简介","Bio")+'</h3><p>'+both(m.bioZh,m.bioEn)+'</p></div>';
     if(m.introZh||m.introEn){
       html+='<div class="modal-block"><h3>'+both("自我介绍","About")+'</h3>';
       if(m.introImage)html+=img(m.introImage,"modal-banner");
       html+='<p>'+both(m.introZh,m.introEn)+'</p></div>';
     }
+    // 2. 教育背景与工作经历
+    if(m.eduZh||m.eduEn) html+='<div class="modal-block"><h3>'+both("教育背景与工作经历","Education & Experience")+'</h3><p>'+both(m.eduZh,m.eduEn)+'</p></div>';
+    // 3. 研究方向
     html+=rel(both("研究方向","Research Areas"),m.pillarIds||[]);
+    // 4. 主要学术成绩
+    if(m.achZh||m.achEn) html+='<div class="modal-block"><h3>'+both("主要学术成绩","Academic Achievements")+'</h3><p>'+both(m.achZh,m.achEn)+'</p></div>';
+    // 5. 国内外会议与学术报告
+    if(m.confZh||m.confEn) html+='<div class="modal-block"><h3>'+both("国内外会议与学术报告","Conferences & Talks")+'</h3><p>'+both(m.confZh,m.confEn)+'</p></div>';
+    // 6. 代表性论文
+    html+=rel(both("代表性论文","Representative Publications"),m.pubIds||[]);
+    // 7. 招生与团队
+    if(m.recruitZh||m.recruitEn) html+='<div class="modal-block"><h3>'+both("招生与团队","Recruitment & Team")+'</h3><p>'+both(m.recruitZh,m.recruitEn)+'</p></div>';
+    // 8. 寄语
+    if(m.wordsZh||m.wordsEn) html+='<div class="modal-block"><h3>'+both("寄语","Message")+'</h3><p>'+both(m.wordsZh,m.wordsEn)+'</p></div>';
+    // 9. 联系方式
+    if(m.contactZh||m.contactEn) html+='<div class="modal-block"><h3>'+both("联系方式","Contact")+'</h3><p>'+both(m.contactZh,m.contactEn)+'</p></div>';
+    // 相关链接
     html+=rel(both("参与课题","Projects"),m.projectIds||[]);
     html+=rel(both("使用设施","Facilities"),m.facilityIds||[]);
-    html+=rel(both("发表论文","Publications"),m.pubIds||[]);
   }
   else if(type==="pub"){
     var p=find(d.publications,id);if(!p)return showToast("未找到："+id);
@@ -1026,6 +1042,18 @@ function openBlockEditor(type,label){
         field("members."+i+".group","分组(pi/faculty/manager/phd/master)",m.group,"text"),
         field("members."+i+".bioZh","简介(中)",m.bioZh,"textarea"),
         field("members."+i+".bioEn","简介(英)",m.bioEn,"textarea"),
+        field("members."+i+".eduZh","教育背景与工作经历(中)",m.eduZh,"textarea"),
+        field("members."+i+".eduEn","教育背景与工作经历(英)",m.eduEn,"textarea"),
+        field("members."+i+".achZh","主要学术成绩(中)",m.achZh,"textarea"),
+        field("members."+i+".achEn","主要学术成绩(英)",m.achEn,"textarea"),
+        field("members."+i+".confZh","国内外会议与学术报告(中)",m.confZh,"textarea"),
+        field("members."+i+".confEn","国内外会议与学术报告(英)",m.confEn,"textarea"),
+        field("members."+i+".recruitZh","招生与团队(中)",m.recruitZh,"textarea"),
+        field("members."+i+".recruitEn","招生与团队(英)",m.recruitEn,"textarea"),
+        field("members."+i+".wordsZh","寄语(中)",m.wordsZh,"textarea"),
+        field("members."+i+".wordsEn","寄语(英)",m.wordsEn,"textarea"),
+        field("members."+i+".contactZh","联系方式(中)",m.contactZh,"textarea"),
+        field("members."+i+".contactEn","联系方式(英)",m.contactEn,"textarea"),
         field("members."+i+".photo","照片路径",m.photo,"text")
       ].join(""),"members",i);
     });
@@ -1125,7 +1153,7 @@ function bindBlockEditorEvents(){
       if(path==="highlights")tpl={icon:"fa-flask",zh:"新方向",en:"New",descZh:"",descEn:"",image:""};
       else if(path==="research.projects")tpl={id:"proj-"+Date.now(),titleZh:"新课题",titleEn:"",contentZh:"",contentEn:"",lead:"",images:[]};
       else if(path==="facilities")tpl={id:"fac-"+Date.now(),icon:"fa-microscope",zh:"新设施",en:"",descZh:"",descEn:"",image:""};
-      else if(path==="members")tpl={id:"m-"+Date.now(),nameZh:"新成员",nameEn:"",roleZh:"",roleEn:"",group:"phd",bioZh:"",bioEn:"",photo:""};
+      else if(path==="members")tpl={id:"m-"+Date.now(),nameZh:"新成员",nameEn:"",roleZh:"",roleEn:"",group:"phd",bioZh:"",bioEn:"",eduZh:"",eduEn:"",achZh:"",achEn:"",confZh:"",confEn:"",recruitZh:"",recruitEn:"",wordsZh:"",wordsEn:"",contactZh:"",contactEn:"",photo:""};
       else if(path==="publications")tpl={id:"p-"+Date.now(),authors:"",titleZh:"",titleEn:"",journal:"",year:"",doi:"#",image:""};
       else if(path==="news")tpl={id:"n-"+Date.now(),titleZh:"",titleEn:"",day:"1",month:"01",blocks:[{type:"text",zh:"",en:""}]};
       arr.push(tpl);
