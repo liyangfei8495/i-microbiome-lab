@@ -143,6 +143,25 @@ section h2{font-size:34px;text-align:center;margin:0 0 14px}
 .modal-block{margin:22px 0}
 .modal-block h3{font-size:13px;text-transform:uppercase;color:var(--primary);letter-spacing:.1em;margin:0 0 10px}
 .modal-block p{margin:0;color:var(--text-color)}
+/* 允许正文按录入的换行显示（内容已 esc 转义，安全）；连续换行即空行分段 */
+.modal-block p,
+.large-text,
+.intro-text,
+.pillar-body p,
+.research-card p,
+.facility-body p,
+.member-bio,
+.member-role,
+.pi-card p,
+.join-intro,
+.join-card p,
+.join-openings li,
+.contact-container p,
+.contact-item,
+.news-body p,
+.publication-item p,
+.lab-life-intro
+{white-space:pre-wrap;}
 .modal-banner{width:100%;height:240px;object-fit:cover;border-radius:14px;background:var(--section-bg);margin-bottom:18px}
 .modal-logo{width:72px;height:72px;object-fit:cover;border-radius:14px;background:var(--section-bg);margin-bottom:12px}
 .modal-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
@@ -171,8 +190,7 @@ footer p{margin:4px 0}
 
 @media(max-width:600px){.hero-title{font-size:36px}.hero-subtitle{font-size:16px}.intro-container{grid-template-columns:1fr;gap:30px}.contact-container{grid-template-columns:1fr}.pi-card{flex-direction:column;text-align:center}.pi-card h2,.pi-card h3,.pi-card p{text-align:center !important}}
 </style>
-<script>window.__DATA={"lab":{"name":"i-Microbiome Lab","taglineZh":"智能微生物组与生物制造实验室","taglineEn":"Intelligent Microbiome and Bio-Manufacturing Laboratory"},"hero":{"image":"images/plant_image2.jpg"},"home":{"titleZh":"用微生物工程，构建可持续生物制造的未来","titleEn":"Engineering microbiomes for a sustainable bio-future","introZh":"i-Microbiome Lab 聚焦智能微生物组与下一代生物制造，从肠道菌群机制解析、工业酶分子设计，到微生物反应器过程放大，我们把“看不见的微生物”变成“用得上的平台”。","introEn":"i-Microbiome Lab focuses on intelligent microbiomes and next-generation bio-manufacturing — from gut microbiome mechanism discovery, to industrial enzyme engineering, to bioreactor scale-up — turning invisible microbes into usable platforms.","intro2Zh":"我们相信：合成生物学、智能算法与高通量工艺的深度融合，将重塑制药、能源、食品与环境的产业边界。","intro2En":"We believe the deep fusion of synthetic biology, intelligent algorithms, and high-throughput process engineering will reshape pharma, energy, food, and environmental industries.","photo":"images/travel_5.jpg","photoCapZh":"i-Microbiome Lab 团队合影","photoCapEn":"i-Microbiome Lab · Team"},"highlights":[{"icon":"fa-dna","zh":"智能微生物组","en":"Intelligent Microbiome","descZh":"结合多组学与机器学习，解析菌群结构-功能-宿主互作机制。","descEn":"Multi-omics + machine learning to decode microbiome structure-function-host interactions.","image":"images/plant_image2.jpg"},{"icon":"fa-flask","zh":"酶工程与合成生物学","en":"Enzyme & SynBio","descZh":"理性设计+AI 辅助，重编程工业酶与底盘菌株。","descEn":"Rational design + AI-assisted reprogramming of industrial enzymes and chassis strains.","image":"images/plant_image3.jpg"},{"icon":"fa-industry","zh":"生物制造过程放大","en":"Bio-manufacturing Scale-up","descZh":"从摇瓶到 200L 发酵罐的全链条工艺优化与智能控制。","descEn":"End-to-end process optimization and intelligent control from shake-flask to 200L bioreactors.","image":"images/plant_image5.jpg"}],"research":{"pillars":[{"id":"pillar-microbiome","icon":"fa-dna","zh":"微生物组机制","en":"Microbiome Mechanisms","descZh":"菌群-代谢物-宿主表型因果链；组学大数据与因果推断。","descEn":"Causal chains of microbiome-metabolite-host phenotype; omics big-data & causal inference.","image":"images/plant_image2.jpg","introZh":"我们用宏基因组、代谢组与单细胞测序，结合机器学习因果推断方法，回答“哪些菌、哪些代谢物、哪些通路”驱动了宿主表型变化。","introEn":"Using metagenomics, metabolomics, and single-cell sequencing combined with ML causal inference, we identify which microbes, metabolites, and pathways drive host phenotypic changes."},{"id":"pillar-enzyme","icon":"fa-atom","zh":"酶工程与合成生物学","en":"Enzyme Engineering & SynBio","descZh":"AI 辅助酶分子设计、代谢通路重构、动态调控。","descEn":"AI-assisted enzyme design, pathway refactoring, dynamic regulation.","image":"images/plant_image3.jpg","introZh":"聚焦工业酶（蛋白酶、脂肪酶、转移酶等）的催化效率、热稳定性、底物特异性优化；同时构建高产菌株底盘与动态代谢调控回路。","introEn":"Focus on optimizing catalytic efficiency, thermostability, and substrate specificity of industrial enzymes; also build high-yield chassis strains and dynamic metabolic regulation circuits."},{"id":"pillar-process","icon":"fa-industry","zh":"生物制造过程放大","en":"Bio-process Scale-up","descZh":"发酵工艺、在线监测、智能控制与绿色分离纯化。","descEn":"Fermentation processes, online monitoring, intelligent control, and green separation.","image":"images/plant_image5.jpg","introZh":"打通从摇瓶到中试的工艺放大瓶颈，结合 PAT 在线监测与 AI 模型，实现产率、稳定性、能耗的多目标最优。","introEn":"Overcome scale-up bottlenecks from shake-flask to pilot, combining PAT online monitoring and AI models for multi-objective optimization of yield, stability, and energy consumption."}],"projects":[{"id":"proj-gut","titleZh":"肠道菌群-宿主代谢互作机制解析","titleEn":"Gut microbiome-host metabolism interplay","logo":"images/yuanke_original.jpg","lead":"梁元可","pillarId":"pillar-microbiome","memberIds":["member-liang","member-yan"],"contentZh":"结合宏基因组与代谢组，系统解析肠道菌群在炎症性肠病、糖尿病等代谢紊乱中的作用机制，挖掘关键菌株与代谢物。","contentEn":"Integrating metagenomics and metabolomics to systematically dissect gut microbiome roles in IBD, diabetes, and other metabolic disorders.","goalsZh":"建立 3 类疾病的关键菌-代谢物-宿主轴因果模型，验证 ≥2 个候选干预靶点。","goalsEn":"Establish causal models of keystone microbe-metabolite-host axes for 3 disease categories; validate ≥2 candidate intervention targets.","progressZh":"已完成 200 例 IBD 患者队列多组学测序，因果推断框架搭建中。","progressEn":"Multi-omics sequencing of 200 IBD patient cohort completed; causal inference framework in development.","images":["images/plant_image2.jpg","images/plant_image6.jpg"],"pubIds":["pub-2025-microbiome"]},{"id":"proj-enzyme-ai","titleZh":"AI 辅助工业酶分子设计","titleEn":"AI-assisted industrial enzyme design","logo":"images/plant_image3.jpg","lead":"官颖","pillarId":"pillar-enzyme","memberIds":["member-guan","member-liuyang"],"contentZh":"结合蛋白质语言模型 (ESM/AlphaFold) 与高通量突变实验，改造工业酶的催化活性与稳定性。","contentEn":"Combining protein language models (ESM/AlphaFold) with high-throughput mutagenesis to engineer catalytic activity and stability of industrial enzymes.","goalsZh":"对 ≥3 类工业酶实现活性或稳定性 ≥2 倍提升；发表工具链开源。","goalsEn":"Achieve ≥2-fold improvement in activity or stability for ≥3 enzyme classes; release toolchain as open-source.","progressZh":"蛋白酶设计模型迭代至 v3，热稳定性提升 2.4 倍。","progressEn":"Protease design model iterated to v3; thermostability improved 2.4x.","images":["images/plant_image3.jpg"],"pubIds":[]},{"id":"proj-bioprocess","titleZh":"微生物发酵过程智能放大","titleEn":"Intelligent scale-up of microbial fermentation","logo":"images/plant_image5.jpg","lead":"郑仕伟","pillarId":"pillar-process","memberIds":["member-zheng","member-chenyueq"],"contentZh":"开发基于在线监测（尾气、OD、pH）的 AI 反馈控制系统，实现摇瓶→中试的稳定放大。","contentEn":"Develop AI feedback control systems based on online monitoring (off-gas, OD, pH) for stable scale-up from shake-flask to pilot.","goalsZh":"在 200L 规模实现 ≥85% 摇瓶效价复现，能耗下降 ≥20%。","goalsEn":"Achieve ≥85% shake-flask titer reproducibility at 200L with ≥20% energy reduction.","progressZh":"中试阶段，已完成 3 批次 50L 验证。","progressEn":"Pilot stage; 3 batches of 50L validation completed.","images":["images/plant_image5.jpg"],"pubIds":[]}]},"facilities":[{"id":"fac-fermentation","icon":"fa-flask","zh":"发酵平台","en":"Fermentation Platform","descZh":"从摇瓶到 200L 发酵罐，全规模微生物培养。","descEn":"From shake-flask to 200L bioreactors, full-scale microbial cultivation.","image":"images/plant_image5.jpg","introZh":"配备 5L、20L、50L、200L 多规格全自动发酵罐，配套在线尾气分析、pH/DO/温度全自动控制。已为多家生物制造企业提供中试服务。","introEn":"Equipped with 5L, 20L, 50L, 200L fully automated bioreactors, online off-gas analysis, and full pH/DO/temperature control.","pillarId":"pillar-process","memberIds":["member-zheng","member-chenyueq"]},{"id":"fac-omics","icon":"fa-microscope","zh":"组学测序平台","en":"Omics & Sequencing Platform","descZh":"Illumina + Nanopore 长读长 + 单细胞测序。","descEn":"Illumina + Nanopore long-read + single-cell sequencing.","image":"images/plant_image2.jpg","introZh":"配备 Illumina NovaSeq、Nanopore PromethION、10x Genomics 单细胞系统，年测序通量 ≥10Tb。已搭建自动化样本制备和高性能计算分析流程。","introEn":"Equipped with Illumina NovaSeq, Nanopore PromethION, 10x Genomics single-cell systems, annual throughput ≥10Tb.","pillarId":"pillar-microbiome","memberIds":["member-liang","member-yan"]},{"id":"fac-protein","icon":"fa-vial","zh":"蛋白质工程平台","en":"Protein Engineering Platform","descZh":"蛋白质表达、纯化、活性表征全套设施。","descEn":"Full protein expression, purification, and characterization facilities.","image":"images/plant_image3.jpg","introZh":"配备 ÄKTA 纯化系统、高通量蛋白结晶机器人、CD 光谱仪、Stop-flow 反应仪，支持从克隆到结构生物学的一体化工作流。","introEn":"Equipped with ÄKTA purification, high-throughput crystallization robot, CD spectrometer, and stop-flow reactor.","pillarId":"pillar-enzyme","memberIds":["member-guan","member-liuyang"]},{"id":"fac-compute","icon":"fa-server","zh":"高性能计算","en":"HPC Cluster","descZh":"8 卡 A100 GPU 集群 + 100TB 存储。","descEn":"8x A100 GPU cluster + 100TB storage.","image":"images/plant_image6.jpg","introZh":"本地 8 卡 A100 GPU 集群 + 100TB 存储 + 自建湿实验数据库，支持蛋白质结构预测、组学分析、深度学习酶设计等场景。","introEn":"Local 8x A100 GPU cluster + 100TB storage + proprietary wet-lab database, supporting protein structure prediction, omics analysis, and deep-learning enzyme design.","pillarId":"pillar-enzyme","memberIds":["member-guan","member-ren"]}],"members":[{"id":"member-liang","group":"pi","nameZh":"梁元可","nameEn":"Yuanke Liang","roleZh":"实验室负责人","roleEn":"Principal Investigator","photo":"","bioZh":"梁元可，博士，西南科技大学生命科学与农林学院教授、博士生导师，国家级青年人才项目入选者。博士毕业于比利时根特大学（Ghent University，全球 Top 100），随后在瑞士日内瓦大学（全球 Top 50）、德国马普植物分子生理研究所（MPI-MP，全球科研机构 Top 3）等顶尖机构从事博士后研究。\n\n长期从事植物应激响应与再生机制、植物-微生物互作研究，擅长分子生物学、植物遗传转化与多组学数据分析。利用 CRISPR 基因编辑与多组学技术，系统阐明了 ERF 转录因子驱动植物损伤后高效再生的分子通路，并鉴定出全新的紫外光（UV-B）光信号响应与光保护代谢物。相关成果为作物抗逆育种和现代农业发展提供了重要的理论基础与全新的基因靶点。目前致力于 AI+多组学驱动的生物制造研究，对标国家生物经济战略与生物制造行动方案，构建通用的植物基因工程体系与底盘技术。当前正拓展高蛋白玉米的微生物增效、植物内生菌资源开发以及壳聚糖生物制造等新方向。\n\n以第一作者在 Science Advances等国际顶尖期刊发表 SCI 论文 7 篇，担任 Modern Agriculture副编委、New Crops青年编辑。","bioEn":"Microbiome & synthetic biology expert.","introZh":"本科毕业于清华大学，博士毕业于 MIT 合成生物学中心，曾任某国际合成生物学公司首席科学家。发表 SCI 论文 60 余篇，H-index 35。","introEn":"B.S. Tsinghua, Ph.D. MIT Center for Synthetic Biology. 60+ SCI publications, H-index 35.","introImage":"","pillarIds":["pillar-microbiome"],"projectIds":["proj-gut"],"facilityIds":["fac-omics"],"pubIds":["pub-2025-microbiome"],"eduZh":"2026.07- 至今 教授，西南科技大学生命科学与农林学院，智能微生态与生物制造PI\n\n2025.02 – 2026.06博士后，德国马普植物分子生理研究所（MPI-MP），合作导师 Caroline Gutjahr 教授（研究：植物-微生物互作与丛枝菌根共生）\n\n2023.02 – 2025.01博士后，瑞士日内瓦大学植物科学系，合作导师 Roman Ulm 教授（研究：植物 UV-B 感知与信号传导）\n\n2018.10 – 2023.01理学博士，比利时根特大学，导师 Lieven De Veylder 教授（论文：ERF 转录因子在植物伤口激活再生中的作用）\n\n2017.10 – 2018.02客座研究生，中国科学院遗传与发育生物学研究所（植物基因组学国家重点实验室），导师王永红研究员（课题：水稻分蘖基因的功能研究）\n\n2016.07 – 2018.06农学硕士，四川农业大学水稻研究所，导师朱建清研究员（论文：富硒红米的营养评价及动物饲养实验）\n\n2012.09 – 2016.06农学学士，四川农业大学农学院，导师陈荣军研究员（论文：水稻应激响应基因 OsUF7 启动子的克隆与表达载体构建）","eduEn":"1","achZh":"入选2025国家级青年人才项目\n\n以第一作者在 Science Advances（Science 子刊，IF≈15）等发表 SCI 论文 7 篇；H 指数 11，论文被引 300+ 次\n\n作为研究骨干参与欧洲研究理事会（ERC）项目（200 万欧元）、瑞士国家科学基金（SNSF）项目等多项国际基金","confZh":"2025 上海交通大学特邀报告（上海，口头报告）\n\n2025 iMMM2025 国际会议（德国·慕尼黑）\n\n2024 第四届全国植物光生物学大会（潍坊，口头报告）\n\n2024 第五届 UV4Plants 网络会议（德国·哥廷根，海报展示）\n\n2024 第七届日内瓦大学博士后日（瑞士·日内瓦，最佳海报奖）\n\n2024 YRSPP 会议（荷兰·乌得勒支，口头报告与海报展示）\n\n2022 瓦赫宁根植物化学系学术报告（荷兰，口头报告）\n\n2022 PSB 研讨会（比利时·根特，口头报告）\n\n2022 第一届欧洲代谢组学学校（法国·马赛，口头报告）\n\n","recruitZh":"我们是一支非常年轻的团队，我们组里只有一群对生命着迷、想把论文写在大地上的人。\n\n梁元可教授领衔智能微生态与生物制造团队常年欢迎以下同学加入：\n\n硕士研究生、博士研究生（生物学、作物学、生物技术等相关专业）\n\n博士后（提供国际化合作平台，与德国马普所、比利时VIB-PSB等顶尖机构保持紧密合作，支持联合培养与国际交流）\n\n本科生科研训练（大创项目、毕业设计、暑期科研——零基础也欢迎，带你从移液枪开始）\n\n团队依托国家级人才项目与西南科技大学龙山人才科研启动项目（领军人才），科研经费充足，研究方向横跨植物发育生物学、微生物互作与 AI 生物制造前沿。我们既做顶刊里的科学，也做地里能长出来的玉米。有志于生命科学前沿、愿意一起学习交叉创新的你，欢迎随时来聊聊，办公室的门一直开着！","wordsZh":"致每一位追光的人\n科学从来不是天才的灵光一现，而是一个普通人愿意每天比昨天多懂一点的坚持。无论你现在是正在犹豫要不要读研的本科生、想要换个平台的硕士博士，请相信，热爱再加上一点点不服输的劲头，就能把很多不可能变成我做到了。\n\n如果你也相信好的科学能长在土里、也能写进顶刊，那就来我们团队吧。我们一起，把好玩的、有用的、了不起的研究，一件一件做出来，从种下一棵玉米开始。"},{"id":"member-guan","group":"faculty","nameZh":"官颖","nameEn":"Ying Guan","roleZh":"副研究员","roleEn":"Associate Professor","photo":"","bioZh":"蛋白质设计与机器学习交叉方向，主持国家自然科学基金面上项目 2 项。","bioEn":"Protein design × machine learning.","introImage":"","pillarIds":["pillar-enzyme"],"projectIds":["proj-enzyme-ai"],"facilityIds":["fac-protein","fac-compute"],"pubIds":[]},{"id":"member-zheng","group":"faculty","nameZh":"郑仕伟","nameEn":"Shiwei Zheng","roleZh":"副研究员","roleEn":"Associate Professor","photo":"","bioZh":"发酵过程工程专家，曾任多家生物制药企业技术顾问。","bioEn":"Fermentation process expert.","introImage":"","pillarIds":["pillar-process"],"projectIds":["proj-bioprocess"],"facilityIds":["fac-fermentation"],"pubIds":[]},{"id":"member-huang","group":"manager","nameZh":"黄佳芳","nameEn":"Jiafang Huang","roleZh":"实验室管理员","roleEn":"Lab Manager","photo":"","bioZh":"负责实验室日常运维、设备管理与安全培训。","bioEn":"Daily operations, equipment management, and safety training."},{"id":"member-yan","group":"phd","nameZh":"阎凝翔","nameEn":"Ningxiang Yan","roleZh":"博士研究生 (2023级)","roleEn":"PhD Student (2023)","photo":"","bioZh":"研究方向：肠道菌群与代谢疾病。","bioEn":"Research: gut microbiome & metabolic diseases.","pillarIds":["pillar-microbiome"],"projectIds":["proj-gut"],"facilityIds":["fac-omics"],"pubIds":[]},{"id":"member-ren","group":"phd","nameZh":"任雪杨","nameEn":"Xueyang Ren","roleZh":"博士研究生 (2024级)","roleEn":"PhD Student (2024)","photo":"","bioZh":"研究方向：蛋白质语言模型与酶设计。","bioEn":"Research: protein language models & enzyme design.","pillarIds":["pillar-enzyme"],"facilityIds":["fac-compute"],"pubIds":[]},{"id":"member-li","group":"master","nameZh":"李杨飞","nameEn":"Yangfei Li","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：微生物发酵过程优化。","bioEn":"Research: microbial fermentation optimization.","pillarIds":["pillar-process"],"facilityIds":["fac-fermentation"],"pubIds":[]},{"id":"member-liuyang","group":"master","nameZh":"刘紫旭","nameEn":"Zixu Liu","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：酶定向进化。","bioEn":"Research: enzyme directed evolution.","pillarIds":["pillar-enzyme"],"projectIds":["proj-enzyme-ai"],"facilityIds":["fac-protein"],"pubIds":[]},{"id":"member-wang","group":"master","nameZh":"王舒","nameEn":"Shu Wang","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：组学数据分析与因果推断。","bioEn":"Research: omics data analysis & causal inference.","pillarIds":["pillar-microbiome"],"facilityIds":["fac-omics"],"pubIds":[]},{"id":"member-chenyueq","group":"master","nameZh":"陈跃铃","nameEn":"Yueqin Chen","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：发酵在线监测与智能控制。","bioEn":"Research: online fermentation monitoring & intelligent control.","pillarIds":["pillar-process"],"projectIds":["proj-bioprocess"],"facilityIds":["fac-fermentation"],"pubIds":[]}],"publications":[{"id":"pub-2025-microbiome","year":"2025","authors":"Liang Y, Yan N, et al.","titleZh":"肠道菌群-宿主代谢轴在炎症性肠病中的因果机制研究","titleEn":"Causal mechanisms of gut microbiome-host metabolism axis in IBD","journal":"Nature Microbiology","doi":"#","image":"images/plant_image2.jpg","abstractZh":"本文结合宏基因组、代谢组与孟德尔随机化，系统揭示了 IBD 患者肠道关键菌-代谢物-免疫轴的因果链路，发现 3 个潜在干预靶点。","abstractEn":"Integrating metagenomics, metabolomics, and Mendelian randomization, this study systematically reveals the causal chain of keystone microbe-metabolite-immune axes in IBD patients and identifies 3 potential intervention targets.","projectIds":["proj-gut"],"memberIds":["member-liang","member-yan"]}],"news":[{"id":"news-grant","date":"2026.07","day":"15","month":"07","titleZh":"团队获国家自然科学基金重点项目资助","titleEn":"Lab awarded NSFC key grant","blocks":[{"type":"text","zh":"由梁元可牵头的“肠道菌群-代谢物-宿主免疫”项目获 NSFC 重点项目资助（直接经费 300 万元）。","en":"Project led by Yuanke Liang awarded NSFC Key Grant (3M RMB direct funding)."},{"type":"image","src":"images/travel_1.jpg"}]},{"id":"news-paper","date":"2026.05","day":"08","month":"05","titleZh":"实验室在 Nature Microbiology 发表论文","titleEn":"Lab publishes in Nature Microbiology","blocks":[{"type":"text","zh":"团队关于 IBD 菌群-代谢物轴的最新研究在 Nature Microbiology 在线发表。","en":"Lab's latest study on IBD microbiome-metabolite axis published online in Nature Microbiology."},{"type":"image","src":"images/plant_image2.jpg"}]},{"id":"news-join","date":"2026.09","day":"01","month":"09","titleZh":"2026 秋季招新启动","titleEn":"2026 Fall recruitment opens","blocks":[{"type":"text","zh":"实验室 2026 年秋季招新启动，欢迎对微生物组、酶工程、生物制造感兴趣的同学申请。","en":"2026 Fall recruitment opens — students interested in microbiome, enzyme engineering, or bio-manufacturing are welcome."},{"type":"image","src":"images/travel_3.jpg"}]}],"join":{"introZh":"我们寻找对微生物科学充满好奇、对工程落地充满热情的同学。","introEn":"We look for students who are curious about microbial science and passionate about engineering applications.","images":["images/travel_3.jpg","images/travel_4.jpg"],"cards":[{"icon":"fa-graduation-cap","zh":"本科生科研训练","en":"Undergraduate Research","descZh":"面向大二大三学生，提供 6 个月以上实验室轮转。","descEn":"Open to 2nd/3rd-year undergraduates; 6+ month rotation."},{"icon":"fa-flask","zh":"硕博研究生","en":"Master/PhD Students","descZh":"提供 4-5 年系统性培养，覆盖实验技能、独立课题、职业发展。","descEn":"4-5 year systematic training covering experimental skills, independent projects, career development."},{"icon":"fa-user-tie","zh":"工程师与博后","en":"Engineers & Postdocs","descZh":"欢迎具备工业经验或工程能力的工程师、博后来推进转化项目。","descEn":"Engineers and postdocs with industrial experience welcome for translational projects."}],"openings":[{"zh":"合成生物学 / 代谢工程方向博士生 1 名","en":"1 PhD: Synthetic Biology / Metabolic Engineering"},{"zh":"蛋白质设计与机器学习方向博士生 1 名","en":"1 PhD: Protein Design & ML"},{"zh":"微生物组数据分析方向硕士生 1 名","en":"1 Master: Microbiome data analysis"}]},"labLife":["images/travel_3.jpg","images/travel_4.jpg","images/travel_5.jpg","images/travel_6.jpg","images/plant_image2.jpg","images/plant_image3.jpg"],"contact":{"email":"yuanke.liang@swust.edu.cn","addressZh":"四川省绵阳市西南科技大学生命科学与农林学院 i-Microbiome Lab","addressEn":"i-Microbiome Lab, School of Life Sciences and Agriculture, Southwest University of Science and Technology, Mianyang, Sichuan Province","socials":[]}};
-</script>
+<script>window.__DATA={"lab":{"name":"i-Microbiome Lab","taglineZh":"智能微生物组与生物制造实验室","taglineEn":"Intelligent Microbiome and Bio-Manufacturing Laboratory"},"hero":{"image":"images/plant_image2.jpg"},"home":{"titleZh":"用微生物工程，构建可持续生物制造的未来","titleEn":"Engineering microbiomes for a sustainable bio-future","introZh":"i-Microbiome Lab 聚焦智能微生物组与下一代生物制造，从肠道菌群机制解析、工业酶分子设计，到微生物反应器过程放大，我们把“看不见的微生物”变成“用得上的平台”。","introEn":"i-Microbiome Lab focuses on intelligent microbiomes and next-generation bio-manufacturing — from gut microbiome mechanism discovery, to industrial enzyme engineering, to bioreactor scale-up — turning invisible microbes into usable platforms.","intro2Zh":"我们相信：合成生物学、智能算法与高通量工艺的深度融合，将重塑制药、能源、食品与环境的产业边界。","intro2En":"We believe the deep fusion of synthetic biology, intelligent algorithms, and high-throughput process engineering will reshape pharma, energy, food, and environmental industries.","photo":"images/travel_5.jpg","photoCapZh":"i-Microbiome Lab 团队合影","photoCapEn":"i-Microbiome Lab · Team"},"research":{"pillars":[{"id":"pillar-microbiome","icon":"fa-dna","zh":"蚯蚓粪源微生物分离与鉴定","en":"Earthworm-Cast Microbial Isolation & Identification","descZh":"从蚯蚓粪中分离、培养与鉴定功能微生物，构建菌株资源库。","descEn":"Isolate, culture and identify functional microbes from earthworm casts; build a strain resource library.","image":"images/plant_image2.jpg","introZh":"我们以蚯蚓粪为来源，系统分离可培养与难培养功能微生物，结合培养组学与系统发育分析，建立服务于促氮研究的菌株资源库与功能图谱。","introEn":"We systematically isolate culturable and difficult-to-culture functional microbes from earthworm casts, and combine culturomics with phylogenetic analysis to build a strain resource library and functional map that serve nitrogen-promotion research."},{"id":"pillar-enzyme","icon":"fa-atom","zh":"促作物氮素吸收利用","en":"Crop Nitrogen Uptake & Utilization","descZh":"解析微生物促作物氮吸收与利用的机制与因果链。","descEn":"Elucidate the mechanisms and causal chains by which microbes promote crop nitrogen uptake and utilization.","image":"images/plant_image3.jpg","introZh":"我们围绕关键功能菌株，解析其促进作物氮素吸收与利用的分子与生理机制，明确“菌株–代谢物–宿主表型”的因果链条，为精准施肥与减施增效提供依据。","introEn":"Focusing on key functional strains, we dissect the molecular and physiological mechanisms by which they promote crop nitrogen uptake and utilization, clarifying the strain–metabolite–host phenotype causal chain to support precise fertilization and reduced-input efficiency."},{"id":"pillar-process","icon":"fa-industry","zh":"微生物模块化（SynCom）最佳促氮组装","en":"Modular Microbiome (SynCom) for Optimal Nitrogen Promotion","descZh":"基于功能模块组装合成菌群，筛选最优促氮组合。","descEn":"Assemble synthetic communities from functional modules; screen optimal nitrogen-promoting consortia.","image":"images/plant_image5.jpg","introZh":"我们将已鉴定的功能微生物按模块组装为合成菌群（SynCom），系统筛选最优促氮组合，并在田间条件下评估其稳定性、互作与持效性。","introEn":"We assemble identified functional microbes into synthetic communities (SynCom) by module, systematically screen optimal nitrogen-promoting combinations, and evaluate their stability, interactions, and persistence under field conditions."}],"projects":[{"id":"proj-gut","titleZh":"肠道菌群-宿主代谢互作机制解析","titleEn":"Gut microbiome-host metabolism interplay","logo":"images/yuanke_original.jpg","lead":"梁元可","pillarId":"pillar-microbiome","memberIds":["member-liang","member-yan"],"contentZh":"结合宏基因组与代谢组，系统解析肠道菌群在炎症性肠病、糖尿病等代谢紊乱中的作用机制，挖掘关键菌株与代谢物。","contentEn":"Integrating metagenomics and metabolomics to systematically dissect gut microbiome roles in IBD, diabetes, and other metabolic disorders.","goalsZh":"建立 3 类疾病的关键菌-代谢物-宿主轴因果模型，验证 ≥2 个候选干预靶点。","goalsEn":"Establish causal models of keystone microbe-metabolite-host axes for 3 disease categories; validate ≥2 candidate intervention targets.","progressZh":"已完成 200 例 IBD 患者队列多组学测序，因果推断框架搭建中。","progressEn":"Multi-omics sequencing of 200 IBD patient cohort completed; causal inference framework in development.","images":["images/plant_image2.jpg","images/plant_image6.jpg"],"pubIds":["pub-2025-microbiome"]},{"id":"proj-enzyme-ai","titleZh":"AI 辅助工业酶分子设计","titleEn":"AI-assisted industrial enzyme design","logo":"images/plant_image3.jpg","lead":"官颖","pillarId":"pillar-enzyme","memberIds":["member-guan","member-liuyang"],"contentZh":"结合蛋白质语言模型 (ESM/AlphaFold) 与高通量突变实验，改造工业酶的催化活性与稳定性。","contentEn":"Combining protein language models (ESM/AlphaFold) with high-throughput mutagenesis to engineer catalytic activity and stability of industrial enzymes.","goalsZh":"对 ≥3 类工业酶实现活性或稳定性 ≥2 倍提升；发表工具链开源。","goalsEn":"Achieve ≥2-fold improvement in activity or stability for ≥3 enzyme classes; release toolchain as open-source.","progressZh":"蛋白酶设计模型迭代至 v3，热稳定性提升 2.4 倍。","progressEn":"Protease design model iterated to v3; thermostability improved 2.4x.","images":["images/plant_image3.jpg"],"pubIds":[]},{"id":"proj-bioprocess","titleZh":"微生物发酵过程智能放大","titleEn":"Intelligent scale-up of microbial fermentation","logo":"images/plant_image5.jpg","lead":"郑仕伟","pillarId":"pillar-process","memberIds":["member-zheng","member-chenyueq"],"contentZh":"开发基于在线监测（尾气、OD、pH）的 AI 反馈控制系统，实现摇瓶→中试的稳定放大。","contentEn":"Develop AI feedback control systems based on online monitoring (off-gas, OD, pH) for stable scale-up from shake-flask to pilot.","goalsZh":"在 200L 规模实现 ≥85% 摇瓶效价复现，能耗下降 ≥20%。","goalsEn":"Achieve ≥85% shake-flask titer reproducibility at 200L with ≥20% energy reduction.","progressZh":"中试阶段，已完成 3 批次 50L 验证。","progressEn":"Pilot stage; 3 batches of 50L validation completed.","images":["images/plant_image5.jpg"],"pubIds":[]}]},"facilities":[{"id":"fac-fermentation","icon":"fa-flask","zh":"发酵平台","en":"Fermentation Platform","descZh":"从摇瓶到 200L 发酵罐，全规模微生物培养。","descEn":"From shake-flask to 200L bioreactors, full-scale microbial cultivation.","image":"images/plant_image5.jpg","introZh":"配备 5L、20L、50L、200L 多规格全自动发酵罐，配套在线尾气分析、pH/DO/温度全自动控制。已为多家生物制造企业提供中试服务。","introEn":"Equipped with 5L, 20L, 50L, 200L fully automated bioreactors, online off-gas analysis, and full pH/DO/temperature control.","pillarId":"pillar-process","memberIds":["member-zheng","member-chenyueq"]},{"id":"fac-omics","icon":"fa-microscope","zh":"组学测序平台","en":"Omics & Sequencing Platform","descZh":"Illumina + Nanopore 长读长 + 单细胞测序。","descEn":"Illumina + Nanopore long-read + single-cell sequencing.","image":"images/plant_image2.jpg","introZh":"配备 Illumina NovaSeq、Nanopore PromethION、10x Genomics 单细胞系统，年测序通量 ≥10Tb。已搭建自动化样本制备和高性能计算分析流程。","introEn":"Equipped with Illumina NovaSeq, Nanopore PromethION, 10x Genomics single-cell systems, annual throughput ≥10Tb.","pillarId":"pillar-microbiome","memberIds":["member-liang","member-yan"]},{"id":"fac-protein","icon":"fa-vial","zh":"蛋白质工程平台","en":"Protein Engineering Platform","descZh":"蛋白质表达、纯化、活性表征全套设施。","descEn":"Full protein expression, purification, and characterization facilities.","image":"images/plant_image3.jpg","introZh":"配备 ÄKTA 纯化系统、高通量蛋白结晶机器人、CD 光谱仪、Stop-flow 反应仪，支持从克隆到结构生物学的一体化工作流。","introEn":"Equipped with ÄKTA purification, high-throughput crystallization robot, CD spectrometer, and stop-flow reactor.","pillarId":"pillar-enzyme","memberIds":["member-guan","member-liuyang"]},{"id":"fac-compute","icon":"fa-server","zh":"高性能计算","en":"HPC Cluster","descZh":"8 卡 A100 GPU 集群 + 100TB 存储。","descEn":"8x A100 GPU cluster + 100TB storage.","image":"images/plant_image6.jpg","introZh":"本地 8 卡 A100 GPU 集群 + 100TB 存储 + 自建湿实验数据库，支持蛋白质结构预测、组学分析、深度学习酶设计等场景。","introEn":"Local 8x A100 GPU cluster + 100TB storage + proprietary wet-lab database, supporting protein structure prediction, omics analysis, and deep-learning enzyme design.","pillarId":"pillar-enzyme","memberIds":["member-guan","member-ren"]}],"members":[{"id":"member-liang","group":"pi","nameZh":"梁元可","nameEn":"Yuanke Liang","roleZh":"实验室负责人","roleEn":"Principal Investigator","photo":"","bioZh":"梁元可，博士，西南科技大学生命科学与农林学院教授、博士生导师，国家级青年人才项目入选者。博士毕业于比利时根特大学（Ghent University，全球 Top 100），随后在瑞士日内瓦大学（全球 Top 50）、德国马普植物分子生理研究所（MPI-MP，全球科研机构 Top 3）等顶尖机构从事博士后研究。\n\n长期从事植物应激响应与再生机制、植物-微生物互作研究，擅长分子生物学、植物遗传转化与多组学数据分析。利用 CRISPR 基因编辑与多组学技术，系统阐明了 ERF 转录因子驱动植物损伤后高效再生的分子通路，并鉴定出全新的紫外光（UV-B）光信号响应与光保护代谢物。相关成果为作物抗逆育种和现代农业发展提供了重要的理论基础与全新的基因靶点。目前致力于 AI+多组学驱动的生物制造研究，对标国家生物经济战略与生物制造行动方案，构建通用的植物基因工程体系与底盘技术。当前正拓展高蛋白玉米的微生物增效、植物内生菌资源开发以及壳聚糖生物制造等新方向。\n\n以第一作者在 Science Advances等国际顶尖期刊发表 SCI 论文 7 篇，担任 Modern Agriculture副编委、New Crops青年编辑。","bioEn":"Microbiome & synthetic biology expert.","introZh":"本科毕业于清华大学，博士毕业于 MIT 合成生物学中心，曾任某国际合成生物学公司首席科学家。发表 SCI 论文 60 余篇，H-index 35。","introEn":"B.S. Tsinghua, Ph.D. MIT Center for Synthetic Biology. 60+ SCI publications, H-index 35.","introImage":"","pillarIds":["pillar-microbiome"],"projectIds":["proj-gut"],"facilityIds":["fac-omics"],"pubIds":["pub-2025-microbiome"],"eduZh":"2026.07- 至今 教授，西南科技大学生命科学与农林学院，智能微生态与生物制造PI\n\n2025.02 – 2026.06博士后，德国马普植物分子生理研究所（MPI-MP），合作导师 Caroline Gutjahr 教授（研究：植物-微生物互作与丛枝菌根共生）\n\n2023.02 – 2025.01博士后，瑞士日内瓦大学植物科学系，合作导师 Roman Ulm 教授（研究：植物 UV-B 感知与信号传导）\n\n2018.10 – 2023.01理学博士，比利时根特大学，导师 Lieven De Veylder 教授（论文：ERF 转录因子在植物伤口激活再生中的作用）\n\n2017.10 – 2018.02客座研究生，中国科学院遗传与发育生物学研究所（植物基因组学国家重点实验室），导师王永红研究员（课题：水稻分蘖基因的功能研究）\n\n2016.07 – 2018.06农学硕士，四川农业大学水稻研究所，导师朱建清研究员（论文：富硒红米的营养评价及动物饲养实验）\n\n2012.09 – 2016.06农学学士，四川农业大学农学院，导师陈荣军研究员（论文：水稻应激响应基因 OsUF7 启动子的克隆与表达载体构建）","eduEn":"1","achZh":"入选2025国家级青年人才项目\n\n以第一作者在 Science Advances（Science 子刊，IF≈15）等发表 SCI 论文 7 篇；H 指数 11，论文被引 300+ 次\n\n作为研究骨干参与欧洲研究理事会（ERC）项目（200 万欧元）、瑞士国家科学基金（SNSF）项目等多项国际基金","confZh":"2025 上海交通大学特邀报告（上海，口头报告）\n\n2025 iMMM2025 国际会议（德国·慕尼黑）\n\n2024 第四届全国植物光生物学大会（潍坊，口头报告）\n\n2024 第五届 UV4Plants 网络会议（德国·哥廷根，海报展示）\n\n2024 第七届日内瓦大学博士后日（瑞士·日内瓦，最佳海报奖）\n\n2024 YRSPP 会议（荷兰·乌得勒支，口头报告与海报展示）\n\n2022 瓦赫宁根植物化学系学术报告（荷兰，口头报告）\n\n2022 PSB 研讨会（比利时·根特，口头报告）\n\n2022 第一届欧洲代谢组学学校（法国·马赛，口头报告）\n\n","recruitZh":"我们是一支非常年轻的团队，我们组里只有一群对生命着迷、想把论文写在大地上的人。\n\n梁元可教授领衔智能微生态与生物制造团队常年欢迎以下同学加入：\n\n硕士研究生、博士研究生（生物学、作物学、生物技术等相关专业）\n\n博士后（提供国际化合作平台，与德国马普所、比利时VIB-PSB等顶尖机构保持紧密合作，支持联合培养与国际交流）\n\n本科生科研训练（大创项目、毕业设计、暑期科研——零基础也欢迎，带你从移液枪开始）\n\n团队依托国家级人才项目与西南科技大学龙山人才科研启动项目（领军人才），科研经费充足，研究方向横跨植物发育生物学、微生物互作与 AI 生物制造前沿。我们既做顶刊里的科学，也做地里能长出来的玉米。有志于生命科学前沿、愿意一起学习交叉创新的你，欢迎随时来聊聊，办公室的门一直开着！","wordsZh":"致每一位追光的人\n科学从来不是天才的灵光一现，而是一个普通人愿意每天比昨天多懂一点的坚持。无论你现在是正在犹豫要不要读研的本科生、想要换个平台的硕士博士，请相信，热爱再加上一点点不服输的劲头，就能把很多不可能变成我做到了。\n\n如果你也相信好的科学能长在土里、也能写进顶刊，那就来我们团队吧。我们一起，把好玩的、有用的、了不起的研究，一件一件做出来，从种下一棵玉米开始。","achEn":"","confEn":"","recruitEn":"","wordsEn":"","contactZh":"","contactEn":""},{"id":"member-guan","group":"faculty","nameZh":"官颖","nameEn":"Ying Guan","roleZh":"副研究员","roleEn":"Associate Professor","photo":"","bioZh":"蛋白质设计与机器学习交叉方向，主持国家自然科学基金面上项目 2 项。","bioEn":"Protein design × machine learning.","introImage":"","pillarIds":["pillar-enzyme"],"projectIds":["proj-enzyme-ai"],"facilityIds":["fac-protein","fac-compute"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":""},{"id":"member-zheng","group":"faculty","nameZh":"郑仕伟","nameEn":"Shiwei Zheng","roleZh":"副研究员","roleEn":"Associate Professor","photo":"","bioZh":"发酵过程工程专家，曾任多家生物制药企业技术顾问。","bioEn":"Fermentation process expert.","introImage":"","pillarIds":["pillar-process"],"projectIds":["proj-bioprocess"],"facilityIds":["fac-fermentation"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":""},{"id":"member-huang","group":"manager","nameZh":"黄佳芳","nameEn":"Jiafang Huang","roleZh":"实验室管理员","roleEn":"Lab Manager","photo":"","bioZh":"负责实验室日常运维、设备管理与安全培训。","bioEn":"Daily operations, equipment management, and safety training.","eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":"","introImage":"","pillarIds":"","pubIds":"","projectIds":"","facilityIds":""},{"id":"member-yan","group":"phd","nameZh":"阎凝翔","nameEn":"Ningxiang Yan","roleZh":"博士研究生 (2023级)","roleEn":"PhD Student (2023)","photo":"","bioZh":"研究方向：肠道菌群与代谢疾病。","bioEn":"Research: gut microbiome & metabolic diseases.","pillarIds":["pillar-microbiome"],"projectIds":["proj-gut"],"facilityIds":["fac-omics"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":"","introImage":""},{"id":"member-ren","group":"phd","nameZh":"任雪杨","nameEn":"Xueyang Ren","roleZh":"博士研究生 (2024级)","roleEn":"PhD Student (2024)","photo":"","bioZh":"研究方向：蛋白质语言模型与酶设计。","bioEn":"Research: protein language models & enzyme design.","pillarIds":["pillar-enzyme"],"facilityIds":["fac-compute"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":"","introImage":"","projectIds":""},{"id":"member-li","group":"master","nameZh":"李杨飞","nameEn":"Yangfei Li","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：微生物发酵过程优化。","bioEn":"Research: microbial fermentation optimization.","pillarIds":["pillar-process"],"facilityIds":["fac-fermentation"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":"","introImage":"","projectIds":""},{"id":"member-liuyang","group":"master","nameZh":"刘紫旭","nameEn":"Zixu Liu","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：酶定向进化。","bioEn":"Research: enzyme directed evolution.","pillarIds":["pillar-enzyme"],"projectIds":["proj-enzyme-ai"],"facilityIds":["fac-protein"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":"","introImage":""},{"id":"member-wang","group":"master","nameZh":"王舒","nameEn":"Shu Wang","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：组学数据分析与因果推断。","bioEn":"Research: omics data analysis & causal inference.","pillarIds":["pillar-microbiome"],"facilityIds":["fac-omics"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":"","introImage":"","projectIds":""},{"id":"member-chenyueq","group":"master","nameZh":"陈跃铃","nameEn":"Yueqin Chen","roleZh":"硕士研究生 (2026级)","roleEn":"Master Student (2026)","photo":"","bioZh":"研究方向：发酵在线监测与智能控制。","bioEn":"Research: online fermentation monitoring & intelligent control.","pillarIds":["pillar-process"],"projectIds":["proj-bioprocess"],"facilityIds":["fac-fermentation"],"pubIds":[],"eduZh":"","eduEn":"","achZh":"","achEn":"","confZh":"","confEn":"","recruitZh":"","recruitEn":"","wordsZh":"","wordsEn":"","contactZh":"","contactEn":"","introZh":"","introEn":"","introImage":""}],"publications":[{"id":"pub-2025-microbiome","year":"2025","authors":"Liang Y, Yan N, et al.","titleZh":"肠道菌群-宿主代谢轴在炎症性肠病中的因果机制研究","titleEn":"Causal mechanisms of gut microbiome-host metabolism axis in IBD","journal":"Nature Microbiology","doi":"#","image":"images/plant_image2.jpg","abstractZh":"本文结合宏基因组、代谢组与孟德尔随机化，系统揭示了 IBD 患者肠道关键菌-代谢物-免疫轴的因果链路，发现 3 个潜在干预靶点。","abstractEn":"Integrating metagenomics, metabolomics, and Mendelian randomization, this study systematically reveals the causal chain of keystone microbe-metabolite-immune axes in IBD patients and identifies 3 potential intervention targets.","projectIds":["proj-gut"],"memberIds":["member-liang","member-yan"]}],"news":[{"id":"news-grant","date":"2026.07","day":"15","month":"07","titleZh":"团队获国家自然科学基金重点项目资助","titleEn":"Lab awarded NSFC key grant","blocks":[{"type":"text","zh":"由梁元可牵头的“肠道菌群-代谢物-宿主免疫”项目获 NSFC 重点项目资助（直接经费 300 万元）。","en":"Project led by Yuanke Liang awarded NSFC Key Grant (3M RMB direct funding)."},{"type":"image","src":"images/travel_1.jpg"}]},{"id":"news-paper","date":"2026.05","day":"08","month":"05","titleZh":"实验室在 Nature Microbiology 发表论文","titleEn":"Lab publishes in Nature Microbiology","blocks":[{"type":"text","zh":"团队关于 IBD 菌群-代谢物轴的最新研究在 Nature Microbiology 在线发表。","en":"Lab's latest study on IBD microbiome-metabolite axis published online in Nature Microbiology."},{"type":"image","src":"images/plant_image2.jpg"}]},{"id":"news-join","date":"2026.09","day":"01","month":"09","titleZh":"2026 秋季招新启动","titleEn":"2026 Fall recruitment opens","blocks":[{"type":"text","zh":"实验室 2026 年秋季招新启动，欢迎对微生物组、酶工程、生物制造感兴趣的同学申请。","en":"2026 Fall recruitment opens — students interested in microbiome, enzyme engineering, or bio-manufacturing are welcome."},{"type":"image","src":"images/travel_3.jpg"}]}],"join":{"introZh":"我们寻找对微生物科学充满好奇、对工程落地充满热情的同学。","introEn":"We look for students who are curious about microbial science and passionate about engineering applications.","images":["images/travel_3.jpg","images/travel_4.jpg"],"cards":[{"icon":"fa-graduation-cap","zh":"本科生科研训练","en":"Undergraduate Research","descZh":"面向大二大三学生，提供 6 个月以上实验室轮转。","descEn":"Open to 2nd/3rd-year undergraduates; 6+ month rotation."},{"icon":"fa-flask","zh":"硕博研究生","en":"Master/PhD Students","descZh":"提供 4-5 年系统性培养，覆盖实验技能、独立课题、职业发展。","descEn":"4-5 year systematic training covering experimental skills, independent projects, career development."},{"icon":"fa-user-tie","zh":"工程师与博后","en":"Engineers & Postdocs","descZh":"欢迎具备工业经验或工程能力的工程师、博后来推进转化项目。","descEn":"Engineers and postdocs with industrial experience welcome for translational projects."}],"openings":[{"zh":"合成生物学 / 代谢工程方向博士生 1 名","en":"1 PhD: Synthetic Biology / Metabolic Engineering"},{"zh":"蛋白质设计与机器学习方向博士生 1 名","en":"1 PhD: Protein Design & ML"},{"zh":"微生物组数据分析方向硕士生 1 名","en":"1 Master: Microbiome data analysis"}]},"labLife":["images/travel_3.jpg","images/travel_4.jpg","images/travel_5.jpg","images/travel_6.jpg","images/plant_image2.jpg","images/plant_image3.jpg"],"contact":{"email":"yuanke.liang@swust.edu.cn","addressZh":"四川省绵阳市西南科技大学生命科学与农林学院 i-Microbiome Lab","addressEn":"i-Microbiome Lab, School of Life Sciences and Agriculture, Southwest University of Science and Technology, Mianyang, Sichuan Province","socials":[]}};</script>
 <!-- build: 2026-07-25T11:51:06Z -->
 </head>
 <body class="lang-zh">
@@ -261,6 +279,7 @@ function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"
 function zh(s){return '<span class="zh">'+esc(s)+'</span>';}
 function en(s){return '<span class="en">'+esc(s)+'</span>';}
 function both(zhTxt,enTxt){return zh(zhTxt)+en(enTxt);}
+function numZh(n){var d=["零","一","二","三","四","五","六","七","八","九","十"];if(n<=10)return d[n];if(n<20)return"十"+d[n-10];if(n%10===0)return d[Math.floor(n/10)]+"十";return d[Math.floor(n/10)]+"十"+d[n%10];}
 function img(src,cls){
   if(!src)return'';
   var c=cls?' class="'+esc(cls)+'"':'';
@@ -278,12 +297,12 @@ function find(arr,id){
 }
 function lookup(id){
   if(!id)return null;
-  if(id.indexOf("member-")===0)return find(DATA.members,id);
-  if(id.indexOf("proj-")===0)return find(DATA.research.projects,id);
-  if(id.indexOf("pub-")===0)return find(DATA.publications,id);
-  if(id.indexOf("news-")===0)return find(DATA.news,id);
-  if(id.indexOf("fac-")===0)return find(DATA.facilities,id);
-  if(id.indexOf("pillar-")===0)return find(DATA.research.pillars,id);
+  if(id.indexOf("member-")===0)return find(window.__DATA.members,id);
+  if(id.indexOf("proj-")===0)return find(window.__DATA.research.projects,id);
+  if(id.indexOf("pub-")===0)return find(window.__DATA.publications,id);
+  if(id.indexOf("news-")===0)return find(window.__DATA.news,id);
+  if(id.indexOf("fac-")===0)return find(window.__DATA.facilities,id);
+  if(id.indexOf("pillar-")===0)return find(window.__DATA.research.pillars,id);
   return null;
 }
 function typeOf(id){
@@ -397,23 +416,16 @@ function openDetail(type,id){
     }
     // 2. 教育背景与工作经历
     if(m.eduZh||m.eduEn) html+='<div class="modal-block"><h3>'+both("教育背景与工作经历","Education & Experience")+'</h3><p>'+both(m.eduZh,m.eduEn)+'</p></div>';
-    // 3. 研究方向
-    html+=rel(both("研究方向","Research Areas"),m.pillarIds||[]);
     // 4. 主要学术成绩
     if(m.achZh||m.achEn) html+='<div class="modal-block"><h3>'+both("主要学术成绩","Academic Achievements")+'</h3><p>'+both(m.achZh,m.achEn)+'</p></div>';
     // 5. 国内外会议与学术报告
     if(m.confZh||m.confEn) html+='<div class="modal-block"><h3>'+both("国内外会议与学术报告","Conferences & Talks")+'</h3><p>'+both(m.confZh,m.confEn)+'</p></div>';
-    // 6. 代表性论文
-    html+=rel(both("代表性论文","Representative Publications"),m.pubIds||[]);
     // 7. 招生与团队
     if(m.recruitZh||m.recruitEn) html+='<div class="modal-block"><h3>'+both("招生与团队","Recruitment & Team")+'</h3><p>'+both(m.recruitZh,m.recruitEn)+'</p></div>';
     // 8. 寄语
     if(m.wordsZh||m.wordsEn) html+='<div class="modal-block"><h3>'+both("寄语","Message")+'</h3><p>'+both(m.wordsZh,m.wordsEn)+'</p></div>';
     // 9. 联系方式
     if(m.contactZh||m.contactEn) html+='<div class="modal-block"><h3>'+both("联系方式","Contact")+'</h3><p>'+both(m.contactZh,m.contactEn)+'</p></div>';
-    // 相关链接
-    html+=rel(both("参与课题","Projects"),m.projectIds||[]);
-    html+=rel(both("使用设施","Facilities"),m.facilityIds||[]);
   }
   else if(type==="pub"){
     var p=find(d.publications,id);if(!p)return showToast("未找到："+id);
@@ -481,7 +493,7 @@ function renderAll(d){
       '<p style="margin:0 0 6px;">'+both(pr.contentZh,pr.contentEn)+'</p>'+
       gal+'<span class="more">'+both("课题详情","Project detail")+' →</span></article>';}).join("");
   document.getElementById("research").innerHTML=
-    '<p class="section-eyebrow">'+both("三大方向","Three Pillars")+'</p><h2>'+both("我们的研究主题","Our Research Themes")+'</h2>'+
+    (function(){var _n=(window.__DATA.research.pillars||[]).length;var _ez=(window.__DATA.research.eyebrowZh||"").trim();var _ee=(window.__DATA.research.eyebrowEn||"").trim();var _eye=_ez?both(_ez,_ee||_ez):both(_n+"大方向",_n+" Pillars");return '<p class="section-eyebrow">'+_eye+'</p><h2>'+both("我们的研究主题","Our Research Themes")+'</h2>';})()+
     '<div class="pillars">'+pillarsHtml+'</div>'+
     '<h2 style="margin-top:70px;">'+both("在研课题","Ongoing Projects")+'</h2>'+
     '<div class="research-grid">'+projectsHtml+'</div>';
@@ -614,9 +626,9 @@ function applyLang(l){
   try{localStorage.setItem(LK,l);}catch(e){}
   document.documentElement.lang=(l==="zh")?"zh-CN":"en";
   if(DATA){
-    document.title=DATA.lab.name+" · "+(l==="en"?DATA.lab.taglineEn:DATA.lab.taglineZh);
-    document.getElementById("nav-title").textContent=DATA.lab.name;
-    document.getElementById("footer-lab-name").textContent=DATA.lab.name;
+    document.title=window.__DATA.lab.name+" · "+(l==="en"?window.__DATA.lab.taglineEn:window.__DATA.lab.taglineZh);
+    document.getElementById("nav-title").textContent=window.__DATA.lab.name;
+    document.getElementById("footer-lab-name").textContent=window.__DATA.lab.name;
   }
 }
 
@@ -782,6 +794,26 @@ body.admin-mode .edit-btn{display:inline-flex !important;}
 .img-upload{border:2px dashed #d0d0d5;border-radius:10px;padding:14px;text-align:center;background:#fafafa;cursor:pointer;}
 .img-upload:hover{border-color:var(--primary,#0066cc);background:#f0f6ff;}
 .img-preview{max-width:200px;max-height:140px;border-radius:8px;margin-top:8px;display:block;}
+.img-widget{display:flex;flex-direction:column;gap:8px;}
+.img-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.img-thumb{width:96px;height:96px;border-radius:10px;overflow:hidden;border:1px solid #e5e5ea;background:#f5f5f7;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;flex-shrink:0;}
+.img-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.img-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.img-url{flex:1;min-width:180px;}
+.img-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.img-item{position:relative;}
+.img-item img{width:84px;height:84px;border-radius:8px;object-fit:cover;border:1px solid #e5e5ea;display:block;}
+.img-del{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;border:none;background:#ff3b30;color:#fff;font-size:12px;line-height:1;cursor:pointer;padding:0;}
+.img-hint{font-size:12px;color:#6e6e73;line-height:1.5;}
+.avatar-edit{display:flex;gap:16px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
+.avatar-preview{width:84px;height:84px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--section-bg);border:1px solid #e3e3e8;display:flex;align-items:center;justify-content:center;}
+.avatar-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+.avatar-initial{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:600;color:#fff;background:linear-gradient(135deg,#5b8def,#7a5bef);}
+.avatar-actions{display:flex;flex-direction:column;gap:8px;}
+.avatar-hint{font-size:11px;color:#8a8a8f;margin-top:5px;line-height:1.5;}
+.ap-btn{background:var(--primary,#0066cc);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
+.ap-btn:hover{opacity:.9;}
+.ap-btn.ghost{background:#fff;color:#c0392b;border:1px solid #e3c3c3;}
 .icon-row{display:flex;align-items:center;gap:8px;margin-top:4px}
 .icon-preview{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid #e5e5ea;border-radius:8px;background:#f9f9fb}
 .icon-preview i{font-size:16px;color:var(--primary,#0066cc)}
@@ -924,6 +956,42 @@ function field(path,label,val,type){
 function itemBox(title,fieldsHtml,arrPath,idx){
   return'<div class="ap-item"><div class="ap-item-head"><strong>'+title+'</strong><button class="ap-del" data-del="'+arrPath+'" data-idx="'+idx+'">删除</button></div>'+fieldsHtml+'</div>';
 }
+function subBox(title,fieldsHtml){
+  return'<div class="ap-item"><div class="ap-item-head"><strong>'+title+'</strong></div>'+fieldsHtml+'</div>';
+}
+// 单一图片上传控件：本地选图→上传图库（无 Token 则内嵌 base64）→回填，并可手填 URL
+function imgField(path,label,val,folder){
+  val=val||"";
+  var thumb=val?'<div class="img-thumb"><img src="'+escAttr(val)+'"></div>':'<div class="img-thumb">无图</div>';
+  return'<div class="ap-field"><label>'+label+'</label>'+
+    '<div class="img-widget" data-img-single="'+escAttr(path)+'" data-img-folder="'+escAttr(folder)+'">'+
+      '<div class="img-row">'+thumb+
+        '<div class="img-actions">'+
+          '<button type="button" class="ap-btn" data-img-pick="'+escAttr(path)+'">上传图片</button>'+
+          (val?'<button type="button" class="ap-btn ghost" data-img-remove="'+escAttr(path)+'">移除</button>':'')+
+          '<input type="file" accept="image/*" hidden data-img-file="'+escAttr(path)+'">'+
+        '</div>'+
+      '</div>'+
+      '<input type="text" class="img-url" data-path="'+escAttr(path)+'" value="'+escAttr(val)+'" placeholder="或粘贴图片 URL">'+
+      '<div class="img-hint">点「上传图片」选本地图，自动存入网站图库并生成链接；也可直接粘贴 URL。建议 ≤2MB。</div>'+
+    '</div></div>';
+}
+// 图片数组上传控件（实验室生活 / 招新图集 / 课题图集）
+function imgListField(path,label,arr,folder){
+  arr=arr||[];
+  var items=arr.map(function(s,idx){
+    return'<div class="img-item"><img src="'+escAttr(s)+'"><button type="button" class="img-del" data-img-list-remove="'+escAttr(path)+'" data-idx="'+idx+'">×</button></div>';
+  }).join("");
+  var ta=arr.join("\n");
+  return'<div class="ap-field"><label>'+label+'</label>'+
+    '<div class="img-widget" data-img-list="'+escAttr(path)+'" data-img-folder="'+escAttr(folder)+'">'+
+      '<div class="img-list">'+items+'</div>'+
+      '<div class="img-actions"><button type="button" class="ap-btn" data-img-list-add="'+escAttr(path)+'">+ 添加图片</button>'+
+        '<input type="file" accept="image/*" hidden data-img-list-file="'+escAttr(path)+'"></div>'+
+      '<div class="img-hint">点「添加图片」选本地图，自动存入图库；也可在下方每行粘贴一个图片 URL。</div>'+
+      '<textarea data-path="'+escAttr(path)+'" style="min-height:64px;" placeholder="或每行一个图片 URL">'+escAttr(ta)+'</textarea>'+
+    '</div></div>';
+}
 function getByPath(obj,path){
   var parts=path.split("."),cur=obj;
   for(var i=0;i<parts.length;i++){
@@ -953,7 +1021,7 @@ function openBlockEditor(type,label){
     h+=field("lab.name","实验室名称",d.lab.name);
     h+=field("lab.taglineZh","中文标语",d.lab.taglineZh);
     h+=field("lab.taglineEn","英文标语",d.lab.taglineEn);
-    h+=field("hero.image","背景图路径",d.hero.image,"text");
+    h+=imgField("hero.image","首屏背景图",d.hero.image,"images/site");
   }else if(type==="home"){
     h+=field("home.titleZh","标题(中)",d.home.titleZh);
     h+=field("home.titleEn","标题(英)",d.home.titleEn);
@@ -961,11 +1029,14 @@ function openBlockEditor(type,label){
     h+=field("home.introEn","简介(英)",d.home.introEn,"textarea");
     h+=field("home.intro2Zh","次简介(中)",d.home.intro2Zh,"textarea");
     h+=field("home.intro2En","次简介(英)",d.home.intro2En,"textarea");
-    h+=field("home.photo","配图路径",d.home.photo,"text");
+    h+=imgField("home.photo","关于我们配图",d.home.photo,"images/site");
     h+=field("home.photoCapZh","图注(中)",d.home.photoCapZh);
     h+=field("home.photoCapEn","图注(英)",d.home.photoCapEn);
   }else if(type==="research"){
-    h+='<h3 style="margin:16px 0 8px;color:var(--primary,#0066cc);font-size:14px;">研究方向（Pillars）</h3>';
+    h+='<h3 style="margin:16px 0 8px;color:var(--primary,#0066cc);font-size:14px;">板块副标题（留空则自动显示为“N大方向 / N Pillars”）</h3>';
+    h+=field("research.eyebrowZh","副标题(中)",d.research.eyebrowZh||"");
+    h+=field("research.eyebrowEn","副标题(英)",d.research.eyebrowEn||"");
+    h+='<h3 style="margin:20px 0 8px;color:var(--primary,#0066cc);font-size:14px;">研究方向（Pillars，可增删）</h3>';
     d.research.pillars.forEach(function(p,i){
       h+=itemBox("方向 "+(i+1)+": "+(p.zh||""),[
         field("research.pillars."+i+".icon","图标",p.icon),
@@ -973,9 +1044,10 @@ function openBlockEditor(type,label){
         field("research.pillars."+i+".en","名称(英)",p.en),
         field("research.pillars."+i+".descZh","描述(中)",p.descZh,"textarea"),
         field("research.pillars."+i+".descEn","描述(英)",p.descEn,"textarea"),
-        field("research.pillars."+i+".image","配图路径",p.image,"text")
+        imgField("research.pillars."+i+".image","配图",p.image,"images/research")
       ].join(""),"research.pillars",i);
     });
+    h+='<button class="ap-add" data-add="research.pillars">+ 添加方向</button>';
     h+='<h3 style="margin:20px 0 8px;color:var(--primary,#0066cc);font-size:14px;">在研课题（可增删）</h3>';
     d.research.projects.forEach(function(pr,i){
       h+=itemBox("课题 "+(i+1)+": "+(pr.titleZh||""),[
@@ -985,6 +1057,8 @@ function openBlockEditor(type,label){
         field("research.projects."+i+".contentEn","内容(英)",pr.contentEn,"textarea"),
         field("research.projects."+i+".lead","负责人",pr.lead,"text")
       ].join(""),"research.projects",i);
+      h+=subBox("课题 Logo",imgField("research.projects."+i+".logo","课题 Logo",pr.logo,"images/projects"));
+      h+=subBox("课题配图",imgListField("research.projects."+i+".images","课题配图",pr.images||[],"images/projects"));
     });
     h+='<button class="ap-add" data-add="research.projects">+ 添加课题</button>';
   }else if(type==="facilities"){
@@ -996,7 +1070,7 @@ function openBlockEditor(type,label){
         field("facilities."+i+".en","名称(英)",f.en),
         field("facilities."+i+".descZh","描述(中)",f.descZh,"textarea"),
         field("facilities."+i+".descEn","描述(英)",f.descEn,"textarea"),
-        field("facilities."+i+".image","配图路径",f.image,"text")
+        imgField("facilities."+i+".image","配图",f.image,"images/facilities")
       ].join(""),"facilities",i);
     });
     h+='<button class="ap-add" data-add="facilities">+ 添加设施</button>';
@@ -1009,14 +1083,31 @@ function openBlockEditor(type,label){
         field("members."+i+".roleZh","职位(中)",m.roleZh),
         field("members."+i+".roleEn","职位(英)",m.roleEn),
         field("members."+i+".group","分组(pi/faculty/manager/phd/master)",m.group,"text"),
-        field("members."+i+".photo","照片路径",m.photo,"text")
+        (function(){
+          var pid="members."+i+".photo";
+          var preview = m.photo
+            ? '<img src="'+escAttr(m.photo)+'" alt="头像">'
+            : '<div class="avatar-initial">'+escAttr((m.nameZh||"?").charAt(0))+'</div>';
+          return '<div class="ap-field"><label>头像</label>'+
+            '<div class="avatar-edit">'+
+              '<div class="avatar-preview" data-avatar-preview="'+i+'">'+preview+'</div>'+
+              '<div class="avatar-actions">'+
+                '<button type="button" class="ap-btn" data-avatar-btn="'+i+'">上传头像</button>'+
+                '<input type="file" accept="image/*" hidden data-avatar-file="'+i+'">'+
+                (m.photo?'<button type="button" class="ap-btn ghost" data-avatar-remove="'+i+'">移除</button>':'')+
+              '</div>'+
+            '</div>'+
+            '<input type="text" data-path="'+pid+'" value="'+escAttr(m.photo||"")+'" placeholder="也可手动填写图片 URL">'+
+            '<div class="avatar-hint">建议正方形图片，≤2MB；点「上传头像」选本地图，自动存入网站图库并生成链接。未登录 Token 时可手动填 URL。</div>'+
+            '</div>';
+        })()
       ].join("");
       var detailFields=[
         field("members."+i+".bioZh","个人简介(中)",m.bioZh,"textarea"),
         field("members."+i+".bioEn","个人简介(英)",m.bioEn,"textarea"),
         field("members."+i+".introZh","自我介绍(中)——可放长图文/寄语/个人故事",m.introZh,"textarea"),
         field("members."+i+".introEn","自我介绍(英)",m.introEn,"textarea"),
-        field("members."+i+".introImage","自我介绍配图路径（空则只显示文字）",m.introImage,"text"),
+        imgField("members."+i+".introImage","自我介绍配图",m.introImage,"images/members"),
         field("members."+i+".eduZh","教育背景与工作经历(中)",m.eduZh,"textarea"),
         field("members."+i+".eduEn","教育背景与工作经历(英)",m.eduEn,"textarea"),
         field("members."+i+".achZh","主要学术成绩(中)",m.achZh,"textarea"),
@@ -1053,7 +1144,7 @@ function openBlockEditor(type,label){
         field("publications."+i+".journal","期刊",pp.journal,"text"),
         field("publications."+i+".year","年份",pp.year,"text"),
         field("publications."+i+".doi","DOI链接",pp.doi,"text"),
-        field("publications."+i+".image","配图路径",pp.image,"text")
+        imgField("publications."+i+".image","配图",pp.image,"images/publications")
       ].join(""),"publications",i);
     });
     h+='<button class="ap-add" data-add="publications">+ 添加论文</button>';
@@ -1093,11 +1184,11 @@ function openBlockEditor(type,label){
     });
     h+='<button class="ap-add" data-add="news">+ 添加动态</button>';
   }else if(type==="labLife"){
-    h+='<p style="color:#6e6e73;font-size:12px;margin:0 0 8px;">实验室生活照片路径（每行一个）</p>';
-    h+='<div class="ap-field"><label>图片路径列表</label><textarea data-path="labLife" style="min-height:120px;">'+d.labLife.join("\n")+'</textarea></div>';
+    h+=imgListField("labLife","实验室生活照片",d.labLife||[],"images/lab-life");
   }else if(type==="join"){
     h+=field("join.introZh","简介(中)",d.join.introZh,"textarea");
     h+=field("join.introEn","简介(英)",d.join.introEn,"textarea");
+    h+=imgListField("join.images","招新图集",d.join.images||[],"images/join");
   }else if(type==="contact"){
     h+=field("contact.email","邮箱",d.contact.email,"text");
     h+=field("contact.phone","电话",d.contact.phone,"text");
@@ -1116,6 +1207,9 @@ function bindBlockEditorEvents(){
       var val=this.value;
       if(path==="labLife"){
         edData.labLife=val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;});
+      }else if(/\.images$/.test(path)){
+        var arr=val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;});
+        setByPath(edData,path,arr);
       }else if(/(pillarIds|pubIds|projectIds|facilityIds)$/.test(path)){
         var arr=val.split(/[,，]/).map(function(s){return s.trim();}).filter(function(s){return s;});
         setByPath(edData,path,arr);
@@ -1139,6 +1233,7 @@ function bindBlockEditorEvents(){
       if(!Array.isArray(arr))return;
       var tpl={};
       if(path==="research.projects")tpl={id:"proj-"+Date.now(),titleZh:"新课题",titleEn:"",contentZh:"",contentEn:"",lead:"",images:[]};
+      else if(path==="research.pillars")tpl={id:"pillar-"+Date.now(),icon:"fa-leaf",zh:"新方向",en:"",descZh:"",descEn:"",image:"",introZh:"",introEn:""};
       else if(path==="facilities")tpl={id:"fac-"+Date.now(),icon:"fa-microscope",zh:"新设施",en:"",descZh:"",descEn:"",image:""};
       else if(path==="members")tpl={id:"m-"+Date.now(),nameZh:"新成员",nameEn:"",roleZh:"",roleEn:"",group:"phd",bioZh:"",bioEn:"",introZh:"",introEn:"",introImage:"",eduZh:"",eduEn:"",achZh:"",achEn:"",confZh:"",confEn:"",recruitZh:"",recruitEn:"",wordsZh:"",wordsEn:"",contactZh:"",contactEn:"",photo:""};
       else if(path==="publications")tpl={id:"p-"+Date.now(),authors:"",titleZh:"",titleEn:"",journal:"",year:"",doi:"#",image:""};
@@ -1157,6 +1252,49 @@ function bindBlockEditorEvents(){
       if(e.dataTransfer.files[0])handleImgUpload(e.dataTransfer.files[0],zone);
     };
     fileInput.onchange=function(){if(fileInput.files[0])handleImgUpload(fileInput.files[0],zone);};
+  });
+  beBody.querySelectorAll("[data-avatar-btn]").forEach(function(btn){
+    var idx=btn.getAttribute("data-avatar-btn");
+    var fileInput=beBody.querySelector('[data-avatar-file="'+idx+'"]');
+    btn.onclick=function(){ if(fileInput) fileInput.click(); };
+    if(fileInput) fileInput.onchange=function(){ if(fileInput.files[0]) handleAvatarUpload(fileInput.files[0], parseInt(idx,10)); };
+  });
+  beBody.querySelectorAll("[data-avatar-remove]").forEach(function(btn){
+    btn.onclick=function(){ removeAvatar(parseInt(btn.getAttribute("data-avatar-remove"),10)); };
+  });
+
+  // ===== 通用图片上传控件（单一 + 数组）=====
+  beBody.querySelectorAll("[data-img-pick]").forEach(function(btn){
+    var path=btn.getAttribute("data-img-pick");
+    var widget=beBody.querySelector('[data-img-single="'+path+'"]');
+    if(!widget) return;
+    var fileInput=widget.querySelector('[data-img-file="'+path+'"]');
+    btn.onclick=function(){ if(fileInput) fileInput.click(); };
+    if(fileInput) fileInput.onchange=function(){ if(fileInput.files[0]) handleImageUpload(fileInput.files[0], {path:path, folder:widget.getAttribute("data-img-folder"), mode:"single", widget:widget}); };
+  });
+  beBody.querySelectorAll("[data-img-list-add]").forEach(function(btn){
+    var path=btn.getAttribute("data-img-list-add");
+    var widget=beBody.querySelector('[data-img-list="'+path+'"]');
+    if(!widget) return;
+    var fileInput=widget.querySelector('[data-img-list-file="'+path+'"]');
+    btn.onclick=function(){ if(fileInput) fileInput.click(); };
+    if(fileInput) fileInput.onchange=function(){ if(fileInput.files[0]) handleImageUpload(fileInput.files[0], {path:path, folder:widget.getAttribute("data-img-folder"), mode:"list", widget:widget}); };
+  });
+  beBody.querySelectorAll("[data-img-list-remove]").forEach(function(btn){
+    btn.onclick=function(){
+      var path=btn.getAttribute("data-img-list-remove");
+      var idx=parseInt(btn.getAttribute("data-idx"),10);
+      var arr=getByPath(edData,path)||[];
+      if(Array.isArray(arr)){ arr.splice(idx,1); setByPath(edData,path,arr); }
+      openBlockEditor(currentEdit, beTitle.textContent.replace(/^编辑：/,""));
+    };
+  });
+  beBody.querySelectorAll("[data-img-remove]").forEach(function(btn){
+    btn.onclick=function(){
+      var path=btn.getAttribute("data-img-remove");
+      setByPath(edData,path,"");
+      openBlockEditor(currentEdit, beTitle.textContent.replace(/^编辑：/,""));
+    };
   });
 
   // ===== 图标自动匹配与预览 =====
@@ -1264,6 +1402,118 @@ function handleImgUpload(file,zone){
     showToast("图片已加载，记得点保存此项");
   };
   reader.readAsDataURL(file);
+}
+
+// 通用图片上传：本地选图 → 上传 GitHub 图库（无 Token 则内嵌 base64）→ 写回 edData
+function handleImageUpload(file, opts){
+  if(!file || !file.type || !file.type.startsWith("image/")){ showToast("请选择图片文件"); return; }
+  if(file.size>2*1024*1024){ showToast("图片过大（>2MB），建议压缩后再传"); return; }
+  var ext="jpg";
+  if(file.type==="image/png") ext="png"; else if(file.type==="image/webp") ext="webp"; else if(file.type==="image/gif") ext="gif";
+  var relPath=opts.folder+"/"+Date.now()+"-"+Math.floor(Math.random()*1e4)+"."+ext;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var dataUrl=e.target.result;
+    var base64=dataUrl.split(",")[1];
+    function commit(url){
+      if(opts.mode==="list"){
+        var arr=getByPath(edData,opts.path)||[];
+        if(!Array.isArray(arr)) arr=[];
+        arr.push(url);
+        setByPath(edData,opts.path,arr);
+      }else{
+        setByPath(edData,opts.path,url);
+      }
+      openBlockEditor(currentEdit, beTitle.textContent.replace(/^编辑：/,""));
+    }
+    var token=getGhToken();
+    if(token){
+      showToast("正在上传图片…");
+      uploadFileToRepo(relPath, base64, function(url){ commit(url); }, function(err){
+        showToast("上传失败："+err+"，已改为内嵌图片（整文件发布时一并生效）");
+        commit(dataUrl);
+      });
+    }else{
+      showToast("未填 GitHub Token，已内嵌图片（建议填 Token 后上传到图库以减小体积）");
+      commit(dataUrl);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// 上传文件到 GitHub 仓库（通过代理），返回 GitHub Pages 可访问的 URL
+function uploadFileToRepo(relPath, base64, onOk, onErr){
+  var token=getGhToken();
+  if(!token){ onErr("未填 GitHub Token，无法上传（可手动填图片 URL）"); return; }
+  var repo="liyangfei8495/i-microbiome-lab";
+  var proxy=getGhProxy();
+  var base=proxy||"https://api.github.com";
+  function put(sha){
+    var body={ message:"site: 上传图片 "+relPath, content:base64 };
+    if(sha) body.sha=sha;
+    fetch(base+"/repos/"+repo+"/contents/"+relPath,{
+      method:"PUT",
+      headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
+      body: JSON.stringify(body)
+    }).then(function(r){ if(!r.ok) throw new Error("上传失败("+r.status+")"); return r.json(); })
+      .then(function(){ onOk("https://liyangfei8495.github.io/i-microbiome-lab/"+relPath); })
+      .catch(function(e){ onErr(e&&e.message?e.message:e); });
+  }
+  fetch(base+"/repos/"+repo+"/contents/"+relPath,{
+    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }
+  }).then(function(r){
+    if(r.status===200) return r.json().then(function(m){ return m.sha; });
+    if(r.status===404) return null;
+    throw new Error("检查文件失败("+r.status+")");
+  }).then(function(sha){ put(sha); }).catch(function(e){ onErr(e&&e.message?e.message:e); });
+}
+
+function handleAvatarUpload(file, memberIndex){
+  if(!file) return;
+  if(!file.type.startsWith("image/")){ showToast("请选择图片文件"); return; }
+  if(file.size>2*1024*1024){ showToast("图片过大（>2MB），建议压缩后再传"); return; }
+  var m=getByPath(edData,"members."+memberIndex);
+  if(!m){ showToast("未找到该成员"); return; }
+  var id=m.id || ("m-"+memberIndex);
+  var ext="jpg";
+  if(file.type==="image/png") ext="png"; else if(file.type==="image/webp") ext="webp"; else if(file.type==="image/gif") ext="gif";
+  var relPath="images/members/"+id+"."+ext;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var dataUrl=e.target.result;
+    var base64=dataUrl.split(",")[1];
+    var prev=beBody.querySelector('[data-avatar-preview="'+memberIndex+'"]');
+    if(prev){ prev.innerHTML='<img src="'+dataUrl+'">'; }
+    showToast("正在上传头像…");
+    uploadFileToRepo(relPath, base64, function(url){
+      setByPath(edData,"members."+memberIndex+".photo",url);
+      var inp=beBody.querySelector('[data-path="members.'+memberIndex+'.photo"]');
+      if(inp) inp.value=url;
+      var btn=beBody.querySelector('[data-avatar-btn="'+memberIndex+'"]');
+      if(btn && !beBody.querySelector('[data-avatar-remove="'+memberIndex+'"]')){
+        var rm=document.createElement("button");
+        rm.type="button"; rm.className="ap-btn ghost"; rm.setAttribute("data-avatar-remove",memberIndex); rm.textContent="移除";
+        rm.onclick=function(){ removeAvatar(memberIndex); };
+        btn.parentNode.appendChild(rm);
+      }
+      showToast("✅ 头像已上传并生成链接");
+    }, function(err){
+      showToast("❌ 头像上传失败："+err+"（可手动填 URL）");
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeAvatar(memberIndex){
+  setByPath(edData,"members."+memberIndex+".photo","");
+  var inp=beBody.querySelector('[data-path="members.'+memberIndex+'.photo"]');
+  if(inp) inp.value="";
+  var prev=beBody.querySelector('[data-avatar-preview="'+memberIndex+'"]');
+  var m=getByPath(edData,"members."+memberIndex);
+  if(prev){ prev.innerHTML='<div class="avatar-initial">'+escAttr(((m&&m.nameZh)||"?").charAt(0))+'</div>'; }
+  var rm=beBody.querySelector('[data-avatar-remove="'+memberIndex+'"]');
+  if(rm) rm.remove();
+  showToast("已移除头像（保存后生效）");
 }
 
 // 保存编辑到本机（localStorage + 当前页面内存 + 内嵌固化）
