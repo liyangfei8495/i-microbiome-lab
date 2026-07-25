@@ -809,7 +809,7 @@ function showToast(msg){
   var t=document.getElementById("ap-toast");
   if(!t){t=document.createElement("div");t.id="ap-toast";t.className="ap-toast";document.body.appendChild(t);}
   t.textContent=msg;t.className="ap-toast show";
-  setTimeout(function(){t.className="ap-toast";},1800);
+  setTimeout(function(){t.className="ap-toast";},2600);
 }
 function apOpen(el){
   el.removeAttribute("hidden");
@@ -1245,6 +1245,7 @@ function handleImgUpload(file,zone){
 
 // 保存编辑到本机（localStorage + 当前页面内存 + 内嵌固化）
 function saveEdits(){
+  if(!edData||typeof edData!=="object"){ try{edData=JSON.parse(JSON.stringify(window.__DATA||DATA||{}));}catch(e){edData={};} }
   try{
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
   }catch(e){showToast("保存失败："+e.message);return false;}
