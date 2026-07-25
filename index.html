@@ -317,6 +317,39 @@ function relAuto(ids){
   return rel(both("相关","Related"),ids);
 }
 
+// ============ news blocks 渲染辅助 ============
+function newsCover(n){
+  if(n.blocks){
+    for(var i=0;i<n.blocks.length;i++){ if(n.blocks[i].type==="image"&&n.blocks[i].src) return n.blocks[i].src; }
+  }
+  return n.image||"";
+}
+function newsSummary(n,max){
+  max=max||70;
+  var txt="";
+  if(n.blocks){
+    for(var i=0;i<n.blocks.length;i++){
+      if(n.blocks[i].type==="text"){ txt+=(z(n.blocks[i].zh)||"")+(z(n.blocks[i].en)||""); if(txt.length>=max) break; }
+    }
+  }
+  if(!txt) txt=(z(n.bodyZh)||"")+(z(n.bodyEn)||"");
+  txt=txt.replace(/\s+/g," ").trim();
+  return txt.length>max?txt.slice(0,max)+"…":txt;
+}
+function newsBlocksHtml(n){
+  if(!n.blocks||!n.blocks.length){
+    var h="";
+    if(n.image) h+=img(n.image,"modal-banner");
+    if(n.bodyZh||n.bodyEn) h+='<div class="modal-block"><p>'+both(n.bodyZh,n.bodyEn)+'</p></div>';
+    return h;
+  }
+  return n.blocks.map(function(b){
+    if(b.type==="image") return img(b.src,"modal-banner");
+    if(b.type==="text") return '<div class="modal-block"><p>'+both(b.zh,b.en)+'</p></div>';
+    return "";
+  }).join("");
+}
+
 // ============ openDetail ============
 function openDetail(type,id){
   var d=DATA,html="";
@@ -383,10 +416,11 @@ function openDetail(type,id){
   }
   else if(type==="news"){
     var n=find(d.news,id);if(!n)return showToast("未找到："+id);
-    html+=img(n.image,"modal-banner");
+    var cover=newsCover(n);
+    if(cover) html+=img(cover,"modal-banner");
     html+='<h2>'+both(n.titleZh,n.titleEn)+'</h2>';
     html+='<p class="modal-role"><i class="fas fa-calendar"></i> '+esc(n.date||"")+'</p>';
-    html+='<div class="modal-block"><p>'+both(n.bodyZh,n.bodyEn)+'</p></div>';
+    html+=newsBlocksHtml(n);
   }
   openModal(html);
 }
@@ -502,10 +536,10 @@ function renderAll(d){
   document.getElementById("news").innerHTML='<h2>'+both("团队动态","Lab News")+'</h2>'+
     '<div class="news-grid">'+d.news.map(function(n){
       return'<article class="news-card clickable" data-open="news" data-id="'+esc(n.id)+'">'+
-        img(n.image,"news-thumb")+
+        img(newsCover(n),"news-thumb")+
         '<div class="news-body"><div class="news-date"><span class="day">'+esc(z(n.day))+'</span><span>'+esc(z(n.month))+'</span></div>'+
         '<h3 style="margin:0 0 8px;">'+both(n.titleZh,n.titleEn)+'</h3>'+
-        '<p style="color:var(--light-text-color);margin:0;">'+both(n.bodyZh,n.bodyEn)+'</p></div></article>';}).join("")+'</div>';
+        '<p style="color:var(--light-text-color);margin:0;">'+esc(newsSummary(n))+'</p></div></article>';}).join("")+'</div>';
 
   // lab life
   document.getElementById("lab-life").innerHTML=
