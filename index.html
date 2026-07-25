@@ -262,6 +262,19 @@ window.__NAV=[
 <script>
 (function(){
 "use strict";
+/* 跨脚本共享：编辑存储键 + 深合并（供下方初始化加载使用） */
+var ED_KEY="__EDITED_DATA";
+function deepMerge(base,over){
+  if(Array.isArray(over))return over;
+  if(over&&typeof over==="object"&&base&&typeof base==="object"){
+    var out=Array.isArray(base)?base.slice():Object.assign({},base);
+    for(var k in over){out[k]=deepMerge(base?base[k]:undefined,over[k]);}
+    return out;
+  }
+  return over===undefined?base:over;
+}
+window.__ED_KEY=ED_KEY;
+window.__deepMerge=deepMerge;
 var DATA=null,modal,modalContent,toast;
 
 function z(o){return o!=null?o:"";}
@@ -668,7 +681,7 @@ document.addEventListener("DOMContentLoaded",function(){
     try{
       var savedEd=localStorage.getItem(ED_KEY);
       if(savedEd){var _s=JSON.parse(savedEd);if(_s&&typeof _s==="object"){__d=deepMerge(__d,_s);}}
-    }catch(e){}
+    }catch(e){console.error("restore edit failed",e);}
     DATA=__d;renderAll(__d);
   }
   else{
