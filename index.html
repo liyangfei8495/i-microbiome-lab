@@ -257,6 +257,67 @@ footer p{margin:4px 0}
   <p>内容加载失败，请确认 content.json 存在且为合法 JSON。</p>
 </div>
 
+<!-- ===== 内联编辑后台 ===== -->
+<button id="admin-trigger" title="管理" style="position:fixed;bottom:16px;left:16px;width:36px;height:36px;border-radius:50%;background:transparent;border:none;color:transparent;cursor:pointer;z-index:90;font-size:14px;"><i class="fas fa-cog"></i></button>
+
+<div id="admin-login" class="admin-modal" hidden>
+  <div class="admin-backdrop" data-al-close></div>
+  <div class="admin-dialog" style="width:340px;">
+    <button class="admin-close" data-al-close aria-label="关闭"><i class="fas fa-times"></i></button>
+    <h2 style="margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px;"><i class="fas fa-lock" style="color:var(--primary-color,#0066cc);"></i> 管理员登录</h2>
+    <label style="display:block;font-size:13px;color:#6e6e73;margin:10px 0 4px;">账号</label>
+    <input id="al-user" style="width:100%;padding:9px 11px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;box-sizing:border-box;" autocomplete="off">
+    <label style="display:block;font-size:13px;color:#6e6e73;margin:10px 0 4px;">密码</label>
+    <input id="al-pass" type="password" style="width:100%;padding:9px 11px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;box-sizing:border-box;" autocomplete="off">
+    <p id="al-err" style="color:#ff3b30;font-size:13px;min-height:18px;margin:8px 0 0;"></p>
+    <button id="al-btn" style="width:100%;margin-top:14px;padding:10px;background:var(--primary-color,#0066cc);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">登录</button>
+  </div>
+</div>
+
+<div id="admin-panel" class="admin-modal" hidden>
+  <div class="admin-backdrop" data-ap-close></div>
+  <div class="admin-dialog" style="width:min(92vw,760px);max-height:88vh;display:flex;flex-direction:column;">
+    <button class="admin-close" data-ap-close aria-label="关闭"><i class="fas fa-times"></i></button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <h2 style="margin:0;font-size:18px;display:flex;align-items:center;gap:8px;"><i class="fas fa-edit" style="color:var(--primary-color,#0066cc);"></i> 内容编辑</h2>
+      <div style="display:flex;gap:8px;">
+        <button id="ap-export" class="ap-btn ap-btn-sec">导出数据</button>
+        <button id="ap-reset" class="ap-btn ap-btn-sec">重置修改</button>
+        <button id="ap-save" class="ap-btn ap-btn-pri">保存</button>
+        <button id="ap-logout" class="ap-btn ap-btn-sec">退出</button>
+      </div>
+    </div>
+    <div id="ap-tabs" class="ap-tabs"></div>
+    <div id="ap-body" style="flex:1;overflow-y:auto;padding:4px 4px 16px;"></div>
+  </div>
+</div>
+
+<style>
+.admin-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px 16px;}
+.admin-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.45);}
+.admin-dialog{position:relative;background:#fff;border-radius:14px;padding:22px;box-shadow:0 12px 40px rgba(0,0,0,0.2);}
+.admin-close{position:absolute;top:10px;right:10px;background:transparent;border:none;font-size:16px;cursor:pointer;color:#6e6e73;width:30px;height:30px;border-radius:8px;}
+.admin-close:hover{background:#f5f5f7;}
+.ap-btn{padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid #e5e5ea;font-family:inherit;}
+.ap-btn-pri{background:var(--primary-color,#0066cc);color:#fff;border:none;}
+.ap-btn-sec{background:#fff;color:#1d1d1f;}
+.ap-btn:hover{opacity:0.88;}
+.ap-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;border-bottom:1px solid #e5e5ea;padding-bottom:10px;}
+.ap-tab{padding:6px 12px;border-radius:999px;background:#f5f5f7;border:1px solid #e5e5ea;cursor:pointer;font-size:13px;font-family:inherit;}
+.ap-tab.active{background:var(--primary-color,#0066cc);color:#fff;border-color:var(--primary-color,#0066cc);}
+.ap-field{margin:12px 0;}
+.ap-field label{display:block;font-size:12px;color:#6e6e73;margin-bottom:4px;font-weight:500;}
+.ap-field input,.ap-field textarea,.ap-field select{width:100%;padding:8px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;font-family:inherit;box-sizing:border-box;}
+.ap-field textarea{min-height:56px;resize:vertical;}
+.ap-item{border:1px solid #e5e5ea;border-radius:10px;padding:12px;margin:10px 0;background:#fafafa;}
+.ap-item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.ap-item-head strong{color:var(--primary-color,#0066cc);font-size:13px;}
+.ap-del{background:#ff3b30;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;}
+.ap-add{background:#e8f0fe;color:var(--primary-color,#0066cc);border:1px solid #cfe0ff;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;margin-top:6px;}
+.ap-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none;}
+.ap-toast.show{opacity:1;}
+</style>
+
 <script>
 (function(){
 "use strict";
@@ -635,8 +696,12 @@ document.addEventListener("DOMContentLoaded",function(){
   // ESC close modal
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!modal.hasAttribute("hidden"))closeModal();});
 
-  // load data（优先内嵌数据，COS 静态托管零依赖；content.json 仅作兜底）
+  // load data（优先 localStorage 编辑版本，其次内嵌数据，content.json 兜底）
   var __d=window.__DATA;
+  try{
+    var saved=localStorage.getItem("__EDITED_DATA");
+    if(saved){__d=JSON.parse(saved);toast&&toast("已加载你的修改","success");}
+  }catch(e){}
   if(__d){DATA=__d;renderAll(__d);}
   else{
     fetch("content.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
@@ -644,6 +709,273 @@ document.addEventListener("DOMContentLoaded",function(){
       .catch(function(){var e=document.getElementById("load-error");if(e)e.style.display="block";});
   }
 });
+
+// ============ 内联编辑后台 ============
+var AL_USER="lab",AL_PASS="123",AL_KEY="__ADMIN_OK",ED_KEY="__EDITED_DATA";
+var alLogin,alPanel,alTabs,alBody,edData=null;
+
+function apToast(msg,type){
+  var t=document.getElementById("ap-toast");
+  if(!t){t=document.createElement("div");t.id="ap-toast";t.className="ap-toast";document.body.appendChild(t);}
+  t.textContent=msg;t.className="ap-toast show"+(type==="error"?"":"");
+  setTimeout(function(){t.className="ap-toast";},1800);
+}
+
+function apOpen(el){el.removeAttribute("hidden");}
+function apClose(el){el.setAttribute("hidden","");}
+document.querySelectorAll("[data-al-close]").forEach(function(b){b.onclick=function(){apClose(alLogin);};});
+document.querySelectorAll("[data-ap-close]").forEach(function(b){b.onclick=function(){apClose(alPanel);};});
+
+// 隐藏入口：连点页脚3次 或 Ctrl+Shift+E
+var clickCount=0,clickTimer=null;
+var trig=document.getElementById("admin-trigger");
+if(trig){trig.onclick=function(){apOpen(alLogin);};}
+var footer=document.querySelector("footer");
+if(footer){footer.addEventListener("click",function(){
+  clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer=setTimeout(function(){clickCount=0;},800);
+  if(clickCount>=3){clickCount=0;apOpen(alLogin);}
+});}
+document.addEventListener("keydown",function(e){
+  if(e.ctrlKey&&e.shiftKey&&(e.key==="E"||e.key==="e")){e.preventDefault();apOpen(alLogin);}
+});
+
+// 登录
+function doLogin(){
+  var u=document.getElementById("al-user").value.trim();
+  var p=document.getElementById("al-pass").value;
+  if(u===AL_USER&&p===AL_PASS){
+    sessionStorage.setItem(AL_KEY,"1");
+    apClose(alLogin);
+    openEditor();
+  }else{
+    document.getElementById("al-err").textContent="账号或密码错误";
+  }
+}
+document.getElementById("al-btn").onclick=doLogin;
+document.getElementById("al-pass").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+document.getElementById("al-user").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+
+// 编辑器
+function openEditor(){
+  // 深拷贝当前 DATA（优先用原始内嵌数据做编辑基底，避免叠加）
+  var base=window.__DATA;
+  try{var s=localStorage.getItem(ED_KEY);if(s)base=JSON.parse(s);}catch(e){}
+  edData=JSON.parse(JSON.stringify(base));
+  buildTabs();
+  apOpen(alPanel);
+}
+
+function buildTabs(){
+  var tabs=[
+    {k:"lab",label:"实验室信息"},
+    {k:"home",label:"首页介绍"},
+    {k:"highlights",label:"三大方向"},
+    {k:"research",label:"研究主题"},
+    {k:"members",label:"团队成员"},
+    {k:"publications",label:"论文成果"},
+    {k:"news",label:"团队动态"}
+  ];
+  alTabs.innerHTML=tabs.map(function(t,i){
+    return'<button class="ap-tab'+(i===0?" active":"")+'" data-tab="'+t.k+'">'+t.label+'</button>';
+  }).join("");
+  alTabs.querySelectorAll(".ap-tab").forEach(function(b){
+    b.onclick=function(){
+      alTabs.querySelectorAll(".ap-tab").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+      renderTab(b.getAttribute("data-tab"));
+    };
+  });
+  renderTab("lab");
+}
+
+function renderTab(k){
+  var d=edData,h="";
+  if(k==="lab"){
+    h+=field("lab.name","实验室名称",d.lab.name,"text");
+    h+=field("lab.taglineZh","中文标语",d.lab.taglineZh);
+    h+=field("lab.taglineEn","英文标语",d.lab.taglineEn);
+    h+=field("hero.image","首屏背景图路径",d.hero.image,"text");
+  }else if(k==="home"){
+    h+=field("home.titleZh","标题(中)",d.home.titleZh);
+    h+=field("home.titleEn","标题(英)",d.home.titleEn);
+    h+=field("home.introZh","简介(中)",d.home.introZh,"textarea");
+    h+=field("home.introEn","简介(英)",d.home.introEn,"textarea");
+    h+=field("home.intro2Zh","次简介(中)",d.home.intro2Zh,"textarea");
+    h+=field("home.intro2En","次简介(英)",d.home.intro2En,"textarea");
+    h+=field("home.photo","配图路径",d.home.photo,"text");
+    h+=field("home.photoCapZh","图注(中)",d.home.photoCapZh);
+    h+=field("home.photoCapEn","图注(英)",d.home.photoCapEn);
+  }else if(k==="highlights"){
+    h+=d.highlights.map(function(it,i){
+      return itemBox("方向 "+(i+1),[
+        field("highlights."+i+".zh","名称(中)",it.zh),
+        field("highlights."+i+".en","名称(英)",it.en),
+        field("highlights."+i+".descZh","描述(中)",it.descZh,"textarea"),
+        field("highlights."+i+".descEn","描述(英)",it.descEn,"textarea"),
+        field("highlights."+i+".icon","图标(fa-xxx)",it.icon,"text"),
+        field("highlights."+i+".image","配图路径",it.image,"text")
+      ],"highlights",i);
+    }).join("");
+    h+='<button class="ap-add" data-add="highlights">+ 添加方向</button>';
+  }else if(k==="research"){
+    h+='<h3 style="margin:16px 0 8px;color:var(--primary-color,#0066cc);font-size:14px;">三大方向</h3>';
+    h+=d.research.pillars.map(function(it,i){
+      return itemBox("方向 "+(i+1),[
+        field("research.pillars."+i+".zh","名称(中)",it.zh),
+        field("research.pillars."+i+".en","名称(英)",it.en),
+        field("research.pillars."+i+".descZh","描述(中)",it.descZh,"textarea"),
+        field("research.pillars."+i+".descEn","描述(英)",it.descEn,"textarea"),
+        field("research.pillars."+i+".image","配图路径",it.image,"text")
+      ],"research.pillars",i);
+    }).join("");
+    h+='<h3 style="margin:20px 0 8px;color:var(--primary-color,#0066cc);font-size:14px;">在研课题</h3>';
+    h+=d.research.projects.map(function(it,i){
+      return itemBox("课题 "+(i+1),[
+        field("research.projects."+i+".titleZh","标题(中)",it.titleZh),
+        field("research.projects."+i+".titleEn","标题(英)",it.titleEn),
+        field("research.projects."+i+".contentZh","内容(中)",it.contentZh,"textarea"),
+        field("research.projects."+i+".contentEn","内容(英)",it.contentEn,"textarea"),
+        field("research.projects."+i+".lead","负责人",it.lead,"text")
+      ],"research.projects",i);
+    }).join("");
+  }else if(k==="members"){
+    h+=d.members.map(function(it,i){
+      return itemBox(it.nameZh||("成员 "+(i+1)),[
+        field("members."+i+".nameZh","姓名(中)",it.nameZh),
+        field("members."+i+".nameEn","姓名(英)",it.nameEn),
+        field("members."+i+".roleZh","职位(中)",it.roleZh),
+        field("members."+i+".roleEn","职位(英)",it.roleEn),
+        field("members."+i+".group","分组",it.group,"text"),
+        field("members."+i+".bioZh","简介(中)",it.bioZh,"textarea"),
+        field("members."+i+".bioEn","简介(英)",it.bioEn,"textarea"),
+        field("members."+i+".photo","照片路径",it.photo,"text")
+      ],"members",i);
+    }).join("");
+    h+='<button class="ap-add" data-add="members">+ 添加成员</button>';
+  }else if(k==="publications"){
+    h+=d.publications.map(function(it,i){
+      return itemBox(it.titleZh||("论文 "+(i+1)),[
+        field("publications."+i+".authors","作者",it.authors),
+        field("publications."+i+".titleZh","标题(中)",it.titleZh),
+        field("publications."+i+".titleEn","标题(英)",it.titleEn),
+        field("publications."+i+".journal","期刊",it.journal,"text"),
+        field("publications."+i+".year","年份",it.year,"text"),
+        field("publications."+i+".doi","DOI链接",it.doi,"text"),
+        field("publications."+i+".image","配图路径",it.image,"text")
+      ],"publications",i);
+    }).join("");
+    h+='<button class="ap-add" data-add="publications">+ 添加论文</button>';
+  }else if(k==="news"){
+    h+=d.news.map(function(it,i){
+      return itemBox(it.titleZh||("动态 "+(i+1)),[
+        field("news."+i+".titleZh","标题(中)",it.titleZh),
+        field("news."+i+".titleEn","标题(英)",it.titleEn),
+        field("news."+i+".bodyZh","内容(中)",it.bodyZh,"textarea"),
+        field("news."+i+".bodyEn","内容(英)",it.bodyEn,"textarea"),
+        field("news."+i+".day","日",it.day,"text"),
+        field("news."+i+".month","月",it.month,"text"),
+        field("news."+i+".image","配图路径",it.image,"text")
+      ],"news",i);
+    }).join("");
+    h+='<button class="ap-add" data-add="news">+ 添加动态</button>';
+  }
+  alBody.innerHTML=h;
+  // 绑定输入
+  alBody.querySelectorAll("[data-path]").forEach(function(inp){
+    inp.oninput=function(){setByPath(edData,this.getAttribute("data-path"),this.value);};
+  });
+  // 删除按钮
+  alBody.querySelectorAll("[data-del]").forEach(function(btn){
+    btn.onclick=function(){
+      var path=this.getAttribute("data-del");
+      var idx=parseInt(this.getAttribute("data-idx"),10);
+      var arr=getByPath(edData,path);
+      if(Array.isArray(arr)){arr.splice(idx,1);renderTab(k);}
+    };
+  });
+  // 添加按钮
+  alBody.querySelectorAll("[data-add]").forEach(function(btn){
+    btn.onclick=function(){
+      var path=this.getAttribute("data-add");
+      var arr=getByPath(edData,path);
+      if(!Array.isArray(arr))return;
+      var tpl={};
+      if(path==="highlights")tpl={icon:"fa-flask",zh:"新方向",en:"New",descZh:"",descEn:"",image:""};
+      else if(path==="members")tpl={id:"m-"+Date.now(),nameZh:"新成员",nameEn:"",roleZh:"",roleEn:"",group:"phd",bioZh:"",bioEn:"",photo:""};
+      else if(path==="publications")tpl={id:"p-"+Date.now(),authors:"",titleZh:"",titleEn:"",journal:"",year:"",doi:"#",image:""};
+      else if(path==="news")tpl={id:"n-"+Date.now(),titleZh:"",titleEn:"",bodyZh:"",bodyEn:"",day:"1",month:"Jan",image:""};
+      arr.push(tpl);renderTab(k);
+    };
+  });
+}
+
+function field(path,label,val,type){
+  val=val==null?"":val;
+  var escVal=String(val).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  if(type==="textarea")return'<div class="ap-field"><label>'+label+'</label><textarea data-path="'+path+'">'+escVal+'</textarea></div>';
+  return'<div class="ap-field"><label>'+label+'</label><input data-path="'+path+'" value="'+escVal+'"></div>';
+}
+function itemBox(title,fieldsHtml,arrPath,idx){
+  return'<div class="ap-item"><div class="ap-item-head"><strong>'+title+'</strong><button class="ap-del" data-del="'+arrPath+'" data-idx="'+idx+'">删除</button></div>'+fieldsHtml+'</div>';
+}
+function getByPath(obj,path){
+  var parts=path.split("."),cur=obj;
+  for(var i=0;i<parts.length;i++){
+    if(cur==null)return undefined;
+    if(/^\d+$/.test(parts[i]))cur=cur[parseInt(parts[i],10)];
+    else cur=cur[parts[i]];
+  }
+  return cur;
+}
+function setByPath(obj,path,val){
+  var parts=path.split("."),cur=obj;
+  for(var i=0;i<parts.length-1;i++){
+    if(/^\d+$/.test(parts[i]))cur=cur[parseInt(parts[i],10)];
+    else cur=cur[parts[i]];
+  }
+  var last=parts[parts.length-1];
+  if(/^\d+$/.test(last))cur[parseInt(last,10)]=val;
+  else cur[last]=val;
+}
+
+// 保存 / 导出 / 重置
+document.getElementById("ap-save").onclick=function(){
+  try{
+    localStorage.setItem(ED_KEY,JSON.stringify(edData));
+    DATA=edData;renderAll(edData);
+    apToast("已保存，刷新后仍生效");
+  }catch(e){apToast("保存失败："+e.message,"error");}
+};
+document.getElementById("ap-export").onclick=function(){
+  var blob=new Blob([JSON.stringify(edData,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");a.href=url;a.download="content.json";a.click();
+  URL.revokeObjectURL(url);
+  apToast("已导出 content.json，发我即可上线");
+};
+document.getElementById("ap-reset").onclick=function(){
+  if(!confirm("确定清除本地修改，恢复原始内容？"))return;
+  localStorage.removeItem(ED_KEY);
+  edData=JSON.parse(JSON.stringify(window.__DATA));
+  DATA=edData;renderAll(edData);
+  renderTab(alTabs.querySelector(".ap-tab.active").getAttribute("data-tab"));
+  apToast("已恢复原始内容");
+};
+document.getElementById("ap-logout").onclick=function(){
+  sessionStorage.removeItem(AL_KEY);
+  apClose(alPanel);
+};
+
+alLogin=document.getElementById("admin-login");
+alPanel=document.getElementById("admin-panel");
+alTabs=document.getElementById("ap-tabs");
+alBody=document.getElementById("ap-body");
+
+// 如果本次会话已登录过，自动打开编辑器
+if(sessionStorage.getItem(AL_KEY)==="1"){/* 不自动打开，等用户主动唤起 */}
+
 })();
 </script>
 </body>
