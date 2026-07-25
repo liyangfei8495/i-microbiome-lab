@@ -852,6 +852,17 @@ function field(path,label,val,type){
   if(type==="textarea")return'<div class="ap-field"><label>'+label+'</label><textarea data-path="'+path+'">'+ev+'</textarea></div>';
   return'<div class="ap-field"><label>'+label+'</label><input data-path="'+path+'" value="'+ev+'"></div>';
 }
+/* 图片字段：路径输入 + 本地上传（转 base64 嵌入），与新闻上传共用 handleImgUpload */
+function imgField(path,label,val){
+  val=val==null?"":val;
+  var ev=String(val).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  var preview=val?'<img class="img-preview" src="'+escAttr(val)+'">':'';
+  return'<div class="ap-field"><label>'+label+'（可填路径，或直接上传）</label>'+
+    '<input data-path="'+path+'" value="'+ev+'">'+
+    '<div class="img-upload" data-upload="'+path+'" style="margin-top:6px;">点击选择图片 / 拖拽到此处'+
+    preview+
+    '<input type="file" accept="image/*" hidden></div></div>';
+}
 function itemBox(title,fieldsHtml,arrPath,idx){
   return'<div class="ap-item"><div class="ap-item-head"><strong>'+title+'</strong><button class="ap-del" data-del="'+arrPath+'" data-idx="'+idx+'">删除</button></div>'+fieldsHtml+'</div>';
 }
@@ -884,7 +895,7 @@ function openBlockEditor(type,label){
     h+=field("lab.name","实验室名称",d.lab.name);
     h+=field("lab.taglineZh","中文标语",d.lab.taglineZh);
     h+=field("lab.taglineEn","英文标语",d.lab.taglineEn);
-    h+=field("hero.image","背景图路径",d.hero.image,"text");
+    h+=imgField("hero.image","背景图",d.hero.image);
   }else if(type==="home"){
     h+=field("home.titleZh","标题(中)",d.home.titleZh);
     h+=field("home.titleEn","标题(英)",d.home.titleEn);
@@ -892,7 +903,7 @@ function openBlockEditor(type,label){
     h+=field("home.introEn","简介(英)",d.home.introEn,"textarea");
     h+=field("home.intro2Zh","次简介(中)",d.home.intro2Zh,"textarea");
     h+=field("home.intro2En","次简介(英)",d.home.intro2En,"textarea");
-    h+=field("home.photo","配图路径",d.home.photo,"text");
+    h+=imgField("home.photo","配图",d.home.photo);
     h+=field("home.photoCapZh","图注(中)",d.home.photoCapZh);
     h+=field("home.photoCapEn","图注(英)",d.home.photoCapEn);
   }else if(type==="highlights"){
@@ -904,7 +915,7 @@ function openBlockEditor(type,label){
         field("highlights."+i+".en","名称(英)",it.en),
         field("highlights."+i+".descZh","描述(中)",it.descZh,"textarea"),
         field("highlights."+i+".descEn","描述(英)",it.descEn,"textarea"),
-        field("highlights."+i+".image","配图路径",it.image,"text")
+        imgField("highlights."+i+".image","配图",it.image)
       ].join(""),"highlights",i);
     });
     h+='<button class="ap-add" data-add="highlights">+ 添加方向</button>';
@@ -917,17 +928,20 @@ function openBlockEditor(type,label){
         field("research.pillars."+i+".en","名称(英)",p.en),
         field("research.pillars."+i+".descZh","描述(中)",p.descZh,"textarea"),
         field("research.pillars."+i+".descEn","描述(英)",p.descEn,"textarea"),
-        field("research.pillars."+i+".image","配图路径",p.image,"text")
+        imgField("research.pillars."+i+".image","配图",p.image)
       ].join(""),"research.pillars",i);
     });
     h+='<h3 style="margin:20px 0 8px;color:var(--primary,#0066cc);font-size:14px;">在研课题（可增删）</h3>';
     d.research.projects.forEach(function(pr,i){
+      var prImgs=pr.images&&pr.images.length?pr.images.join("\n"):"";
       h+=itemBox("课题 "+(i+1)+": "+(pr.titleZh||""),[
         field("research.projects."+i+".titleZh","标题(中)",pr.titleZh),
         field("research.projects."+i+".titleEn","标题(英)",pr.titleEn),
         field("research.projects."+i+".contentZh","内容(中)",pr.contentZh,"textarea"),
         field("research.projects."+i+".contentEn","内容(英)",pr.contentEn,"textarea"),
-        field("research.projects."+i+".lead","负责人",pr.lead,"text")
+        field("research.projects."+i+".lead","负责人",pr.lead,"text"),
+        '<div class="ap-field"><label>课题配图路径列表（每行一个）</label><textarea data-path="research.projects.'+i+'.images" style="min-height:80px;">'+prImgs+'</textarea></div>',
+        '<div class="ap-field"><label>或批量上传课题配图</label><div class="img-upload" data-upload-batch="research.projects.'+i+'.images" style="margin-top:6px;">点击选择多张图片 / 拖拽到此处<input type="file" accept="image/*" multiple hidden></div></div>'
       ].join(""),"research.projects",i);
     });
     h+='<button class="ap-add" data-add="research.projects">+ 添加课题</button>';
@@ -940,7 +954,7 @@ function openBlockEditor(type,label){
         field("facilities."+i+".en","名称(英)",f.en),
         field("facilities."+i+".descZh","描述(中)",f.descZh,"textarea"),
         field("facilities."+i+".descEn","描述(英)",f.descEn,"textarea"),
-        field("facilities."+i+".image","配图路径",f.image,"text")
+        imgField("facilities."+i+".image","配图",f.image)
       ].join(""),"facilities",i);
     });
     h+='<button class="ap-add" data-add="facilities">+ 添加设施</button>';
@@ -955,7 +969,7 @@ function openBlockEditor(type,label){
         field("members."+i+".group","分组(pi/faculty/manager/phd/master)",m.group,"text"),
         field("members."+i+".bioZh","简介(中)",m.bioZh,"textarea"),
         field("members."+i+".bioEn","简介(英)",m.bioEn,"textarea"),
-        field("members."+i+".photo","照片路径",m.photo,"text")
+        imgField("members."+i+".photo","照片",m.photo)
       ].join(""),"members",i);
     });
     h+='<button class="ap-add" data-add="members">+ 添加成员</button>';
@@ -969,7 +983,7 @@ function openBlockEditor(type,label){
         field("publications."+i+".journal","期刊",pp.journal,"text"),
         field("publications."+i+".year","年份",pp.year,"text"),
         field("publications."+i+".doi","DOI链接",pp.doi,"text"),
-        field("publications."+i+".image","配图路径",pp.image,"text")
+        imgField("publications."+i+".image","配图",pp.image)
       ].join(""),"publications",i);
     });
     h+='<button class="ap-add" data-add="publications">+ 添加论文</button>';
@@ -984,20 +998,22 @@ function openBlockEditor(type,label){
         field("news."+i+".bodyEn","内容(英)",n.bodyEn,"textarea")+
         field("news."+i+".day","日(如 15)",n.day,"text")+
         field("news."+i+".month","月(如 07)",n.month,"text")+
-        field("news."+i+".image","配图路径",n.image,"text")+
-        '<div class="ap-field"><label>或上传本地图片（转base64嵌入）</label>'+
-        '<div class="img-upload" data-upload="news.'+i+'.image">点击选择图片 / 拖拽到此处'+
-        imgPreview+
-        '<input type="file" accept="image/*" hidden></div></div>'+
+        imgField("news."+i+".image","配图",n.image)+
         '</div>';
     });
     h+='<button class="ap-add" data-add="news">+ 添加动态</button>';
   }else if(type==="labLife"){
-    h+='<p style="color:#6e6e73;font-size:12px;margin:0 0 8px;">实验室生活照片路径（每行一个）</p>';
-    h+='<div class="ap-field"><label>图片路径列表</label><textarea data-path="labLife" style="min-height:120px;">'+d.labLife.join("\n")+'</textarea></div>';
+    h+='<p style="color:#6e6e73;font-size:12px;margin:0 0 8px;">实验室生活照片（可填路径，或直接批量上传本地图片，转 base64 嵌入）</p>';
+    h+='<div class="ap-field"><label>图片路径列表（每行一个）</label><textarea data-path="labLife" style="min-height:120px;">'+d.labLife.join("\n")+'</textarea></div>';
+    h+='<div class="ap-field"><label>或批量上传本地图片</label>'+
+       '<div class="img-upload" data-upload-batch="labLife" style="margin-top:6px;">点击选择多张图片 / 拖拽到此处'+
+       '<input type="file" accept="image/*" multiple hidden></div></div>';
   }else if(type==="join"){
     h+=field("join.introZh","简介(中)",d.join.introZh,"textarea");
     h+=field("join.introEn","简介(英)",d.join.introEn,"textarea");
+    var joinImgs=d.join.images&&d.join.images.length?d.join.images.join("\n"):"";
+    h+='<div class="ap-field"><label>招新配图路径列表（每行一个）</label><textarea data-path="join.images" style="min-height:80px;">'+joinImgs+'</textarea></div>';
+    h+='<div class="ap-field"><label>或批量上传招新配图</label><div class="img-upload" data-upload-batch="join.images" style="margin-top:6px;">点击选择多张图片 / 拖拽到此处<input type="file" accept="image/*" multiple hidden></div></div>';
   }else if(type==="contact"){
     h+=field("contact.email","邮箱",d.contact.email,"text");
     h+=field("contact.phone","电话",d.contact.phone,"text");
@@ -1016,6 +1032,8 @@ function bindBlockEditorEvents(){
       var val=this.value;
       if(path==="labLife"){
         edData.labLife=val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;});
+      }else if(/\.images$/.test(path)){
+        setByPath(edData,path,val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;}));
       }else{
         setByPath(edData,path,val);
       }
@@ -1056,6 +1074,17 @@ function bindBlockEditorEvents(){
     };
     fileInput.onchange=function(){if(fileInput.files[0])handleImgUpload(fileInput.files[0],zone);};
   });
+  beBody.querySelectorAll("[data-upload-batch]").forEach(function(zone){
+    var fileInput=zone.querySelector('input[type="file"]');
+    zone.onclick=function(){fileInput.click();};
+    zone.ondragover=function(e){e.preventDefault();zone.style.borderColor="#007aff";};
+    zone.ondragleave=function(){zone.style.borderColor="#d0d0d5";};
+    zone.ondrop=function(e){
+      e.preventDefault();zone.style.borderColor="#d0d0d5";
+      if(e.dataTransfer.files.length)handleBatchUpload(e.dataTransfer.files,zone);
+    };
+    fileInput.onchange=function(){if(fileInput.files.length)handleBatchUpload(fileInput.files,zone);};
+  });
 }
 
 function handleImgUpload(file,zone){
@@ -1076,6 +1105,29 @@ function handleImgUpload(file,zone){
     showToast("图片已加载，记得点保存此项");
   };
   reader.readAsDataURL(file);
+}
+
+function handleBatchUpload(files,zone){
+  var path=zone.getAttribute("data-upload-batch");
+  var arr=getByPath(edData,path)||[];
+  if(!Array.isArray(arr))arr=[];
+  var pending=files.length;
+  Array.prototype.forEach.call(files,function(file){
+    if(!file.type.startsWith("image/")){showToast("已跳过非图片文件");pending--;return;}
+    if(file.size>2*1024*1024){showToast(file.name+" 过大（>2MB）已跳过");pending--;return;}
+    var reader=new FileReader();
+    reader.onload=function(e){
+      arr.push(e.target.result);
+      pending--;
+      if(pending===0){
+        setByPath(edData,path,arr);
+        var ta=beBody.querySelector('[data-path="'+path+'"]');
+        if(ta)ta.value=arr.join("\n");
+        showToast("已添加 "+arr.length+" 张图片，记得点保存此项");
+      }
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 document.getElementById("be-save").onclick=function(){
