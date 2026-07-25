@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>i-Microbiome Lab</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;--border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;--hover-color:#f0f4f8;--focus-outline-color:rgba(0,102,204,.6);}
+*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--text-color);background:var(--bg);margin:0;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.skip-link{position:absolute;top:-40px;left:0;background:var(--primary);color:#fff;padding:8px;z-index:1000;transition:.2s}.skip-link:focus{top:0}
+nav{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);z-index:100;transition:transform .3s}
+.nav-container{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-container h1{font-size:18px;margin:0;color:var(--text-color);font-weight:600}
+.nav-right{display:flex;align-items:center;gap:14px}
+.lang-toggle-btn{background:transparent;border:1px solid var(--border-color);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;color:var(--text-color);font-family:inherit}
+.menu-toggle{display:none;flex-direction:column;gap:4px;background:transparent;border:none;cursor:pointer;padding:8px}
+.menu-toggle span{display:block;width:22px;height:2px;background:var(--text-color);transition:.2s}
+.nav-links{list-style:none;display:flex;gap:24px;margin:0;padding:0}
+.nav-links a{color:var(--text-color);text-decoration:none;font-size:14px;font-weight:500;padding:8px 0;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--primary)}
+@media(max-width:900px){.menu-toggle{display:flex}.nav-links{position:absolute;top:64px;left:0;right:0;flex-direction:column;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);padding:16px 24px;gap:12px;border-bottom:1px solid var(--border-color);transform:translateY(-200%);transition:transform .3s}.nav-links.active{transform:translateY(0)}}
+.hero{position:relative;min-height:540px;background-size:cover;background-position:center;color:#fff;display:flex;align-items:center;justify-content:center;padding:120px 24px 80px}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.55),rgba(0,40,80,.4))}
+.hero-content{position:relative;text-align:center;max-width:760px}
+.hero-title{font-size:54px;font-weight:700;margin:0 0 18px}
+.hero-subtitle{font-size:20px;opacity:.92;margin:0}
+section.reveal{padding:80px 24px;max-width:1200px;margin:0 auto;opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s}
+section.reveal.visible{opacity:1;transform:none}
+section h2{font-size:34px;text-align:center;margin:0 0 14px}
+.section-eyebrow{text-align:center;color:var(--primary);text-transform:uppercase;font-size:13px;letter-spacing:.12em;font-weight:600;margin:0 0 8px}
+.large-text{font-size:18px;color:var(--light-text-color);margin-top:0}
+.btn{display:inline-block;background:var(--primary);color:#fff;padding:11px 22px;border-radius:999px;text-decoration:none;font-size:14px;font-weight:500;transition:.2s;cursor:pointer;border:none;font-family:inherit}
+.btn:hover{background:var(--primary-hover)}
+.btn.secondary{background:transparent;color:var(--primary);border:1px solid var(--primary)}
+.text-center{text-align:center}
+.mt-40{margin-top:40px}
+
+/* intro */
+.intro-container{display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:center}
+.intro-image figure{margin:0;border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.12)}
+.intro-image img{width:100%;height:auto;display:block}
+.intro-image figcaption{font-size:14px;color:var(--light-text-color);text-align:center;margin-top:10px}
+
+/* highlights */
+.highlights-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:40px}
+.highlight-card{padding:28px 22px;border:1px solid var(--border-color);border-radius:16px;transition:transform .25s,box-shadow .25s;background:var(--bg)}
+.highlight-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.08)}
+.hl-img{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:16px;background:var(--section-bg)}
+.hl-icon{width:48px;height:48px;background:var(--section-bg);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:20px;margin-bottom:12px}
+
+/* pillars */
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:30px}
+.pillar-card{padding:0;border:1px solid var(--border-color);border-radius:16px;text-align:left;background:var(--bg);cursor:pointer;transition:transform .25s,box-shadow .25s;overflow:hidden}
+.pillar-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.08)}
+.pillar-img{width:100%;height:160px;object-fit:cover;background:var(--section-bg)}
+.pillar-body{padding:22px}
+.pillar-icon{width:44px;height:44px;background:var(--section-bg);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:18px;margin:-22px 0 12px;position:relative}
+.more{display:inline-block;margin-top:10px;color:var(--primary);font-weight:600;font-size:13px}
+
+/* projects */
+.research-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-top:30px}
+.research-card{padding:22px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;transition:transform .25s,box-shadow .25s}
+.research-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.08)}
+.proj-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.proj-logo{width:54px;height:54px;object-fit:cover;border-radius:12px;flex-shrink:0;background:var(--section-bg)}
+.proj-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px;border-radius:10px;overflow:hidden}
+.proj-gallery img{width:100%;height:80px;object-fit:cover;background:var(--section-bg)}
+
+/* facilities */
+.facilities-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:30px}
+.facility-card{padding:0;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.facility-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.08)}
+.facility-banner{width:100%;height:160px;object-fit:cover;background:var(--section-bg)}
+.facility-body{padding:20px}
+.facility-icon{width:44px;height:44px;background:var(--section-bg);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:18px;margin:-22px 0 10px;box-shadow:0 6px 18px rgba(0,0,0,.06);position:relative}
+
+/* members */
+.pi-card{display:flex;flex-wrap:wrap;gap:30px;padding:32px;border:1px solid var(--border-color);border-radius:20px;background:linear-gradient(135deg,#f5f5f7,#fff);cursor:pointer;transition:transform .25s,box-shadow .25s;margin-top:24px;align-items:center}
+.pi-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.08)}
+.pi-card h2{margin:0 0 4px;text-align:left}
+.pi-card h3{color:var(--primary);margin:0 0 10px;text-align:left;font-size:15px}
+.pi-card p{margin:0;text-align:left;color:var(--light-text-color)}
+.pi-card .pi-photo{width:130px;height:130px;flex-shrink:0;border-radius:50%;object-fit:cover}
+.members-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:24px}
+.member-card{padding:22px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;text-align:center;transition:transform .25s,box-shadow .25s}
+.member-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.08)}
+.member-photo,.m-avatar{width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block;background:var(--section-bg)}
+.member-role{color:var(--primary);font-size:12px;font-weight:600;margin-bottom:8px}
+.member-bio{color:var(--light-text-color);font-size:13px;margin:0;line-height:1.5}
+
+/* publications */
+.publications-grid{margin-top:30px}
+.publication-list{list-style:none;padding:0;margin:0}
+.publication-item{display:flex;gap:16px;align-items:flex-start;padding:16px;border:1px solid var(--border-color);border-radius:14px;background:var(--bg);margin-bottom:12px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.publication-item:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.pub-thumb{width:110px;flex-shrink:0;height:82px;border-radius:10px;overflow:hidden;background:var(--section-bg)}
+.pub-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* news */
+.news-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:30px}
+.news-card{padding:0;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.news-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.08)}
+.news-thumb{width:100%;height:160px;object-fit:cover;background:var(--section-bg)}
+.news-body{padding:20px}
+.news-date{display:inline-block;background:var(--section-bg);border-radius:8px;padding:4px 10px;margin-bottom:10px;color:var(--primary);font-size:13px;font-weight:600}
+.news-date .day{font-size:18px;margin-right:4px}
+
+/* join */
+.join-banner{width:100%;height:300px;object-fit:cover;border-radius:16px;margin:30px 0;background:var(--section-bg)}
+.join-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:40px}
+.join-gallery img{width:100%;height:140px;object-fit:cover;border-radius:10px;background:var(--section-bg)}
+.lab-life-intro{text-align:center;color:var(--light-text-color);margin:0 0 30px}
+.travel-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.gallery-item{aspect-ratio:1;overflow:hidden;border-radius:12px;background:var(--section-bg)}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.gallery-item img:hover{transform:scale(1.05)}
+
+/* join cards */
+.join-intro{text-align:center;color:var(--light-text-color);max-width:720px;margin:0 auto 40px;font-size:18px}
+.join-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-bottom:50px}
+.join-card{padding:26px 20px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg)}
+.join-card .hl-icon{margin-bottom:12px}
+.join-openings{background:var(--bg);border:1px solid var(--border-color);border-radius:16px;padding:30px;margin-bottom:30px}
+.join-openings h3{text-align:center;margin:0 0 16px}
+.join-openings ul{max-width:640px;margin:0 auto;padding-left:20px}
+.join-openings li{padding:8px 0;border-bottom:1px solid var(--border-color)}
+.join-openings li:last-child{border-bottom:0}
+.join-cta{text-align:center}
+
+/* contact */
+.contact-container{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}
+.contact-item{display:flex;align-items:center;gap:12px;padding:14px 0;color:var(--text-color);text-decoration:none}
+.contact-item i{color:var(--primary);font-size:18px;width:22px}
+.social-links{list-style:none;padding:0;display:flex;gap:12px;margin-top:14px}
+.social-links li a{display:block;width:48px;height:48px;border-radius:12px;background:var(--section-bg);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:20px;transition:.2s}
+.social-links li a:hover{background:var(--primary);color:#fff}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center}
+.modal[hidden]{display:none}
+.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+.modal-dialog{position:relative;background:#fff;border-radius:20px;max-width:800px;width:calc(100% - 32px);max-height:88vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);z-index:1}
+.modal-close{position:sticky;top:8px;float:right;margin:8px 14px 0 0;width:36px;height:36px;border-radius:50%;background:var(--section-bg);border:none;font-size:14px;cursor:pointer;color:var(--text-color);z-index:2;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--border-color)}
+.modal-content{padding:36px 40px 30px;clear:both}
+.modal-content h2{margin:0 0 6px;text-align:left;font-size:24px}
+.modal-role{color:var(--light-text-color);font-size:14px;margin:0 0 20px}
+.modal-block{margin:22px 0}
+.modal-block h3{font-size:13px;text-transform:uppercase;color:var(--primary);letter-spacing:.1em;margin:0 0 10px}
+.modal-block p{margin:0;color:var(--text-color)}
+.modal-banner{width:100%;height:240px;object-fit:cover;border-radius:14px;background:var(--section-bg);margin-bottom:18px}
+.modal-logo{width:72px;height:72px;object-fit:cover;border-radius:14px;background:var(--section-bg);margin-bottom:12px}
+.modal-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
+.modal-gallery img{width:100%;height:100px;object-fit:cover;border-radius:8px;background:var(--section-bg)}
+.modal-photo{width:110px;height:110px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;background:var(--section-bg)}
+.modal-m-avatar{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:42px;font-weight:600;margin:0 auto 16px}
+
+/* related chips */
+.related-section{margin-top:28px;padding-top:22px;border-top:1px solid var(--border-color)}
+.related-section h3{font-size:13px;text-transform:uppercase;color:var(--primary);letter-spacing:.1em;margin:0 0 12px}
+.related-grid{display:flex;flex-wrap:wrap;gap:8px}
+.related-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;background:var(--section-bg);border:1px solid var(--border-color);border-radius:999px;cursor:pointer;font-size:13px;color:var(--text-color);transition:.2s}
+.related-chip:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.related-chip img{width:16px;height:16px;border-radius:50%;object-fit:cover}
+
+/* lang */
+.lang-zh .en,.lang-en .zh{display:none !important}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;opacity:0;transition:.3s;z-index:300;pointer-events:none}
+.toast.show{opacity:1}
+
+/* footer */
+footer{padding:30px 24px;border-top:1px solid var(--border-color);background:var(--section-bg);color:var(--light-text-color);text-align:center}
+footer p{margin:4px 0}
+
+@media(max-width:600px){.hero-title{font-size:36px}.hero-subtitle{font-size:16px}.intro-container{grid-template-columns:1fr;gap:30px}.contact-container{grid-template-columns:1fr}.pi-card{flex-direction:column;text-align:center}.pi-card h2,.pi-card h3,.pi-card p{text-align:center !important}}
+</style>
+<script>window.__DATA={"lab":{"name":"i-Microbiome Lab","taglineZh":"智能微生物组与生物制造实验室","taglineEn":"Intelligent Microbiome and Bio-Manufacturing Laboratory"},"hero":{"image":"images/plant_image2.jpg"},"home":{"titleZh":"用微生物工程，构建可持续生物制造的未来","titleEn":"Engineering microbiomes for a sustainable bio-future","introZh":"i-Microbiome Lab 聚焦智能微生物组与下一代生物制造，从肠道菌群机制解析、工业酶分子设计，到微生物反应器过程放大，我们把“看不见的微生物”变成“用得上的平台”。","introEn":"i-Microbiome Lab focuses on intelligent microbiomes and next-generation bio-manufacturing — from gut microbiome mechanism discovery, to industrial enzyme engineering, to bioreactor scale-up — turning invisible microbes into usable platforms.","intro2Zh":"我们相信：合成生物学、智能算法与高通量工艺的深度融合，将重塑制药、能源、食品与环境的产业边界。","intro2En":"We believe the deep fusion of synthetic biology, intelligent algorithms, and high-throughput process engineering will reshape pharma, energy, food, and environmental industries.","photo":"images/travel_5.jpg","photoCapZh":"i-Microbiome Lab 团队合影","photoCapEn":"i-Microbiome Lab · Team"},"highlights":[{"icon":"fa-dna","zh":"智能微生物组","en":"Intelligent Microbiome","descZh":"结合多组学与机器学习，解析菌群结构-功能-宿主互作机制。","descEn":"Multi-omics + machine learning to decode microbiome structure-function-host interactions.","image":"images/plant_image2.jpg"},{"icon":"fa-flask","zh":"酶工程与合成生物学","en":"Enzyme & SynBio","descZh":"理性设计+AI 辅助，重编程工业酶与底盘菌株。","descEn":"Rational design + AI-assisted reprogramming of industrial enzymes and chassis strains.","image":"images/plant_image3.jpg"},{"icon":"fa-industry","zh":"生物制造过程放大","en":"Bio-manufacturing Scale-up","descZh":"从摇瓶到 200L 发酵罐的全链条工艺优化与智能控制。","descEn":"End-to-end process optimization and intelligent control from shake-flask to 200L bioreactors.","image":"images/plant_image5.jpg"}],"research":{"pillars":[{"id":"pillar-microbiome","icon":"fa-dna","zh":"微生物组机制","en":"Microbiome Mechanisms","descZh":"菌群-代谢物-宿主表型因果链；组学大数据与因果推断。","descEn":"Causal chains of microbiome-metabolite-host phenotype; omics big-data & causal inference.","image":"images/plant_image2.jpg","introZh":"我们用宏基因组、代谢组与单细胞测序，结合机器学习因果推断方法，回答“哪些菌、哪些代谢物、哪些通路”驱动了宿主表型变化。","introEn":"Using metagenomics, metabolomics, and single-cell sequencing combined with ML causal inference, we identify which microbes, metabolites, and pathways drive host phenotypic changes."},{"id":"pillar-enzyme","icon":"fa-atom","zh":"酶工程与合成生物学","en":"Enzyme Engineering & SynBio","descZh":"AI 辅助酶分子设计、代谢通路重构、动态调控。","descEn":"AI-assisted enzyme design, pathway refactoring, dynamic regulation.","image":"images/plant_image3.jpg","introZh":"聚焦工业酶（蛋白酶、脂肪酶、转移酶等）的催化效率、热稳定性、底物特异性优化；同时构建高产菌株底盘与动态代谢调控回路。","introEn":"Focus on optimizing catalytic efficiency, thermostability, and substrate specificity of industrial enzymes; also build high-yield chassis strains and dynamic metabolic regulation circuits."},{"id":"pillar-process","icon":"fa-industry","zh":"生物制造过程放大","en":"Bio-process Scale-up","descZh":"发酵工艺、在线监测、智能控制与绿色分离纯化。","descEn":"Fermentation processes, online monitoring, intelligent control, and green separation.","image":"images/plant_image5.jpg","introZh":"打通从摇瓶到中试的工艺放大瓶颈，结合 PAT 在线监测与 AI 模型，实现产率、稳定性、能耗的多目标最优。","introEn":"Overcome scale-up bottlenecks from shake-flask to pilot, combining PAT online monitoring and AI models for multi-objective optimization of yield, stability, and energy consumption."}],"projects":[{"id":"proj-gut","titleZh":"肠道菌群-宿主代谢互作机制解析","titleEn":"Gut microbiome-host metabolism interplay","logo":"images/yuanke_original.jpg","lead":"梁元可","pillarId":"pillar-microbiome","memberIds":["member-liang","member-yan"],"contentZh":"结合宏基因组与代谢组，系统解析肠道菌群在炎症性肠病、糖尿病等代谢紊乱中的作用机制，挖掘关键菌株与代谢物。","contentEn":"Integrating metagenomics and metabolomics to systematically dissect gut microbiome roles in IBD, diabetes, and other metabolic disorders.","goalsZh":"建立 3 类疾病的关键菌-代谢物-宿主轴因果模型，验证 ≥2 个候选干预靶点。","goalsEn":"Establish causal models of keystone microbe-metabolite-host axes for 3 disease categories; validate ≥2 candidate intervention targets.","progressZh":"已完成 200 例 IBD 患者队列多组学测序，因果推断框架搭建中。","progressEn":"Multi-omics sequencing of 200 IBD patient cohort completed; causal inference framework in development.","images":["images/plant_image2.jpg","images/plant_image6.jpg"],"pubIds":["pub-2025-microbiome"]},{"id":"proj-enzyme-ai","titleZh":"AI 辅助工业酶分子设计","titleEn":"AI-assisted industrial enzyme design","logo":"images/plant_image3.jpg","lead":"官颖","pillarId":"pillar-enzyme","memberIds":["member-guan","member-liuyang"],"contentZh":"结合蛋白质语言模型 (ESM/AlphaFold) 与高通量突变实验，改造工业酶的催化活性与稳定性。","contentEn":"Combining protein language models (ESM/AlphaFold) with high-throughput mutagenesis to engineer catalytic activity and stability of industrial enzymes.","goalsZh":"对 ≥3 类工业酶实现活性或稳定性 ≥2 倍提升；发表工具链开源。","goalsEn":"Achieve ≥2-fold improvement in activity or stability for ≥3 enzyme classes; release toolchain as open-source.","progressZh":"蛋白酶设计模型迭代至 v3，热稳定性提升 2.4 倍。","progressEn":"Protease design model iterated to v3; thermostability improved 2.4x.","images":["images/plant_image3.jpg"],"pubIds":[]},{"id":"proj-bioprocess","titleZh":"微生物发酵过程智能放大","titleEn":"Intelligent scale-up of microbial fermentation","logo":"images/plant_image5.jpg","lead":"郑仕伟","pillarId":"pillar-process","memberIds":["member-zheng","member-chenyueq"],"contentZh":"开发基于在线监测（尾气、OD、pH）的 AI 反馈控制系统，实现摇瓶→中试的稳定放大。","contentEn":"Develop AI feedback control systems based on online monitoring (off-gas, OD, pH) for stable scale-up from shake-flask to pilot.","goalsZh":"在 200L 规模实现 ≥85% 摇瓶效价复现，能耗下降 ≥20%。","goalsEn":"Achieve ≥85% shake-flask titer reproducibility at 200L with ≥20% energy reduction.","progressZh":"中试阶段，已完成 3 批次 50L 验证。","progressEn":"Pilot stage; 3 batches of 50L validation completed.","images":["images/plant_image5.jpg"],"pubIds":[]}]},"facilities":[{"id":"fac-fermentation","icon":"fa-flask","zh":"发酵平台","en":"Fermentation Platform","descZh":"从摇瓶到 200L 发酵罐，全规模微生物培养。","descEn":"From shake-flask to 200L bioreactors, full-scale microbial cultivation.","image":"images/plant_image5.jpg","introZh":"配备 5L、20L、50L、200L 多规格全自动发酵罐，配套在线尾气分析、pH/DO/温度全自动控制。已为多家生物制造企业提供中试服务。","introEn":"Equipped with 5L, 20L, 50L, 200L fully automated bioreactors, online off-gas analysis, and full pH/DO/temperature control.","pillarId":"pillar-process","memberIds":["member-zheng","member-chenyueq"]},{"id":"fac-omics","icon":"fa-microscope","zh":"组学测序平台","en":"Omics & Sequencing Platform","descZh":"Illumina + Nanopore 长读长 + 单细胞测序。","descEn":"Illumina + Nanopore long-read + single-cell sequencing.","image":"images/plant_image2.jpg","introZh":"配备 Illumina NovaSeq、Nanopore PromethION、10x Genomics 单细胞系统，年测序通量 ≥10Tb。已搭建自动化样本制备和高性能计算分析流程。","introEn":"Equipped with Illumina NovaSeq, Nanopore PromethION, 10x Genomics single-cell systems, annual throughput ≥10Tb.","pillarId":"pillar-microbiome","memberIds":["member-liang","member-yan"]},{"id":"fac-protein","icon":"fa-vial","zh":"蛋白质工程平台","en":"Protein Engineering Platform","descZh":"蛋白质表达、纯化、活性表征全套设施。","descEn":"Full protein expression, purification, and characterization facilities.","image":"images/plant_image3.jpg","introZh":"配备 ÄKTA 纯化系统、高通量蛋白结晶机器人、CD 光谱仪、Stop-flow 反应仪，支持从克隆到结构生物学的一体化工作流。","introEn":"Equipped with ÄKTA purification, high-throughput crystallization robot, CD spectrometer, and stop-flow reactor.","pillarId":"pillar-enzyme","memberIds":["member-guan","member-liuyang"]},{"id":"fac-compute","icon":"fa-server","zh":"高性能计算","en":"HPC Cluster","descZh":"8 卡 A100 GPU 集群 + 100TB 存储。","descEn":"8x A100 GPU cluster + 100TB storage.","image":"images/plant_image6.jpg","introZh":"本地 8 卡 A100 GPU 集群 + 100TB 存储 + 自建湿实验数据库，支持蛋白质结构预测、组学分析、深度学习酶设计等场景。","introEn":"Local 8x A100 GPU cluster + 100TB storage + proprietary wet-lab database, supporting protein structure prediction, omics analysis, and deep-learning enzyme design.","pillarId":"pillar-enzyme","memberIds":["member-guan","member-ren"]}],"members":[{"id":"member-liang","group":"pi","nameZh":"梁元可","nameEn":"Yuanke Liang","roleZh":"实验室负责人","roleEn":"Principal Investigator","photo":"images/yuanke_original.jpg","bioZh":"微生物组学与合成生物学专家，长期致力于肠道菌群机制与工业酶工程。","bioEn":"Microbiome & synthetic biology expert.","introZh":"本科毕业于清华大学，博士毕业于 MIT 合成生物学中心，曾任某国际合成生物学公司首席科学家。发表 SCI 论文 60 余篇，H-index 35。","introEn":"B.S. Tsinghua, Ph.D. MIT Center for Synthetic Biology. 60+ SCI publications, H-index 35.","introImage":"images/yuanke_original.jpg","pillarIds":["pillar-microbiome"],"projectIds":["proj-gut"],"facilityIds":["fac-omics"],"pubIds":["pub-2025-microbiome"]},{"id":"member-guan","group":"faculty","nameZh":"官颖","nameEn":"Ying Guan","roleZh":"副研究员","roleEn":"Associate Professor","photo":"","bioZh":"蛋白质设计与机器学习交叉方向，主持国家自然科学基金面上项目 2 项。","bioEn":"Protein design × machine learning.","introImage":"","pillarIds":["pillar-enzyme"],"projectIds":["proj-enzyme-ai"],"facilityIds":["fac-protein","fac-compute"],"pubIds":[]},{"id":"member-zheng","group":"faculty","nameZh":"郑仕伟","nameEn":"Shiwei Zheng","roleZh":"副研究员","roleEn":"Associate Professor","photo":"","bioZh":"发酵过程工程专家，曾任多家生物制药企业技术顾问。","bioEn":"Fermentation process expert.","introImage":"","pillarIds":["pillar-process"],"projectIds":["proj-bioprocess"],"facilityIds":["fac-fermentation"],"pubIds":[]},{"id":"member-huang","group":"manager","nameZh":"黄佳芳","nameEn":"Jiafang Huang","roleZh":"实验室管理员","roleEn":"Lab Manager","photo":"","bioZh":"负责实验室日常运维、设备管理与安全培训。","bioEn":"Daily operations, equipment management, and safety training."},{"id":"member-yan","group":"phd","nameZh":"阎凝翔","nameEn":"Ningxiang Yan","roleZh":"博士研究生 (2023级)","roleEn":"PhD Student (2023)","photo":"","bioZh":"研究方向：肠道菌群与代谢疾病。","bioEn":"Research: gut microbiome & metabolic diseases.","pillarIds":["pillar-microbiome"],"projectIds":["proj-gut"],"facilityIds":["fac-omics"],"pubIds":[]},{"id":"member-ren","group":"phd","nameZh":"任雪杨","nameEn":"Xueyang Ren","roleZh":"博士研究生 (2024级)","roleEn":"PhD Student (2024)","photo":"","bioZh":"研究方向：蛋白质语言模型与酶设计。","bioEn":"Research: protein language models & enzyme design.","pillarIds":["pillar-enzyme"],"facilityIds":["fac-compute"],"pubIds":[]},{"id":"member-liuyang","group":"master","nameZh":"刘紫旭","nameEn":"Zixu Liu","roleZh":"硕士研究生 (2024级)","roleEn":"Master Student (2024)","photo":"","bioZh":"研究方向：酶定向进化。","bioEn":"Research: enzyme directed evolution.","pillarIds":["pillar-enzyme"],"projectIds":["proj-enzyme-ai"],"facilityIds":["fac-protein"],"pubIds":[]},{"id":"member-li","group":"master","nameZh":"李杨飞","nameEn":"Yangfei Li","roleZh":"硕士研究生 (2024级)","roleEn":"Master Student (2024)","photo":"","bioZh":"研究方向：微生物发酵过程优化。","bioEn":"Research: microbial fermentation optimization.","pillarIds":["pillar-process"],"facilityIds":["fac-fermentation"],"pubIds":[]},{"id":"member-wang","group":"master","nameZh":"王舒","nameEn":"Shu Wang","roleZh":"硕士研究生 (2025级)","roleEn":"Master Student (2025)","photo":"","bioZh":"研究方向：组学数据分析与因果推断。","bioEn":"Research: omics data analysis & causal inference.","pillarIds":["pillar-microbiome"],"facilityIds":["fac-omics"],"pubIds":[]},{"id":"member-chenyueq","group":"master","nameZh":"陈跃铃","nameEn":"Yueqin Chen","roleZh":"硕士研究生 (2025级)","roleEn":"Master Student (2025)","photo":"","bioZh":"研究方向：发酵在线监测与智能控制。","bioEn":"Research: online fermentation monitoring & intelligent control.","pillarIds":["pillar-process"],"projectIds":["proj-bioprocess"],"facilityIds":["fac-fermentation"],"pubIds":[]}],"publications":[{"id":"pub-2025-microbiome","year":"2025","authors":"Liang Y, Yan N, et al.","titleZh":"肠道菌群-宿主代谢轴在炎症性肠病中的因果机制研究","titleEn":"Causal mechanisms of gut microbiome-host metabolism axis in IBD","journal":"Nature Microbiology","doi":"#","image":"images/plant_image2.jpg","abstractZh":"本文结合宏基因组、代谢组与孟德尔随机化，系统揭示了 IBD 患者肠道关键菌-代谢物-免疫轴的因果链路，发现 3 个潜在干预靶点。","abstractEn":"Integrating metagenomics, metabolomics, and Mendelian randomization, this study systematically reveals the causal chain of keystone microbe-metabolite-immune axes in IBD patients and identifies 3 potential intervention targets.","projectIds":["proj-gut"],"memberIds":["member-liang","member-yan"]}],"news":[{"id":"news-grant","date":"2026.07","day":"15","month":"07","titleZh":"团队获国家自然科学基金重点项目资助","titleEn":"Lab awarded NSFC key grant","bodyZh":"由梁元可牵头的“肠道菌群-代谢物-宿主免疫”项目获 NSFC 重点项目资助（直接经费 300 万元）。","bodyEn":"Project led by Yuanke Liang awarded NSFC Key Grant (3M RMB direct funding).","image":"images/travel_1.jpg"},{"id":"news-paper","date":"2026.05","day":"08","month":"05","titleZh":"实验室在 Nature Microbiology 发表论文","titleEn":"Lab publishes in Nature Microbiology","bodyZh":"团队关于 IBD 菌群-代谢物轴的最新研究在 Nature Microbiology 在线发表。","bodyEn":"Lab's latest study on IBD microbiome-metabolite axis published online in Nature Microbiology.","image":"images/plant_image2.jpg"},{"id":"news-join","date":"2026.09","day":"01","month":"09","titleZh":"2026 秋季招新启动","titleEn":"2026 Fall recruitment opens","bodyZh":"实验室 2026 年秋季招新启动，欢迎对微生物组、酶工程、生物制造感兴趣的同学申请。","bodyEn":"2026 Fall recruitment opens — students interested in microbiome, enzyme engineering, or bio-manufacturing are welcome.","image":"images/travel_3.jpg"}],"join":{"introZh":"我们寻找对微生物科学充满好奇、对工程落地充满热情的同学。","introEn":"We look for students who are curious about microbial science and passionate about engineering applications.","images":["images/travel_3.jpg","images/travel_4.jpg"],"cards":[{"icon":"fa-graduation-cap","zh":"本科生科研训练","en":"Undergraduate Research","descZh":"面向大二大三学生，提供 6 个月以上实验室轮转。","descEn":"Open to 2nd/3rd-year undergraduates; 6+ month rotation."},{"icon":"fa-flask","zh":"硕博研究生","en":"Master/PhD Students","descZh":"提供 4-5 年系统性培养，覆盖实验技能、独立课题、职业发展。","descEn":"4-5 year systematic training covering experimental skills, independent projects, career development."},{"icon":"fa-user-tie","zh":"工程师与博后","en":"Engineers & Postdocs","descZh":"欢迎具备工业经验或工程能力的工程师、博后来推进转化项目。","descEn":"Engineers and postdocs with industrial experience welcome for translational projects."}],"openings":[{"zh":"合成生物学 / 代谢工程方向博士生 1 名","en":"1 PhD: Synthetic Biology / Metabolic Engineering"},{"zh":"蛋白质设计与机器学习方向博士生 1 名","en":"1 PhD: Protein Design & ML"},{"zh":"微生物组数据分析方向硕士生 1 名","en":"1 Master: Microbiome data analysis"}]},"labLife":["images/travel_3.jpg","images/travel_4.jpg","images/travel_5.jpg","images/travel_6.jpg","images/plant_image2.jpg","images/plant_image3.jpg"],"contact":{"email":"i-microlab@your-university.edu.cn","addressZh":"四川省成都市 XX 大学 XX 学院 i-Microbiome Lab","addressEn":"i-Microbiome Lab, School of XX, XX University, Chengdu, China","socials":[]}};</script>
+</head>
+<body class="lang-zh">
+<a href="#top" class="skip-link">Skip to main content</a>
+
+<nav id="main-nav"><div class="nav-container">
+  <h1 id="nav-title">i-Microbiome Lab</h1>
+  <div class="nav-right">
+    <button id="lang-toggle" class="lang-toggle-btn" type="button">EN</button>
+    <div class="menu-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#top" class="active"><span class="zh">首页</span><span class="en">Home</span></a></li>
+    <li><a href="#research"><span class="zh">研究方向</span><span class="en">Research</span></a></li>
+    <li><a href="#facilities"><span class="zh">实验室设施</span><span class="en">Facilities</span></a></li>
+    <li><a href="#members"><span class="zh">团队成员</span><span class="en">Members</span></a></li>
+    <li><a href="#publications"><span class="zh">论文成果</span><span class="en">Publications</span></a></li>
+    <li><a href="#news"><span class="zh">团队动态</span><span class="en">News</span></a></li>
+    <li><a href="#lab-life"><span class="zh">实验室生活</span><span class="en">Lab Life</span></a></li>
+    <li><a href="#join"><span class="zh">招新</span><span class="en">Join Us</span></a></li>
+  </ul>
+</div></nav>
+
+<main id="top">
+  <section class="hero" id="hero"><div class="hero-content">
+    <h1 class="hero-title" id="hero-title"></h1>
+    <p class="hero-subtitle" id="hero-subtitle"></p>
+  </div></section>
+
+  <!-- 首页介绍 -->
+  <section id="home" class="reveal"></section>
+
+  <!-- 研究亮点 -->
+  <section id="highlights" class="reveal"></section>
+
+  <!-- 研究方向 + 在研课题 -->
+  <section id="research" class="reveal"></section>
+
+  <!-- 实验室设施 -->
+  <section id="facilities" class="reveal"></section>
+
+  <!-- 团队成员 -->
+  <section id="members" class="reveal"><h2><span class="zh">团队成员</span><span class="en">Our Team</span></h2>
+    <div id="members-root"></div>
+  </section>
+
+  <!-- 论文成果 -->
+  <section id="publications" class="reveal"></section>
+
+  <!-- 团队动态 -->
+  <section id="news" class="reveal"></section>
+
+  <!-- 实验室生活 -->
+  <section id="lab-life" class="reveal"></section>
+
+  <!-- 招新 -->
+  <section id="join" class="reveal"></section>
+
+  <!-- 联系方式 -->
+  <section id="contact" class="reveal"></section>
+</main>
+
+<footer role="contentinfo"><div>
+  <p>&copy; <span id="current-year">2026</span> <span id="footer-lab-name">i-Microbiome Lab</span>. <span class="zh">保留所有权利。</span><span class="en">All rights reserved.</span></p>
+  <p><span class="zh">智能微生物组与生物制造。</span><span class="en">Intelligent Microbiome &amp; Bio-Manufacturing.</span></p>
+</div></footer>
+
+<!-- 详情弹窗 -->
+<div id="detail-modal" class="modal" role="dialog" aria-modal="true" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-dialog">
+    <button type="button" class="modal-close" data-close aria-label="关闭"><i class="fas fa-times"></i></button>
+    <div class="modal-content" id="detail-content"></div>
+  </div>
+</div>
+
+<div id="load-error" style="display:none;text-align:center;padding:60px;color:#c0392b;">
+  <p>内容加载失败，请确认 content.json 存在且为合法 JSON。</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+var DATA=null,modal,modalContent,toast;
+
+function z(o){return o!=null?o:"";}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function zh(s){return '<span class="zh">'+esc(s)+'</span>';}
+function en(s){return '<span class="en">'+esc(s)+'</span>';}
+function both(zhTxt,enTxt){return zh(zhTxt)+en(enTxt);}
+function img(src,cls){
+  if(!src)return'';
+  var c=cls?' class="'+esc(cls)+'"':'';
+  return'<img src="'+esc(src)+'"'+c+' alt="" loading="lazy">';
+}
+function avatar(name){
+  var h=0;
+  for(var i=0;i<(name||"??").length;i++)h=(h*31+(name||"?").charCodeAt(i))%360;
+  return'<div class="modal-m-avatar" style="background-color:hsl('+h+',52%,50%)">'+esc((name||"?").charAt(0))+'</div>';
+}
+function find(arr,id){
+  if(!arr||!id)return null;
+  for(var i=0;i<arr.length;i++)if(arr[i]&&arr[i].id===id)return arr[i];
+  return null;
+}
+function lookup(id){
+  if(!id)return null;
+  if(id.indexOf("member-")===0)return find(DATA.members,id);
+  if(id.indexOf("proj-")===0)return find(DATA.research.projects,id);
+  if(id.indexOf("pub-")===0)return find(DATA.publications,id);
+  if(id.indexOf("news-")===0)return find(DATA.news,id);
+  if(id.indexOf("fac-")===0)return find(DATA.facilities,id);
+  if(id.indexOf("pillar-")===0)return find(DATA.research.pillars,id);
+  return null;
+}
+function typeOf(id){
+  if(!id)return null;
+  var p=id.indexOf("-");
+  return p<0?id:id.slice(0,p);
+}
+function chip(id,label){
+  var o=lookup(id);
+  if(!o)return"";
+  var lbl=label||o.nameZh||o.titleZh||o.zh||id;
+  var ph=o.photo||o.logo||"";
+  var inner=ph?'<img src="'+esc(ph)+'" alt=""> ':'<i class="fas fa-link" style="font-size:11px"></i> ';
+  return'<span class="related-chip" data-jump="'+esc(id)+'">'+inner+esc(lbl)+'</span>';
+}
+function rel(label,ids){
+  if(!ids||!ids.length)return"";
+  var items=ids.map(function(id){return chip(id);}).join("");
+  if(!items)return"";
+  return'<div class="related-section"><h3>'+esc(label)+'</h3><div class="related-grid">'+items+'</div></div>';
+}
+function relAuto(ids){
+  if(!ids||!ids.length)return"";
+  return rel(both("相关","Related"),ids);
+}
+
+// ============ openDetail ============
+function openDetail(type,id){
+  var d=DATA,html="";
+  if(type==="pillar"){
+    var p=find(d.research.pillars,id);if(!p)return showToast("未找到："+id);
+    html+=img(p.image,"modal-banner");
+    html+='<h2>'+both(p.zh,p.en)+'</h2><p class="modal-role"><i class="fas fa-dna"></i> '+both("研究方向","Research Pillar")+'</p>';
+    html+='<div class="modal-block"><h3>'+both("方向介绍","Overview")+'</h3><p>'+both(p.introZh,p.introEn)+'</p></div>';
+    if(p.descZh)html+='<div class="modal-block"><h3>'+both("简述","Summary")+'</h3><p>'+both(p.descZh,p.descEn)+'</p></div>';
+    var projIds=p.projectIds||d.research.projects.filter(function(x){return x.pillarId===p.id;}).map(function(x){return x.id;});
+    var facIds=p.facilityIds||d.facilities.filter(function(x){return x.pillarId===p.id;}).map(function(x){return x.id;});
+    html+=rel(both("在研课题","Projects"),projIds);
+    html+=rel(both("相关设施","Facilities"),facIds);
+    html+=rel(both("相关论文","Publications"),p.pubIds||[]);
+  }
+  else if(type==="project"){
+    var pr=find(d.research.projects,id);if(!pr)return showToast("未找到："+id);
+    html+=img(pr.logo,"modal-logo");
+    html+='<h2>'+both(pr.titleZh,pr.titleEn)+'</h2>';
+    html+='<p class="modal-role">'+both("负责人：","Lead: ")+esc(pr.lead||"—")+'</p>';
+    html+='<div class="modal-block"><h3>'+both("研究内容","Content")+'</h3><p>'+both(pr.contentZh,pr.contentEn)+'</p></div>';
+    html+='<div class="modal-block"><h3>'+both("研究目标","Goals")+'</h3><p>'+both(pr.goalsZh,pr.goalsEn)+'</p></div>';
+    html+='<div class="modal-block"><h3>'+both("研究进展","Progress")+'</h3><p>'+both(pr.progressZh,pr.progressEn)+'</p></div>';
+    if(pr.images&&pr.images.length){
+      html+='<div class="modal-block"><h3>'+both("配图","Gallery")+'</h3><div class="modal-gallery">'+pr.images.map(function(s){return img(s,"");}).join("")+'</div></div>';
+    }
+    html+=rel(both("所属研究方向","Research Pillar"),pr.pillarId?[pr.pillarId]:[]);
+    html+=rel(both("参与成员","Team Members"),pr.memberIds||[]);
+    html+=rel(both("相关论文","Publications"),pr.pubIds||[]);
+  }
+  else if(type==="facility"){
+    var f=find(d.facilities,id);if(!f)return showToast("未找到："+id);
+    html+=img(f.image,"modal-banner");
+    html+='<h2>'+both(f.zh,f.en)+'</h2>';
+    html+='<div class="modal-block"><h3>'+both("详细介绍","Details")+'</h3><p>'+both(f.introZh,f.introEn)+'</p></div>';
+    html+=rel(both("所属研究方向","Research Pillar"),f.pillarId?[f.pillarId]:[]);
+    html+=rel(both("常用成员","Team Members"),f.memberIds||[]);
+  }
+  else if(type==="member"){
+    var m=find(d.members,id);if(!m)return showToast("未找到："+id);
+    var ph=m.photo?img(m.photo,"modal-photo"):avatar(m.nameZh||m.nameEn||"?");
+    html+=ph+'<h2 style="text-align:center;">'+esc(m.nameZh)+' '+en(m.nameEn)+'</h2>';
+    html+='<p class="modal-role" style="text-align:center;">'+both(m.roleZh,m.roleEn)+'</p>';
+    html+='<div class="modal-block"><h3>'+both("简介","Bio")+'</h3><p>'+both(m.bioZh,m.bioEn)+'</p></div>';
+    if(m.introZh||m.introEn){
+      html+='<div class="modal-block"><h3>'+both("自我介绍","About")+'</h3>';
+      if(m.introImage)html+=img(m.introImage,"modal-banner");
+      html+='<p>'+both(m.introZh,m.introEn)+'</p></div>';
+    }
+    html+=rel(both("研究方向","Research Areas"),m.pillarIds||[]);
+    html+=rel(both("参与课题","Projects"),m.projectIds||[]);
+    html+=rel(both("使用设施","Facilities"),m.facilityIds||[]);
+    html+=rel(both("发表论文","Publications"),m.pubIds||[]);
+  }
+  else if(type==="pub"){
+    var p=find(d.publications,id);if(!p)return showToast("未找到："+id);
+    html+=img(p.image,"modal-banner");
+    html+='<h2>'+both(p.titleZh,p.titleEn)+'</h2>';
+    html+='<p class="modal-role">'+esc(p.authors||"")+' · '+esc(p.journal||"")+' · '+esc(p.year||"")+'</p>';
+    html+='<div class="modal-block"><h3>'+both("摘要","Abstract")+'</h3><p>'+both(p.abstractZh,p.abstractEn)+'</p></div>';
+    if(p.doi&&p.doi!=="#")html+='<div class="modal-block"><a href="'+esc(p.doi)+'" target="_blank" class="btn">'+both("查看原文","View paper")+' <i class="fas fa-external-link-alt"></i></a></div>';
+    html+=rel(both("相关课题","Projects"),p.projectIds||[]);
+    html+=rel(both("参与成员","Team Members"),p.memberIds||[]);
+  }
+  else if(type==="news"){
+    var n=find(d.news,id);if(!n)return showToast("未找到："+id);
+    html+=img(n.image,"modal-banner");
+    html+='<h2>'+both(n.titleZh,n.titleEn)+'</h2>';
+    html+='<p class="modal-role"><i class="fas fa-calendar"></i> '+esc(n.date||"")+'</p>';
+    html+='<div class="modal-block"><p>'+both(n.bodyZh,n.bodyEn)+'</p></div>';
+  }
+  openModal(html);
+}
+
+// ============ renderAll ============
+function renderAll(d){
+  // lab name 同步到 nav + footer
+  document.getElementById("nav-title").textContent=z(d.lab.name);
+  document.getElementById("footer-lab-name").textContent=z(d.lab.name);
+  document.title=d.lab.name+" · "+(window.__lang==="en"?z(d.lab.taglineEn):z(d.lab.taglineZh));
+
+  // hero
+  var hero=document.getElementById("hero");
+  if(d.hero.image)hero.style.backgroundImage="url('"+esc(d.hero.image)+"')";
+  document.getElementById("hero-title").textContent=z(d.lab.name);
+  document.getElementById("hero-subtitle").innerHTML=both(d.lab.taglineZh,d.lab.taglineEn);
+
+  // home
+  document.getElementById("home").innerHTML=
+    '<p class="section-eyebrow">'+both("关于我们","About Us")+'</p>'+
+    '<div class="intro-container">'+
+      '<div class="intro-text">'+
+        '<h2>'+both(d.home.titleZh,d.home.titleEn)+'</h2>'+
+        '<p class="large-text">'+both(d.home.introZh,d.home.introEn)+'</p>'+
+        '<p>'+both(d.home.intro2Zh,d.home.intro2En)+'</p>'+
+      '</div>'+
+      '<div class="intro-image">'+
+        '<figure>'+img(d.home.photo,"")+'<figcaption>'+both(d.home.photoCapZh,d.home.photoCapEn)+'</figcaption></figure>'+
+      '</div>'+
+    '</div>'+
+    '<div class="text-center mt-40"><a href="#research" class="btn">'+both("了解我们的研究","Explore Our Research")+'</a></div>';
+
+  // highlights（三大方向卡片，每张有配图）
+  document.getElementById("highlights").innerHTML=
+    '<p class="section-eyebrow">'+both("三大方向","Three Pillars")+'</p><h2>'+both("研究亮点","Research Highlights")+'</h2>'+
+    '<div class="highlights-container">'+d.highlights.map(function(h){
+      return'<div class="highlight-card">'+
+        img(h.image,"hl-img")+
+        '<div class="hl-icon"><i class="fas '+esc(z(h.icon))+'"></i></div>'+
+        '<h3 style="margin:0 0 8px;">'+both(h.zh,h.en)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(h.descZh,h.descEn)+'</p>'+
+      '</div>';}).join("")+'</div>';
+
+  // research: pillars + projects
+  var pillarsHtml=d.research.pillars.map(function(p){
+    return'<article class="pillar-card clickable" data-open="pillar" data-id="'+esc(p.id)+'">'+
+      img(p.image,"pillar-img")+
+      '<div class="pillar-body"><div class="pillar-icon"><i class="fas '+esc(z(p.icon))+'"></i></div>'+
+      '<h3 style="margin:0 0 8px;">'+both(p.zh,p.en)+'</h3>'+
+      '<p style="color:var(--light-text-color);margin:0;">'+both(p.descZh,p.descEn)+'</p>'+
+      '<span class="more">'+both("查看详情","View detail")+' →</span></div></article>';}).join("");
+  var projectsHtml=d.research.projects.map(function(pr){
+    var gal=pr.images&&pr.images.length?('<div class="proj-gallery">'+pr.images.map(function(s){return img(s,"");}).join("")+'</div>'):"";
+    return'<article class="research-card clickable" data-open="project" data-id="'+esc(pr.id)+'">'+
+      '<div class="proj-header">'+img(pr.logo,"proj-logo")+'<h3 style="margin:0;">'+both(pr.titleZh,pr.titleEn)+'</h3></div>'+
+      '<p style="color:var(--light-text-color);margin:0 0 4px;font-size:13px;">'+esc(z(pr.lead))+'</p>'+
+      '<p style="margin:0 0 6px;">'+both(pr.contentZh,pr.contentEn)+'</p>'+
+      gal+'<span class="more">'+both("课题详情","Project detail")+' →</span></article>';}).join("");
+  document.getElementById("research").innerHTML=
+    '<p class="section-eyebrow">'+both("三大方向","Three Pillars")+'</p><h2>'+both("我们的研究主题","Our Research Themes")+'</h2>'+
+    '<div class="pillars">'+pillarsHtml+'</div>'+
+    '<h2 style="margin-top:70px;">'+both("在研课题","Ongoing Projects")+'</h2>'+
+    '<div class="research-grid">'+projectsHtml+'</div>';
+
+  // facilities
+  document.getElementById("facilities").innerHTML=
+    '<p class="section-eyebrow">'+both("硬件支撑","Infrastructure")+'</p><h2>'+both("实验室设施","Lab Facilities")+'</h2>'+
+    '<div class="facilities-grid">'+d.facilities.map(function(f){
+      return'<article class="facility-card clickable" data-open="facility" data-id="'+esc(f.id)+'">'+
+        img(f.image,"facility-banner")+
+        '<div class="facility-body"><div class="facility-icon"><i class="fas '+esc(z(f.icon))+'"></i></div>'+
+        '<h3 style="margin:0 0 8px;">'+both(f.zh,f.en)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(f.descZh,f.descEn)+'</p>'+
+        '<span class="more">'+both("查看详情","View detail")+' →</span></div></article>';}).join("")+'</div>';
+
+  // members
+  var root=document.getElementById("members-root");
+  var h="",pi=find(d.members,"member-liang");
+  if(pi){
+    h+='<p class="section-eyebrow" style="margin-top:60px;">'+both("实验室负责人","Principal Investigator")+'</p>'+
+      '<article class="pi-card clickable" data-open="member" data-id="'+esc(pi.id)+'">'+
+      img(pi.photo,"pi-photo")+
+      '<div><h2>'+esc(pi.nameZh)+' '+en(pi.nameEn)+'</h2><h3>'+both(pi.roleZh,pi.roleEn)+'</h3>'+
+      '<p>'+both(pi.bioZh,pi.bioEn)+'</p></div></article>';
+  }
+  var groups=[{k:"faculty",tz:"团队老师",te:"Faculty"},{k:"manager",tz:"实验室管理",te:"Lab Manager"},{k:"phd",tz:"博士研究生",te:"PhD Students"},{k:"master",tz:"硕士研究生",te:"Master Students"}];
+  groups.forEach(function(g){
+    var list=d.members.filter(function(m){return m.group===g.k;});
+    if(!list.length)return;
+    h+='<p class="section-eyebrow" style="margin-top:60px;">'+both(g.tz,g.te)+'</p><div class="members-grid">'+list.map(function(m){
+      var pho=m.photo?img(m.photo,"member-photo"):'<div class="m-avatar" style="background-color:hsl('+((m.nameZh.charCodeAt(0)*37)%360)+',52%,50%)">'+esc((m.nameZh||"?").charAt(0))+'</div>';
+      return'<article class="member-card clickable" data-open="member" data-id="'+esc(m.id)+'">'+
+        pho+'<h3 style="margin:0 0 4px;">'+esc(m.nameZh)+' '+en(m.nameEn)+'</h3>'+
+        '<div class="member-role">'+both(m.roleZh,m.roleEn)+'</div>'+
+        '<p class="member-bio">'+both(m.bioZh,m.bioEn)+'</p></article>';}).join("")+'</div>';
+  });
+  root.innerHTML=h;
+
+  // publications
+  document.getElementById("publications").innerHTML='<h2>'+both("论文成果","Publications")+'</h2>'+
+    '<div class="publications-grid"><ul class="publication-list">'+
+    d.publications.map(function(p){
+      return'<li class="publication-item clickable" data-open="pub" data-id="'+esc(p.id)+'">'+
+        '<div class="pub-thumb">'+img(p.image,"")+'</div>'+
+        '<div style="flex:1;"><p style="margin:0 0 4px;"><strong>'+esc(z(p.authors))+'</strong></p>'+
+        '<p style="margin:0 0 4px;">'+both(p.titleZh,p.titleEn)+'</p>'+
+        '<p style="margin:0;color:var(--light-text-color);font-size:12px;"><em>'+esc(z(p.journal))+'</em> · '+esc(z(p.year))+
+        (p.doi&&p.doi!=="#"?' · <a href="'+esc(p.doi)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">DOI</a>':"")+
+        '</p></div></li>';}).join("")+'</ul></div>';
+
+  // news
+  document.getElementById("news").innerHTML='<h2>'+both("团队动态","Lab News")+'</h2>'+
+    '<div class="news-grid">'+d.news.map(function(n){
+      return'<article class="news-card clickable" data-open="news" data-id="'+esc(n.id)+'">'+
+        img(n.image,"news-thumb")+
+        '<div class="news-body"><div class="news-date"><span class="day">'+esc(z(n.day))+'</span><span>'+esc(z(n.month))+'</span></div>'+
+        '<h3 style="margin:0 0 8px;">'+both(n.titleZh,n.titleEn)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(n.bodyZh,n.bodyEn)+'</p></div></article>';}).join("")+'</div>';
+
+  // lab life
+  document.getElementById("lab-life").innerHTML=
+    '<h2>'+both("实验室生活","Lab Life")+'</h2>'+
+    '<p class="lab-life-intro">'+both("用照片记录实验室的成长与欢笑。","We capture the lab\'s growth and laughs in photos.")+'</p>'+
+    '<div class="travel-gallery">'+d.labLife.map(function(s){return'<div class="gallery-item">'+img(s,"")+'</div>';}).join("")+'</div>';
+
+  // join
+  var jg=d.join.images&&d.join.images.length?('<div class="join-gallery">'+d.join.images.map(function(s){return img(s,"");}).join("")+'</div>'):"";
+  document.getElementById("join").innerHTML=
+    '<p class="section-eyebrow">'+both("加入我们","Join Us")+'</p><h2>'+both("招新","Join Us")+'</h2>'+
+    jg+
+    '<div class="join-intro"><p class="large-text">'+both(d.join.introZh,d.join.introEn)+'</p></div>'+
+    '<div class="join-cards">'+d.join.cards.map(function(c){
+      return'<div class="join-card"><div class="hl-icon"><i class="fas '+esc(z(c.icon))+'"></i></div>'+
+        '<h3 style="margin:0 0 10px;">'+both(c.zh,c.en)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(c.descZh,c.descEn)+'</p></div>';}).join("")+'</div>'+
+    '<div class="join-openings"><h3>'+both("当前开放方向","Open Directions")+'</h3><ul>'+
+    d.join.openings.map(function(o){return'<li>'+both(o.zh,o.en)+'</li>';}).join("")+'</ul></div>'+
+    '<div class="join-cta"><a href="#contact" class="btn">'+both("联系我们申请","Get in Touch")+'</a></div>';
+
+  // contact
+  var socials=d.contact.socials&&d.contact.socials.length?
+    '<div class="social-container"><h3 style="margin:0 0 10px;">'+both("关注我们","Connect")+'</h3><ul class="social-links">'+
+    d.contact.socials.map(function(s){return'<li><a href="'+esc(z(s.url||"#"))+'" aria-label="'+esc(z(s.type))+'"><i class="fas fa-link"></i></a></li>';}).join("")+'</ul></div>':"";
+  document.getElementById("contact").innerHTML=
+    '<h2>'+both("联系我们","Contact Us")+'</h2>'+
+    '<div class="contact-container">'+
+      '<div>'+
+        '<div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:'+esc(z(d.contact.email))+'">'+esc(z(d.contact.email))+'</a></div>'+
+        '<div class="contact-item"><i class="fas fa-map-marker-alt"></i><span>'+both(d.contact.addressZh,d.contact.addressEn)+'</span></div>'+
+      '</div>'+socials+
+    '</div>';
+
+  bindAll();
+  applyLang(window.__lang||"zh");
+}
+
+// ============ bind ============
+function bindAll(){
+  document.querySelectorAll("[data-open]").forEach(function(el){
+    el.onclick=function(e){if(e.target.tagName==="A")return;openDetail(el.getAttribute("data-open"),el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openDetail(el.getAttribute("data-open"),el.getAttribute("data-id"));}};
+    el.setAttribute("tabindex","0");
+  });
+  modalContent.addEventListener("click",function(e){
+    var t=e.target.closest("[data-jump]");
+    if(t){e.stopPropagation();openDetail(typeOf(t.getAttribute("data-jump")),t.getAttribute("data-jump"));}
+  });
+  modal.addEventListener("click",function(e){if(e.target.hasAttribute("data-close")||e.target===modal)closeModal();});
+}
+
+// ============ modal ============
+function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();}
+function closeModal(){modal.setAttribute("hidden","");document.body.classList.remove("modal-open");}
+
+// ============ toast ============
+function showToast(m){
+  if(!toast){toast=document.createElement("div");toast.className="toast";document.body.appendChild(toast);}
+  toast.textContent=m;toast.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(function(){toast.classList.remove("show");},2000);
+}
+
+// ============ i18n ============
+var LK="iMicrobiomeLang";
+window.__lang=function(){try{return localStorage.getItem(LK);}catch(e){return null;}}()||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en");
+function applyLang(l){
+  document.body.classList.remove("lang-zh","lang-en");
+  document.body.classList.add("lang-"+l);
+  window.__lang=l;
+  var btn=document.getElementById("lang-toggle");
+  if(btn)btn.textContent=(l==="zh")?"EN":"中文";
+  try{localStorage.setItem(LK,l);}catch(e){}
+  document.documentElement.lang=(l==="zh")?"zh-CN":"en";
+  if(DATA){
+    document.title=DATA.lab.name+" · "+(l==="en"?DATA.lab.taglineEn:DATA.lab.taglineZh);
+    document.getElementById("nav-title").textContent=DATA.lab.name;
+    document.getElementById("footer-lab-name").textContent=DATA.lab.name;
+  }
+}
+
+// ============ init ============
+document.addEventListener("DOMContentLoaded",function(){
+  modal=document.getElementById("detail-modal");
+  modalContent=document.getElementById("detail-content");
+  var t=document.getElementById("lang-toggle");
+  if(t)t.addEventListener("click",function(){applyLang(window.__lang==="zh"?"en":"zh");});
+
+  // mobile menu
+  var mt=document.querySelector(".menu-toggle"),nl=document.querySelector(".nav-links");
+  if(mt&&nl){mt.addEventListener("click",function(){
+    var o=nl.classList.contains("active");
+    nl.classList.toggle("active");mt.classList.toggle("active");
+    mt.setAttribute("aria-expanded",o?"false":"true");
+  });nl.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){nl.classList.remove("active");mt.classList.remove("active");});});}
+
+  var y=document.getElementById("current-year");if(y)y.textContent=new Date().getFullYear();
+
+  // smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener("click",function(e){
+      var id=this.getAttribute("href");if(id==="#")return;
+      var t=document.querySelector(id);if(!t)return;
+      e.preventDefault();
+      window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-70,behavior:"smooth"});
+    });
+  });
+
+  // scroll reveal
+  var secs=document.querySelectorAll("section.reveal");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("visible");io.unobserve(en.target);}});
+    },{threshold:.1,rootMargin:"-40px"});
+    secs.forEach(function(s){io.observe(s);});
+  } else secs.forEach(function(s){s.classList.add("visible");});
+
+  // nav hide on scroll down
+  var nav=document.querySelector("nav"),last=0,sched=false;
+  window.addEventListener("scroll",function(){
+    if(sched)return;sched=true;
+    requestAnimationFrame(function(){
+      var st=window.scrollY;
+      nav.classList.toggle("scrolled",st>10);
+      if(st>last&&st>80)nav.style.transform="translateY(-100%)";else nav.style.transform="translateY(0)";
+      last=st;sched=false;
+    });
+  });
+
+  // ESC close modal
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!modal.hasAttribute("hidden"))closeModal();});
+
+  // load data（优先内嵌数据，COS 静态托管零依赖；content.json 仅作兜底）
+  var __d=window.__DATA;
+  if(__d){DATA=__d;renderAll(__d);}
+  else{
+    fetch("content.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){DATA=d;renderAll(d);})
+      .catch(function(){var e=document.getElementById("load-error");if(e)e.style.display="block";});
+  }
+});
+})();
+</script>
+</body>
+</html>
