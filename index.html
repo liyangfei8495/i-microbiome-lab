@@ -1041,8 +1041,10 @@ function openBlockEditor(type,label){
         field("research.pillars."+i+".icon","图标",p.icon),
         field("research.pillars."+i+".zh","名称(中)",p.zh),
         field("research.pillars."+i+".en","名称(英)",p.en),
-        field("research.pillars."+i+".descZh","描述(中)",p.descZh,"textarea"),
-        field("research.pillars."+i+".descEn","描述(英)",p.descEn,"textarea"),
+        field("research.pillars."+i+".descZh","描述/简述(中)",p.descZh,"textarea"),
+        field("research.pillars."+i+".descEn","描述/简述(英)",p.descEn,"textarea"),
+        field("research.pillars."+i+".introZh","方向介绍(中)",p.introZh,"textarea"),
+        field("research.pillars."+i+".introEn","方向介绍(英)",p.introEn,"textarea"),
         imgField("research.pillars."+i+".image","配图",p.image,"images/research")
       ].join(""),"research.pillars",i);
     });
@@ -1052,9 +1054,16 @@ function openBlockEditor(type,label){
       h+=itemBox("课题 "+(i+1)+": "+(pr.titleZh||""),[
         field("research.projects."+i+".titleZh","标题(中)",pr.titleZh),
         field("research.projects."+i+".titleEn","标题(英)",pr.titleEn),
-        field("research.projects."+i+".contentZh","内容(中)",pr.contentZh,"textarea"),
-        field("research.projects."+i+".contentEn","内容(英)",pr.contentEn,"textarea"),
-        field("research.projects."+i+".lead","负责人",pr.lead,"text")
+        field("research.projects."+i+".lead","负责人",pr.lead,"text"),
+        field("research.projects."+i+".pillarId","所属研究方向ID",pr.pillarId,"text"),
+        field("research.projects."+i+".contentZh","研究内容(中)",pr.contentZh,"textarea"),
+        field("research.projects."+i+".contentEn","研究内容(英)",pr.contentEn,"textarea"),
+        field("research.projects."+i+".goalsZh","研究目标(中)",pr.goalsZh,"textarea"),
+        field("research.projects."+i+".goalsEn","研究目标(英)",pr.goalsEn,"textarea"),
+        field("research.projects."+i+".progressZh","研究进展(中)",pr.progressZh,"textarea"),
+        field("research.projects."+i+".progressEn","研究进展(英)",pr.progressEn,"textarea"),
+        field("research.projects."+i+".memberIds","参与成员ID(逗号分隔)",(pr.memberIds||[]).join(", "),"text"),
+        field("research.projects."+i+".pubIds","相关论文ID(逗号分隔)",(pr.pubIds||[]).join(", "),"text")
       ].join(""),"research.projects",i);
       h+=subBox("课题 Logo",imgField("research.projects."+i+".logo","课题 Logo",pr.logo,"images/projects"));
       h+=subBox("课题配图",imgListField("research.projects."+i+".images","课题配图",pr.images||[],"images/projects"));
@@ -1069,6 +1078,10 @@ function openBlockEditor(type,label){
         field("facilities."+i+".en","名称(英)",f.en),
         field("facilities."+i+".descZh","描述(中)",f.descZh,"textarea"),
         field("facilities."+i+".descEn","描述(英)",f.descEn,"textarea"),
+        field("facilities."+i+".introZh","详细介绍(中)",f.introZh,"textarea"),
+        field("facilities."+i+".introEn","详细介绍(英)",f.introEn,"textarea"),
+        field("facilities."+i+".pillarId","所属研究方向ID",f.pillarId,"text"),
+        field("facilities."+i+".memberIds","常用成员ID(逗号分隔)",(f.memberIds||[]).join(", "),"text"),
         imgField("facilities."+i+".image","配图",f.image,"images/facilities")
       ].join(""),"facilities",i);
     });
@@ -1136,6 +1149,10 @@ function openBlockEditor(type,label){
         field("publications."+i+".journal","期刊",pp.journal,"text"),
         field("publications."+i+".year","年份",pp.year,"text"),
         field("publications."+i+".doi","DOI链接",pp.doi,"text"),
+        field("publications."+i+".abstractZh","摘要(中)",pp.abstractZh,"textarea"),
+        field("publications."+i+".abstractEn","摘要(英)",pp.abstractEn,"textarea"),
+        field("publications."+i+".projectIds","相关课题ID(逗号分隔)",(pp.projectIds||[]).join(", "),"text"),
+        field("publications."+i+".memberIds","参与成员ID(逗号分隔)",(pp.memberIds||[]).join(", "),"text"),
         imgField("publications."+i+".image","配图",pp.image,"images/publications")
       ].join(""),"publications",i);
     });
@@ -1202,6 +1219,9 @@ function bindBlockEditorEvents(){
       }else if(/\.images$/.test(path)){
         var arr=val.split("\n").map(function(s){return s.trim();}).filter(function(s){return s;});
         setByPath(edData,path,arr);
+      }else if(/(memberIds|pubIds|projectIds|facilityIds)$/.test(path)){
+        var arr=val.split(/[,，]/).map(function(s){return s.trim();}).filter(function(s){return s;});
+        setByPath(edData,path,arr);
       }else{
         setByPath(edData,path,val);
       }
@@ -1221,11 +1241,11 @@ function bindBlockEditorEvents(){
       var arr=getByPath(edData,path);
       if(!Array.isArray(arr))return;
       var tpl={};
-      if(path==="research.projects")tpl={id:"proj-"+Date.now(),titleZh:"新课题",titleEn:"",contentZh:"",contentEn:"",lead:"",images:[]};
+      if(path==="research.projects")tpl={id:"proj-"+Date.now(),titleZh:"新课题",titleEn:"",contentZh:"",contentEn:"",goalsZh:"",goalsEn:"",progressZh:"",progressEn:"",lead:"",pillarId:"",memberIds:[],pubIds:[],images:[],logo:""};
       else if(path==="research.pillars")tpl={id:"pillar-"+Date.now(),icon:"fa-leaf",zh:"新方向",en:"",descZh:"",descEn:"",image:"",introZh:"",introEn:""};
-      else if(path==="facilities")tpl={id:"fac-"+Date.now(),icon:"fa-microscope",zh:"新设施",en:"",descZh:"",descEn:"",image:""};
+      else if(path==="facilities")tpl={id:"fac-"+Date.now(),icon:"fa-microscope",zh:"新设施",en:"",descZh:"",descEn:"",introZh:"",introEn:"",image:"",pillarId:"",memberIds:[]};
       else if(path==="members")tpl={id:"m-"+Date.now(),nameZh:"新成员",nameEn:"",roleZh:"",roleEn:"",group:"phd",bioZh:"",bioEn:"",introZh:"",introEn:"",introImage:"",eduZh:"",eduEn:"",achZh:"",achEn:"",confZh:"",confEn:"",recruitZh:"",recruitEn:"",wordsZh:"",wordsEn:"",contactZh:"",contactEn:"",photo:""};
-      else if(path==="publications")tpl={id:"p-"+Date.now(),authors:"",titleZh:"",titleEn:"",journal:"",year:"",doi:"#",image:""};
+      else if(path==="publications")tpl={id:"p-"+Date.now(),authors:"",titleZh:"",titleEn:"",journal:"",year:"",doi:"#",abstractZh:"",abstractEn:"",image:"",projectIds:[],memberIds:[]};
       else if(path==="news")tpl={id:"n-"+Date.now(),titleZh:"",titleEn:"",day:"1",month:"01",blocks:[{type:"text",zh:"",en:""}]};
       arr.push(tpl);
       openBlockEditor(currentEdit,beTitle.textContent.replace(/^编辑：/,""));
