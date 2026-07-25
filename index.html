@@ -257,21 +257,409 @@ footer p{margin:4px 0}
   <p>内容加载失败，请确认 content.json 存在且为合法 JSON。</p>
 </div>
 
-<!-- ===== 所见即所得内联编辑器 ===== -->
-<button id="admin-trigger" title="管理" style="position:fixed;bottom:16px;left:16px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.01);border:none;color:transparent;cursor:pointer;z-index:90;font-size:14px;"><i class="fas fa-cog"></i></button>
+<script>
+(function(){
+"use strict";
+var DATA=null,modal,modalContent,toast;
 
+function z(o){return o!=null?o:"";}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function zh(s){return '<span class="zh">'+esc(s)+'</span>';}
+function en(s){return '<span class="en">'+esc(s)+'</span>';}
+function both(zhTxt,enTxt){return zh(zhTxt)+en(enTxt);}
+function img(src,cls){
+  if(!src)return'';
+  var c=cls?' class="'+esc(cls)+'"':'';
+  return'<img src="'+esc(src)+'"'+c+' alt="" loading="lazy">';
+}
+function avatar(name){
+  var h=0;
+  for(var i=0;i<(name||"??").length;i++)h=(h*31+(name||"?").charCodeAt(i))%360;
+  return'<div class="modal-m-avatar" style="background-color:hsl('+h+',52%,50%)">'+esc((name||"?").charAt(0))+'</div>';
+}
+function find(arr,id){
+  if(!arr||!id)return null;
+  for(var i=0;i<arr.length;i++)if(arr[i]&&arr[i].id===id)return arr[i];
+  return null;
+}
+function lookup(id){
+  if(!id)return null;
+  if(id.indexOf("member-")===0)return find(DATA.members,id);
+  if(id.indexOf("proj-")===0)return find(DATA.research.projects,id);
+  if(id.indexOf("pub-")===0)return find(DATA.publications,id);
+  if(id.indexOf("news-")===0)return find(DATA.news,id);
+  if(id.indexOf("fac-")===0)return find(DATA.facilities,id);
+  if(id.indexOf("pillar-")===0)return find(DATA.research.pillars,id);
+  return null;
+}
+function typeOf(id){
+  if(!id)return null;
+  var p=id.indexOf("-");
+  return p<0?id:id.slice(0,p);
+}
+function chip(id,label){
+  var o=lookup(id);
+  if(!o)return"";
+  var lbl=label||o.nameZh||o.titleZh||o.zh||id;
+  var ph=o.photo||o.logo||"";
+  var inner=ph?'<img src="'+esc(ph)+'" alt=""> ':'<i class="fas fa-link" style="font-size:11px"></i> ';
+  return'<span class="related-chip" data-jump="'+esc(id)+'">'+inner+esc(lbl)+'</span>';
+}
+function rel(label,ids){
+  if(!ids||!ids.length)return"";
+  var items=ids.map(function(id){return chip(id);}).join("");
+  if(!items)return"";
+  return'<div class="related-section"><h3>'+esc(label)+'</h3><div class="related-grid">'+items+'</div></div>';
+}
+function relAuto(ids){
+  if(!ids||!ids.length)return"";
+  return rel(both("相关","Related"),ids);
+}
+
+// ============ openDetail ============
+function openDetail(type,id){
+  var d=DATA,html="";
+  if(type==="pillar"){
+    var p=find(d.research.pillars,id);if(!p)return showToast("未找到："+id);
+    html+=img(p.image,"modal-banner");
+    html+='<h2>'+both(p.zh,p.en)+'</h2><p class="modal-role"><i class="fas fa-dna"></i> '+both("研究方向","Research Pillar")+'</p>';
+    html+='<div class="modal-block"><h3>'+both("方向介绍","Overview")+'</h3><p>'+both(p.introZh,p.introEn)+'</p></div>';
+    if(p.descZh)html+='<div class="modal-block"><h3>'+both("简述","Summary")+'</h3><p>'+both(p.descZh,p.descEn)+'</p></div>';
+    var projIds=p.projectIds||d.research.projects.filter(function(x){return x.pillarId===p.id;}).map(function(x){return x.id;});
+    var facIds=p.facilityIds||d.facilities.filter(function(x){return x.pillarId===p.id;}).map(function(x){return x.id;});
+    html+=rel(both("在研课题","Projects"),projIds);
+    html+=rel(both("相关设施","Facilities"),facIds);
+    html+=rel(both("相关论文","Publications"),p.pubIds||[]);
+  }
+  else if(type==="project"){
+    var pr=find(d.research.projects,id);if(!pr)return showToast("未找到："+id);
+    html+=img(pr.logo,"modal-logo");
+    html+='<h2>'+both(pr.titleZh,pr.titleEn)+'</h2>';
+    html+='<p class="modal-role">'+both("负责人：","Lead: ")+esc(pr.lead||"—")+'</p>';
+    html+='<div class="modal-block"><h3>'+both("研究内容","Content")+'</h3><p>'+both(pr.contentZh,pr.contentEn)+'</p></div>';
+    html+='<div class="modal-block"><h3>'+both("研究目标","Goals")+'</h3><p>'+both(pr.goalsZh,pr.goalsEn)+'</p></div>';
+    html+='<div class="modal-block"><h3>'+both("研究进展","Progress")+'</h3><p>'+both(pr.progressZh,pr.progressEn)+'</p></div>';
+    if(pr.images&&pr.images.length){
+      html+='<div class="modal-block"><h3>'+both("配图","Gallery")+'</h3><div class="modal-gallery">'+pr.images.map(function(s){return img(s,"");}).join("")+'</div></div>';
+    }
+    html+=rel(both("所属研究方向","Research Pillar"),pr.pillarId?[pr.pillarId]:[]);
+    html+=rel(both("参与成员","Team Members"),pr.memberIds||[]);
+    html+=rel(both("相关论文","Publications"),pr.pubIds||[]);
+  }
+  else if(type==="facility"){
+    var f=find(d.facilities,id);if(!f)return showToast("未找到："+id);
+    html+=img(f.image,"modal-banner");
+    html+='<h2>'+both(f.zh,f.en)+'</h2>';
+    html+='<div class="modal-block"><h3>'+both("详细介绍","Details")+'</h3><p>'+both(f.introZh,f.introEn)+'</p></div>';
+    html+=rel(both("所属研究方向","Research Pillar"),f.pillarId?[f.pillarId]:[]);
+    html+=rel(both("常用成员","Team Members"),f.memberIds||[]);
+  }
+  else if(type==="member"){
+    var m=find(d.members,id);if(!m)return showToast("未找到："+id);
+    var ph=m.photo?img(m.photo,"modal-photo"):avatar(m.nameZh||m.nameEn||"?");
+    html+=ph+'<h2 style="text-align:center;">'+esc(m.nameZh)+' '+en(m.nameEn)+'</h2>';
+    html+='<p class="modal-role" style="text-align:center;">'+both(m.roleZh,m.roleEn)+'</p>';
+    html+='<div class="modal-block"><h3>'+both("简介","Bio")+'</h3><p>'+both(m.bioZh,m.bioEn)+'</p></div>';
+    if(m.introZh||m.introEn){
+      html+='<div class="modal-block"><h3>'+both("自我介绍","About")+'</h3>';
+      if(m.introImage)html+=img(m.introImage,"modal-banner");
+      html+='<p>'+both(m.introZh,m.introEn)+'</p></div>';
+    }
+    html+=rel(both("研究方向","Research Areas"),m.pillarIds||[]);
+    html+=rel(both("参与课题","Projects"),m.projectIds||[]);
+    html+=rel(both("使用设施","Facilities"),m.facilityIds||[]);
+    html+=rel(both("发表论文","Publications"),m.pubIds||[]);
+  }
+  else if(type==="pub"){
+    var p=find(d.publications,id);if(!p)return showToast("未找到："+id);
+    html+=img(p.image,"modal-banner");
+    html+='<h2>'+both(p.titleZh,p.titleEn)+'</h2>';
+    html+='<p class="modal-role">'+esc(p.authors||"")+' · '+esc(p.journal||"")+' · '+esc(p.year||"")+'</p>';
+    html+='<div class="modal-block"><h3>'+both("摘要","Abstract")+'</h3><p>'+both(p.abstractZh,p.abstractEn)+'</p></div>';
+    if(p.doi&&p.doi!=="#")html+='<div class="modal-block"><a href="'+esc(p.doi)+'" target="_blank" class="btn">'+both("查看原文","View paper")+' <i class="fas fa-external-link-alt"></i></a></div>';
+    html+=rel(both("相关课题","Projects"),p.projectIds||[]);
+    html+=rel(both("参与成员","Team Members"),p.memberIds||[]);
+  }
+  else if(type==="news"){
+    var n=find(d.news,id);if(!n)return showToast("未找到："+id);
+    html+=img(n.image,"modal-banner");
+    html+='<h2>'+both(n.titleZh,n.titleEn)+'</h2>';
+    html+='<p class="modal-role"><i class="fas fa-calendar"></i> '+esc(n.date||"")+'</p>';
+    html+='<div class="modal-block"><p>'+both(n.bodyZh,n.bodyEn)+'</p></div>';
+  }
+  openModal(html);
+}
+
+// ============ renderAll ============
+function renderAll(d){
+  // lab name 同步到 nav + footer
+  document.getElementById("nav-title").textContent=z(d.lab.name);
+  document.getElementById("footer-lab-name").textContent=z(d.lab.name);
+  document.title=d.lab.name+" · "+(window.__lang==="en"?z(d.lab.taglineEn):z(d.lab.taglineZh));
+
+  // hero
+  var hero=document.getElementById("hero");
+  if(d.hero.image)hero.style.backgroundImage="url('"+esc(d.hero.image)+"')";
+  document.getElementById("hero-title").textContent=z(d.lab.name);
+  document.getElementById("hero-subtitle").innerHTML=both(d.lab.taglineZh,d.lab.taglineEn);
+
+  // home
+  document.getElementById("home").innerHTML=
+    '<p class="section-eyebrow">'+both("关于我们","About Us")+'</p>'+
+    '<div class="intro-container">'+
+      '<div class="intro-text">'+
+        '<h2>'+both(d.home.titleZh,d.home.titleEn)+'</h2>'+
+        '<p class="large-text">'+both(d.home.introZh,d.home.introEn)+'</p>'+
+        '<p>'+both(d.home.intro2Zh,d.home.intro2En)+'</p>'+
+      '</div>'+
+      '<div class="intro-image">'+
+        '<figure>'+img(d.home.photo,"")+'<figcaption>'+both(d.home.photoCapZh,d.home.photoCapEn)+'</figcaption></figure>'+
+      '</div>'+
+    '</div>'+
+    '<div class="text-center mt-40"><a href="#research" class="btn">'+both("了解我们的研究","Explore Our Research")+'</a></div>';
+
+  // highlights（三大方向卡片，每张有配图）
+  document.getElementById("highlights").innerHTML=
+    '<p class="section-eyebrow">'+both("三大方向","Three Pillars")+'</p><h2>'+both("研究亮点","Research Highlights")+'</h2>'+
+    '<div class="highlights-container">'+d.highlights.map(function(h){
+      return'<div class="highlight-card">'+
+        img(h.image,"hl-img")+
+        '<div class="hl-icon"><i class="fas '+esc(z(h.icon))+'"></i></div>'+
+        '<h3 style="margin:0 0 8px;">'+both(h.zh,h.en)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(h.descZh,h.descEn)+'</p>'+
+      '</div>';}).join("")+'</div>';
+
+  // research: pillars + projects
+  var pillarsHtml=d.research.pillars.map(function(p){
+    return'<article class="pillar-card clickable" data-open="pillar" data-id="'+esc(p.id)+'">'+
+      img(p.image,"pillar-img")+
+      '<div class="pillar-body"><div class="pillar-icon"><i class="fas '+esc(z(p.icon))+'"></i></div>'+
+      '<h3 style="margin:0 0 8px;">'+both(p.zh,p.en)+'</h3>'+
+      '<p style="color:var(--light-text-color);margin:0;">'+both(p.descZh,p.descEn)+'</p>'+
+      '<span class="more">'+both("查看详情","View detail")+' →</span></div></article>';}).join("");
+  var projectsHtml=d.research.projects.map(function(pr){
+    var gal=pr.images&&pr.images.length?('<div class="proj-gallery">'+pr.images.map(function(s){return img(s,"");}).join("")+'</div>'):"";
+    return'<article class="research-card clickable" data-open="project" data-id="'+esc(pr.id)+'">'+
+      '<div class="proj-header">'+img(pr.logo,"proj-logo")+'<h3 style="margin:0;">'+both(pr.titleZh,pr.titleEn)+'</h3></div>'+
+      '<p style="color:var(--light-text-color);margin:0 0 4px;font-size:13px;">'+esc(z(pr.lead))+'</p>'+
+      '<p style="margin:0 0 6px;">'+both(pr.contentZh,pr.contentEn)+'</p>'+
+      gal+'<span class="more">'+both("课题详情","Project detail")+' →</span></article>';}).join("");
+  document.getElementById("research").innerHTML=
+    '<p class="section-eyebrow">'+both("三大方向","Three Pillars")+'</p><h2>'+both("我们的研究主题","Our Research Themes")+'</h2>'+
+    '<div class="pillars">'+pillarsHtml+'</div>'+
+    '<h2 style="margin-top:70px;">'+both("在研课题","Ongoing Projects")+'</h2>'+
+    '<div class="research-grid">'+projectsHtml+'</div>';
+
+  // facilities
+  document.getElementById("facilities").innerHTML=
+    '<p class="section-eyebrow">'+both("硬件支撑","Infrastructure")+'</p><h2>'+both("实验室设施","Lab Facilities")+'</h2>'+
+    '<div class="facilities-grid">'+d.facilities.map(function(f){
+      return'<article class="facility-card clickable" data-open="facility" data-id="'+esc(f.id)+'">'+
+        img(f.image,"facility-banner")+
+        '<div class="facility-body"><div class="facility-icon"><i class="fas '+esc(z(f.icon))+'"></i></div>'+
+        '<h3 style="margin:0 0 8px;">'+both(f.zh,f.en)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(f.descZh,f.descEn)+'</p>'+
+        '<span class="more">'+both("查看详情","View detail")+' →</span></div></article>';}).join("")+'</div>';
+
+  // members
+  var root=document.getElementById("members-root");
+  var h="",pi=find(d.members,"member-liang");
+  if(pi){
+    h+='<p class="section-eyebrow" style="margin-top:60px;">'+both("实验室负责人","Principal Investigator")+'</p>'+
+      '<article class="pi-card clickable" data-open="member" data-id="'+esc(pi.id)+'">'+
+      img(pi.photo,"pi-photo")+
+      '<div><h2>'+esc(pi.nameZh)+' '+en(pi.nameEn)+'</h2><h3>'+both(pi.roleZh,pi.roleEn)+'</h3>'+
+      '<p>'+both(pi.bioZh,pi.bioEn)+'</p></div></article>';
+  }
+  var groups=[{k:"faculty",tz:"团队老师",te:"Faculty"},{k:"manager",tz:"实验室管理",te:"Lab Manager"},{k:"phd",tz:"博士研究生",te:"PhD Students"},{k:"master",tz:"硕士研究生",te:"Master Students"}];
+  groups.forEach(function(g){
+    var list=d.members.filter(function(m){return m.group===g.k;});
+    if(!list.length)return;
+    h+='<p class="section-eyebrow" style="margin-top:60px;">'+both(g.tz,g.te)+'</p><div class="members-grid">'+list.map(function(m){
+      var pho=m.photo?img(m.photo,"member-photo"):'<div class="m-avatar" style="background-color:hsl('+((m.nameZh.charCodeAt(0)*37)%360)+',52%,50%)">'+esc((m.nameZh||"?").charAt(0))+'</div>';
+      return'<article class="member-card clickable" data-open="member" data-id="'+esc(m.id)+'">'+
+        pho+'<h3 style="margin:0 0 4px;">'+esc(m.nameZh)+' '+en(m.nameEn)+'</h3>'+
+        '<div class="member-role">'+both(m.roleZh,m.roleEn)+'</div>'+
+        '<p class="member-bio">'+both(m.bioZh,m.bioEn)+'</p></article>';}).join("")+'</div>';
+  });
+  root.innerHTML=h;
+
+  // publications
+  document.getElementById("publications").innerHTML='<h2>'+both("论文成果","Publications")+'</h2>'+
+    '<div class="publications-grid"><ul class="publication-list">'+
+    d.publications.map(function(p){
+      return'<li class="publication-item clickable" data-open="pub" data-id="'+esc(p.id)+'">'+
+        '<div class="pub-thumb">'+img(p.image,"")+'</div>'+
+        '<div style="flex:1;"><p style="margin:0 0 4px;"><strong>'+esc(z(p.authors))+'</strong></p>'+
+        '<p style="margin:0 0 4px;">'+both(p.titleZh,p.titleEn)+'</p>'+
+        '<p style="margin:0;color:var(--light-text-color);font-size:12px;"><em>'+esc(z(p.journal))+'</em> · '+esc(z(p.year))+
+        (p.doi&&p.doi!=="#"?' · <a href="'+esc(p.doi)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">DOI</a>':"")+
+        '</p></div></li>';}).join("")+'</ul></div>';
+
+  // news
+  document.getElementById("news").innerHTML='<h2>'+both("团队动态","Lab News")+'</h2>'+
+    '<div class="news-grid">'+d.news.map(function(n){
+      return'<article class="news-card clickable" data-open="news" data-id="'+esc(n.id)+'">'+
+        img(n.image,"news-thumb")+
+        '<div class="news-body"><div class="news-date"><span class="day">'+esc(z(n.day))+'</span><span>'+esc(z(n.month))+'</span></div>'+
+        '<h3 style="margin:0 0 8px;">'+both(n.titleZh,n.titleEn)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(n.bodyZh,n.bodyEn)+'</p></div></article>';}).join("")+'</div>';
+
+  // lab life
+  document.getElementById("lab-life").innerHTML=
+    '<h2>'+both("实验室生活","Lab Life")+'</h2>'+
+    '<p class="lab-life-intro">'+both("用照片记录实验室的成长与欢笑。","We capture the lab\'s growth and laughs in photos.")+'</p>'+
+    '<div class="travel-gallery">'+d.labLife.map(function(s){return'<div class="gallery-item">'+img(s,"")+'</div>';}).join("")+'</div>';
+
+  // join
+  var jg=d.join.images&&d.join.images.length?('<div class="join-gallery">'+d.join.images.map(function(s){return img(s,"");}).join("")+'</div>'):"";
+  document.getElementById("join").innerHTML=
+    '<p class="section-eyebrow">'+both("加入我们","Join Us")+'</p><h2>'+both("招新","Join Us")+'</h2>'+
+    jg+
+    '<div class="join-intro"><p class="large-text">'+both(d.join.introZh,d.join.introEn)+'</p></div>'+
+    '<div class="join-cards">'+d.join.cards.map(function(c){
+      return'<div class="join-card"><div class="hl-icon"><i class="fas '+esc(z(c.icon))+'"></i></div>'+
+        '<h3 style="margin:0 0 10px;">'+both(c.zh,c.en)+'</h3>'+
+        '<p style="color:var(--light-text-color);margin:0;">'+both(c.descZh,c.descEn)+'</p></div>';}).join("")+'</div>'+
+    '<div class="join-openings"><h3>'+both("当前开放方向","Open Directions")+'</h3><ul>'+
+    d.join.openings.map(function(o){return'<li>'+both(o.zh,o.en)+'</li>';}).join("")+'</ul></div>'+
+    '<div class="join-cta"><a href="#contact" class="btn">'+both("联系我们申请","Get in Touch")+'</a></div>';
+
+  // contact
+  var socials=d.contact.socials&&d.contact.socials.length?
+    '<div class="social-container"><h3 style="margin:0 0 10px;">'+both("关注我们","Connect")+'</h3><ul class="social-links">'+
+    d.contact.socials.map(function(s){return'<li><a href="'+esc(z(s.url||"#"))+'" aria-label="'+esc(z(s.type))+'"><i class="fas fa-link"></i></a></li>';}).join("")+'</ul></div>':"";
+  document.getElementById("contact").innerHTML=
+    '<h2>'+both("联系我们","Contact Us")+'</h2>'+
+    '<div class="contact-container">'+
+      '<div>'+
+        '<div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:'+esc(z(d.contact.email))+'">'+esc(z(d.contact.email))+'</a></div>'+
+        '<div class="contact-item"><i class="fas fa-map-marker-alt"></i><span>'+both(d.contact.addressZh,d.contact.addressEn)+'</span></div>'+
+      '</div>'+socials+
+    '</div>';
+
+  bindAll();
+  applyLang(window.__lang||"zh");
+}
+
+// ============ bind ============
+function bindAll(){
+  document.querySelectorAll("[data-open]").forEach(function(el){
+    el.onclick=function(e){if(e.target.tagName==="A")return;openDetail(el.getAttribute("data-open"),el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openDetail(el.getAttribute("data-open"),el.getAttribute("data-id"));}};
+    el.setAttribute("tabindex","0");
+  });
+  modalContent.addEventListener("click",function(e){
+    var t=e.target.closest("[data-jump]");
+    if(t){e.stopPropagation();openDetail(typeOf(t.getAttribute("data-jump")),t.getAttribute("data-jump"));}
+  });
+  modal.addEventListener("click",function(e){if(e.target.hasAttribute("data-close")||e.target===modal)closeModal();});
+}
+
+// ============ modal ============
+function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();}
+function closeModal(){modal.setAttribute("hidden","");document.body.classList.remove("modal-open");}
+
+// ============ toast ============
+function showToast(m){
+  if(!toast){toast=document.createElement("div");toast.className="toast";document.body.appendChild(toast);}
+  toast.textContent=m;toast.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(function(){toast.classList.remove("show");},2000);
+}
+
+// ============ i18n ============
+var LK="iMicrobiomeLang";
+window.__lang=function(){try{return localStorage.getItem(LK);}catch(e){return null;}}()||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en");
+function applyLang(l){
+  document.body.classList.remove("lang-zh","lang-en");
+  document.body.classList.add("lang-"+l);
+  window.__lang=l;
+  var btn=document.getElementById("lang-toggle");
+  if(btn)btn.textContent=(l==="zh")?"EN":"中文";
+  try{localStorage.setItem(LK,l);}catch(e){}
+  document.documentElement.lang=(l==="zh")?"zh-CN":"en";
+  if(DATA){
+    document.title=DATA.lab.name+" · "+(l==="en"?DATA.lab.taglineEn:DATA.lab.taglineZh);
+    document.getElementById("nav-title").textContent=DATA.lab.name;
+    document.getElementById("footer-lab-name").textContent=DATA.lab.name;
+  }
+}
+
+// ============ init ============
+document.addEventListener("DOMContentLoaded",function(){
+  modal=document.getElementById("detail-modal");
+  modalContent=document.getElementById("detail-content");
+  var t=document.getElementById("lang-toggle");
+  if(t)t.addEventListener("click",function(){applyLang(window.__lang==="zh"?"en":"zh");});
+
+  // mobile menu
+  var mt=document.querySelector(".menu-toggle"),nl=document.querySelector(".nav-links");
+  if(mt&&nl){mt.addEventListener("click",function(){
+    var o=nl.classList.contains("active");
+    nl.classList.toggle("active");mt.classList.toggle("active");
+    mt.setAttribute("aria-expanded",o?"false":"true");
+  });nl.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){nl.classList.remove("active");mt.classList.remove("active");});});}
+
+  var y=document.getElementById("current-year");if(y)y.textContent=new Date().getFullYear();
+
+  // smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener("click",function(e){
+      var id=this.getAttribute("href");if(id==="#")return;
+      var t=document.querySelector(id);if(!t)return;
+      e.preventDefault();
+      window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-70,behavior:"smooth"});
+    });
+  });
+
+  // scroll reveal
+  var secs=document.querySelectorAll("section.reveal");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("visible");io.unobserve(en.target);}});
+    },{threshold:.1,rootMargin:"-40px"});
+    secs.forEach(function(s){io.observe(s);});
+  } else secs.forEach(function(s){s.classList.add("visible");});
+
+  // nav hide on scroll down
+  var nav=document.querySelector("nav"),last=0,sched=false;
+  window.addEventListener("scroll",function(){
+    if(sched)return;sched=true;
+    requestAnimationFrame(function(){
+      var st=window.scrollY;
+      nav.classList.toggle("scrolled",st>10);
+      if(st>last&&st>80)nav.style.transform="translateY(-100%)";else nav.style.transform="translateY(0)";
+      last=st;sched=false;
+    });
+  });
+
+  // ESC close modal
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!modal.hasAttribute("hidden"))closeModal();});
+
+  // load data（优先内嵌数据，fetch 兜底）
+  var __d=window.__DATA;
+  if(__d){DATA=__d;renderAll(__d);}
+  else{
+    fetch("content.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){DATA=d;renderAll(d);})
+      .catch(function(){var e=document.getElementById("load-error");if(e)e.style.display="block";});
+  }
+});
+})();
+</script>
+
+<!-- ===== 所见即所得内联编辑器（隐藏入口：点击页脚版权3次） ===== -->
 <!-- 登录框 -->
 <div id="admin-login" class="admin-modal" hidden style="display:none;">
   <div class="admin-backdrop" data-al-close></div>
   <div class="admin-dialog" style="width:340px;">
     <button class="admin-close" data-al-close aria-label="关闭"><i class="fas fa-times"></i></button>
-    <h2 style="margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px;"><i class="fas fa-lock" style="color:var(--primary-color,#0066cc);"></i> 管理员登录</h2>
+    <h2 style="margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px;"><i class="fas fa-lock" style="color:var(--primary,#0066cc);"></i> 管理员登录</h2>
     <label style="display:block;font-size:13px;color:#6e6e73;margin:10px 0 4px;">账号</label>
     <input id="al-user" style="width:100%;padding:9px 11px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;box-sizing:border-box;" autocomplete="off">
     <label style="display:block;font-size:13px;color:#6e6e73;margin:10px 0 4px;">密码</label>
     <input id="al-pass" type="password" style="width:100%;padding:9px 11px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;box-sizing:border-box;" autocomplete="off">
     <p id="al-err" style="color:#ff3b30;font-size:13px;min-height:18px;margin:8px 0 0;"></p>
-    <button id="al-btn" style="width:100%;margin-top:14px;padding:10px;background:var(--primary-color,#0066cc);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">登录</button>
+    <button id="al-btn" style="width:100%;margin-top:14px;padding:10px;background:var(--primary,#0066cc);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">登录</button>
   </div>
 </div>
 
@@ -280,7 +668,7 @@ footer p{margin:4px 0}
   <div class="admin-backdrop" data-be-close></div>
   <div class="admin-dialog" style="width:min(92vw,640px);max-height:88vh;display:flex;flex-direction:column;">
     <button class="admin-close" data-be-close aria-label="关闭"><i class="fas fa-times"></i></button>
-    <h2 id="be-title" style="margin:0 0 14px;font-size:17px;display:flex;align-items:center;gap:8px;"><i class="fas fa-edit" style="color:var(--primary-color,#0066cc);"></i> 编辑</h2>
+    <h2 id="be-title" style="margin:0 0 14px;font-size:17px;display:flex;align-items:center;gap:8px;"><i class="fas fa-edit" style="color:var(--primary,#0066cc);"></i> 编辑</h2>
     <div id="be-body" style="flex:1;overflow-y:auto;padding:4px 4px 16px;"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:10px;border-top:1px solid #e5e5ea;">
       <button id="be-cancel" class="ap-btn ap-btn-sec">取消</button>
@@ -289,9 +677,8 @@ footer p{margin:4px 0}
   </div>
 </div>
 
-<!-- 底部操作栏（登录后显示） -->
+<!-- 底部操作栏（仅登录后显示） -->
 <div id="admin-bar" hidden style="position:fixed;bottom:0;left:0;right:0;background:rgba(20,20,22,0.92);backdrop-filter:blur(20px);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:95;flex-wrap:wrap;font-size:13px;">
-  <span style="opacity:0.7;">管理模式</span>
   <button id="ab-save" class="ab-btn ab-pri">💾 保存全部</button>
   <button id="ab-export" class="ab-btn ab-sec">📤 导出数据</button>
   <button id="ab-reset" class="ab-btn ab-sec">↩️ 重置</button>
@@ -306,7 +693,7 @@ footer p{margin:4px 0}
 .admin-close{position:absolute;top:10px;right:10px;background:transparent;border:none;font-size:16px;cursor:pointer;color:#6e6e73;width:30px;height:30px;border-radius:8px;}
 .admin-close:hover{background:#f5f5f7;}
 .ap-btn{padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid #e5e5ea;font-family:inherit;background:#fff;color:#1d1d1f;}
-.ap-btn-pri{background:var(--primary-color,#0066cc);color:#fff;border:none;}
+.ap-btn-pri{background:var(--primary,#0066cc);color:#fff;border:none;}
 .ap-btn-sec{background:#fff;color:#1d1d1f;}
 .ap-btn:hover{opacity:0.88;}
 .ap-field{margin:12px 0;}
@@ -315,14 +702,14 @@ footer p{margin:4px 0}
 .ap-field textarea{min-height:64px;resize:vertical;}
 .ap-item{border:1px solid #e5e5ea;border-radius:10px;padding:12px;margin:10px 0;background:#fafafa;}
 .ap-item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.ap-item-head strong{color:var(--primary-color,#0066cc);font-size:13px;}
+.ap-item-head strong{color:var(--primary,#0066cc);font-size:13px;}
 .ap-del{background:#ff3b30;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;}
-.ap-add{background:#e8f0fe;color:var(--primary-color,#0066cc);border:1px solid #cfe0ff;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;margin-top:6px;}
+.ap-add{background:#e8f0fe;color:var(--primary,#0066cc);border:1px solid #cfe0ff;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;margin-top:6px;}
 .ap-toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none;}
 .ap-toast.show{opacity:1;}
 body.admin-mode .edit-zone{position:relative;outline:1px dashed rgba(0,102,204,0.25);outline-offset:2px;}
 body.admin-mode .edit-zone:hover{outline:2px dashed rgba(0,102,204,0.6);}
-.edit-btn{display:none;position:absolute;top:6px;right:6px;z-index:50;background:var(--primary-color,#0066cc);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.edit-btn{display:none;position:absolute;top:6px;right:6px;z-index:50;background:var(--primary,#0066cc);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
 .edit-btn:hover{opacity:0.88;}
 body.admin-mode .edit-btn{display:inline-flex !important;}
 body.admin-mode{padding-bottom:50px;}
@@ -331,7 +718,7 @@ body.admin-mode{padding-bottom:50px;}
 .ab-sec{background:rgba(255,255,255,0.15);color:#fff;}
 .ab-btn:hover{opacity:0.85;}
 .img-upload{border:2px dashed #d0d0d5;border-radius:10px;padding:14px;text-align:center;background:#fafafa;cursor:pointer;}
-.img-upload:hover{border-color:var(--primary-color,#0066cc);background:#f0f6ff;}
+.img-upload:hover{border-color:var(--primary,#0066cc);background:#f0f6ff;}
 .img-preview{max-width:200px;max-height:140px;border-radius:8px;margin-top:8px;display:block;}
 </style>
 
@@ -356,14 +743,17 @@ function showToast(msg){
 function apOpen(el){el.removeAttribute("hidden");el.style.display="flex";}
 function apClose(el){el.setAttribute("hidden","");el.style.display="none";}
 
+/* 隐藏入口：点击页脚版权 3 次（800ms 内）触发登录 */
 var clickCount=0,clickTimer=null;
-document.getElementById("admin-trigger").onclick=function(){apOpen(document.getElementById("admin-login"));};
 var footer=document.querySelector("footer");
-if(footer){footer.addEventListener("click",function(){
-  clickCount++;clearTimeout(clickTimer);
-  clickTimer=setTimeout(function(){clickCount=0;},800);
-  if(clickCount>=3){clickCount=0;apOpen(document.getElementById("admin-login"));}
-});}
+if(footer){
+  footer.addEventListener("click",function(){
+    clickCount++;clearTimeout(clickTimer);
+    clickTimer=setTimeout(function(){clickCount=0;},800);
+    if(clickCount>=3){clickCount=0;apOpen(document.getElementById("admin-login"));}
+  });
+}
+/* 快捷键：Ctrl+Shift+E */
 document.addEventListener("keydown",function(e){
   if(e.ctrlKey&&e.shiftKey&&(e.key==="E"||e.key==="e")){e.preventDefault();apOpen(document.getElementById("admin-login"));}
 });
@@ -469,7 +859,7 @@ function setByPath(obj,path,val){
 
 function openBlockEditor(type,label){
   currentEdit=type;
-  beTitle.innerHTML='<i class="fas fa-edit" style="color:var(--primary-color,#0066cc);"></i> 编辑：'+label;
+  beTitle.innerHTML='<i class="fas fa-edit" style="color:var(--primary,#0066cc);"></i> 编辑：'+label;
   var h="";
   var d=edData;
   if(type==="hero"){
@@ -501,7 +891,7 @@ function openBlockEditor(type,label){
     });
     h+='<button class="ap-add" data-add="highlights">+ 添加方向</button>';
   }else if(type==="research"){
-    h+='<h3 style="margin:16px 0 8px;color:var(--primary-color,#0066cc);font-size:14px;">研究方向（Pillars）</h3>';
+    h+='<h3 style="margin:16px 0 8px;color:var(--primary,#0066cc);font-size:14px;">研究方向（Pillars）</h3>';
     d.research.pillars.forEach(function(p,i){
       h+=itemBox("方向 "+(i+1)+": "+(p.zh||""),[
         field("research.pillars."+i+".icon","图标",p.icon),
@@ -512,7 +902,7 @@ function openBlockEditor(type,label){
         field("research.pillars."+i+".image","配图路径",p.image,"text")
       ].join(""),"research.pillars",i);
     });
-    h+='<h3 style="margin:20px 0 8px;color:var(--primary-color,#0066cc);font-size:14px;">在研课题（可增删）</h3>';
+    h+='<h3 style="margin:20px 0 8px;color:var(--primary,#0066cc);font-size:14px;">在研课题（可增删）</h3>';
     d.research.projects.forEach(function(pr,i){
       h+=itemBox("课题 "+(i+1)+": "+(pr.titleZh||""),[
         field("research.projects."+i+".titleZh","标题(中)",pr.titleZh),
@@ -707,7 +1097,6 @@ document.getElementById("ab-logout").onclick=function(){
 if(sessionStorage.getItem(AL_KEY)==="1"){enterAdminMode();}
 
 })();
-
 </script>
 </body>
 </html>
