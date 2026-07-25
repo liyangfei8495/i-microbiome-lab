@@ -436,6 +436,20 @@ function openDetail(type,id){
     if(m.wordsZh||m.wordsEn) html+='<div class="modal-block"><h3>'+both("寄语","Message")+'</h3><p>'+both(m.wordsZh,m.wordsEn)+'</p></div>';
     // 9. 联系方式
     if(m.contactZh||m.contactEn) html+='<div class="modal-block"><h3>'+both("联系方式","Contact")+'</h3><p>'+both(m.contactZh,m.contactEn)+'</p></div>';
+    // 10. 在研课题（按参与成员反向关联，方便快速跳转）
+    var memberProjects=(d.research.projects||[]).filter(function(pr){
+      return (pr.memberIds||[]).indexOf(m.id)>=0;
+    });
+    if(memberProjects.length){
+      html+='<div class="modal-block"><h3>'+both("在研课题","Current Projects")+'</h3><div class="proj-jump-list">';
+      memberProjects.forEach(function(pr){
+        html+='<div class="proj-jump" data-open="project" data-id="'+esc(pr.id)+'">'
+          + (pr.logo?img(pr.logo,"proj-jump-logo"):'')
+          + '<span>'+esc(pr.titleZh||pr.titleEn||pr.id)+'</span>'
+          + '<i class="fas fa-chevron-right"></i></div>';
+      });
+      html+='</div></div>';
+    }
   }
   else if(type==="pub"){
     var p=find(d.publications,id);if(!p)return showToast("未找到："+id);
@@ -613,7 +627,14 @@ function bindAll(){
 }
 
 // ============ modal ============
-function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();}
+function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();
+  // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
+  modalContent.querySelectorAll("[data-open]").forEach(function(el){
+    el.onclick=function(e){if(e.target.tagName==="A")return;openDetail(el.getAttribute("data-open"),el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openDetail(el.getAttribute("data-open"),el.getAttribute("data-id"));}};
+    el.setAttribute("tabindex","0");
+  });
+}
 function closeModal(){modal.setAttribute("hidden","");document.body.classList.remove("modal-open");}
 
 // ============ toast ============
