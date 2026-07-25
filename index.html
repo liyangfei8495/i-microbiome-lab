@@ -1289,8 +1289,9 @@ function publishToGitHub(){
   var token=getGhToken();
   if(!token){ showToast("请先在上方填入 GitHub Token 并点“记住”"); var gi=document.getElementById("gh-token"); if(gi) gi.focus(); return; }
   var repo="liyangfei8495/i-microbiome-lab", path="index.html";
-  var base=getGhProxy()||"https://api.github.com";
-  showToast("正在发布到 GitHub…");
+  var proxy=getGhProxy();
+  var base=proxy||"https://api.github.com";
+  showToast(proxy?("正在通过代理发布（"+proxy+"）…"):"正在直连 GitHub 发布…");
   var ctrl=new AbortController();
   var to=setTimeout(function(){ ctrl.abort(); }, 12000);
   fetch(base+"/repos/"+repo+"/contents/"+path,{
@@ -1364,6 +1365,12 @@ document.getElementById("be-save").onclick=function(){
   if(saveEdits()){ apClose(beModal); showToast("已保存并更新预览，刷新后永久生效"); }
 };
 document.getElementById("be-publish").onclick=function(){
+  var tk=getGhToken();
+  if(!tk){
+    showToast("❌ 还没填 GitHub Token！请在弹窗里填 ghp_ 开头的 Token 并点“记住”，再点发布");
+    var gi=document.getElementById("gh-token"); if(gi){ try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus(); }
+    return;
+  }
   if(!saveEdits()) return;
   apClose(beModal);
   publishToGitHub();
