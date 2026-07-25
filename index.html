@@ -734,9 +734,14 @@ document.addEventListener("DOMContentLoaded",function(){
         <input id="gh-token" type="password" placeholder="GitHub Token（仅首次填，存本机浏览器，不公开）" style="flex:1;padding:7px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;">
         <button id="gh-token-save" class="ap-btn ap-btn-sec" title="记住 Token">记住</button>
       </div>
-      <div style="font-size:11px;color:#8a8a8e;margin-top:4px;">Token 需有该仓库 Contents 写权限（fine-grained，仅授权 liyangfei8495/i-microbiome-lab）。点“保存并发布”即全网生效。</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+        <input id="gh-proxy" placeholder="代理地址（可选，填空=直连。中国大陆建议填 Cloudflare Worker 地址）" style="flex:1;padding:7px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:12px;font-family:inherit;box-sizing:border-box;">
+        <button id="gh-proxy-save" class="ap-btn ap-btn-sec" title="记住代理地址">记住</button>
+      </div>
+      <div style="font-size:11px;color:#8a8a8e;margin-top:4px;">Token 需有该仓库 Contents 写权限。若直连 api.github.com 发布失败（国内常见），可填 Cloudflare Worker 代理地址。也可点「导出」把改好的网页下载下来发我，由我帮你发布。</div>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:10px;border-top:1px solid #e5e5ea;">
+      <button id="be-export" class="ap-btn ap-btn-sec" title="下载当前完整网页文件">导出 index.html</button>
       <button id="be-cancel" class="ap-btn ap-btn-sec">取消</button>
       <button id="be-publish" class="ap-btn ap-btn-pri" style="background:#0a7d3b;">保存并发布</button>
       <button id="be-save" class="ap-btn ap-btn-pri">保存此项</button>
@@ -1273,12 +1278,19 @@ function getGhToken(){
   var t=(inp&&inp.value)?inp.value.trim():(localStorage.getItem("GH_TOKEN")||"");
   return t;
 }
+function getGhProxy(){
+  var inp=document.getElementById("gh-proxy");
+  var p=(inp&&inp.value)?inp.value.trim():(localStorage.getItem("GH_PROXY")||"");
+  if(p){ p=p.replace(/\/+$/,""); }
+  return p;
+}
 function publishToGitHub(){
   var token=getGhToken();
   if(!token){ showToast("请先在上方填入 GitHub Token 并点“记住”"); var gi=document.getElementById("gh-token"); if(gi) gi.focus(); return; }
   var repo="liyangfei8495/i-microbiome-lab", path="index.html";
+  var base=getGhProxy()||"https://api.github.com";
   showToast("正在发布到 GitHub…");
-  fetch("https://api.github.com/repos/"+repo+"/contents/"+path,{
+  fetch(base+"/repos/"+repo+"/contents/"+path,{
     headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }
   }).then(function(r){ if(!r.ok) throw new Error("获取文件失败("+r.status+")"); return r.json(); })
    .then(function(meta){
@@ -1286,7 +1298,7 @@ function publishToGitHub(){
      var newData="window.__DATA="+JSON.stringify(edData)+";\n";
      var newHtml=oldHtml.replace(/window\.__DATA=\{[\s\S]*?\};\s*<\/script>/, function(m){ return newData+"<\/script>"; });
      if(newHtml===oldHtml){ throw new Error("未检测到数据段，发布中止"); }
-     return fetch("https://api.github.com/repos/"+repo+"/contents/"+path,{
+     return fetch(base+"/repos/"+repo+"/contents/"+path,{
        method:"PUT",
        headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
        body: JSON.stringify({ message:"site: 管理员发布更新", content:b64encode(newHtml), sha:meta.sha })
@@ -1301,6 +1313,22 @@ document.getElementById("gh-token-save").onclick=function(){
   if(!v){ showToast("请输入 Token"); return; }
   localStorage.setItem("GH_TOKEN",v); showToast("Token 已记住（仅存本机浏览器）");
 };
+document.getElementById("gh-proxy-save").onclick=function(){
+  var v=document.getElementById("gh-proxy").value.trim();
+  localStorage.setItem("GH_PROXY",v); showToast("代理地址已记住（仅存本机浏览器）");
+};
+document.getElementById("be-export").onclick=function(){
+  if(!saveEdits()) return;
+  var url=location.href.split("#")[0];
+  fetch(url).then(function(r){return r.text();}).then(function(oldHtml){
+    var newData="window.__DATA="+JSON.stringify(edData)+";\n";
+    var newHtml=oldHtml.replace(/window\.__DATA=\{[\s\S]*?\};\s*<\/script>/, function(m){ return newData+"<\/script>"; });
+    if(newHtml===oldHtml){ showToast("导出失败：未检测到数据段"); return; }
+    var blob=new Blob([newHtml],{type:"text/html"});
+    var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="index.html"; a.click();
+    showToast("已导出 index.html，可发我帮你发布（或填代理后直接发布）");
+  }).catch(function(e){ showToast("导出失败："+e.message); });
+};
 document.getElementById("be-save").onclick=function(){
   if(saveEdits()){ apClose(beModal); showToast("已保存并更新预览，刷新后永久生效"); }
 };
@@ -1309,8 +1337,9 @@ document.getElementById("be-publish").onclick=function(){
   apClose(beModal);
   publishToGitHub();
 };
-// 初始化填充已记住的 Token
-(function(){ var t=localStorage.getItem("GH_TOKEN"); if(t){ var inp=document.getElementById("gh-token"); if(inp) inp.value=t; } })();
+// 初始化填充已记住的 Token / 代理
+(function(){ var t=localStorage.getItem("GH_TOKEN"); if(t){ var inp=document.getElementById("gh-token"); if(inp) inp.value=t; }
+  var p=localStorage.getItem("GH_PROXY"); if(p){ var pinp=document.getElementById("gh-proxy"); if(pinp) pinp.value=p; } })();
 
 
 })();
