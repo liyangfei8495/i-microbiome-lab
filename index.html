@@ -1662,6 +1662,8 @@ function setPubStatus(msg,type){
 function publishToGitHub(onDone){
   var token=getGhToken();
   if(!token){ setPubStatus("❌ 请先填 GitHub Token 并点“记住”","err"); var gi=document.getElementById("gh-token"); if(gi){try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus();} if(onDone)onDone(false,"请先填 GitHub Token"); return; }
+  // 兜底：edData 未初始化时（用户直接点“保存并发布”而未先保存），用线上真实数据，绝不能写成 window.__DATA=undefined
+  if(!edData||typeof edData!=="object"){ try{ edData=JSON.parse(JSON.stringify(window.__DATA||DATA||{})); }catch(e){ edData={}; } }
   var repo="liyangfei8495/i-microbiome-lab", path="index.html";
   var proxy=getGhProxy();
   var base=proxy||"https://api.github.com";
