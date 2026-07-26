@@ -28,7 +28,7 @@ nav{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.85);backdro
 .nav-links a{color:var(--text-color);text-decoration:none;font-size:14px;font-weight:500;padding:8px 0;transition:color .2s}
 .nav-links a:hover,.nav-links a.active{color:var(--primary)}
 @media(max-width:900px){.menu-toggle{display:flex}.nav-links{position:absolute;top:64px;left:0;right:0;flex-direction:column;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);padding:16px 24px;gap:12px;border-bottom:1px solid var(--border-color);transform:translateY(-200%);transition:transform .3s}.nav-links.active{transform:translateY(0)}}
-.hero{position:relative;min-height:540px;background-size:cover;background-position:center;color:#fff;display:flex;align-items:center;justify-content:center;padding:120px 24px 80px}
+.hero{position:relative;min-height:540px;background-size:cover;background-position:center;color:#fff;display:flex;align-items:center;justify-content:center;padding:120px 24px 80px;touch-action:pan-y;}
 .hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.55),rgba(0,40,80,.4))}
 .hero-content{position:relative;text-align:center;max-width:760px}
 .hero-title{font-size:54px;font-weight:700;margin:0 0 18px}
@@ -677,7 +677,7 @@ function renderAll(d){
       }else if(anim){
         window.__heroTimer=setTimeout(function(){ go(cur+1); }, 6000); // 动图(GIF/WebP)播一轮再切，不占 GPU
       }else{
-        window.__heroTimer=setTimeout(function(){ go(cur+1); }, 4000);
+        window.__heroTimer=setTimeout(function(){ go(cur+1); }, 5000);
       }
     }
     if(slides.length<=1){
@@ -693,6 +693,21 @@ function renderAll(d){
     if(reduceMotion)return;
     scheduleNext();
     dots.forEach(function(dt,i){ dt.onclick=function(){ if(i!==cur){ if(window.__heroTimer)clearTimeout(window.__heroTimer); go(i); scheduleNext(); } }; });
+    // 手动滑动切换（触摸 + 鼠标拖拽）：横向位移超阈值即切上/下一张，联动暂停自动计时
+    var heroSwipe=document.getElementById("hero");
+    if(heroSwipe && slides.length>1){
+      var sx=0, sy=0, active=false, horiz=false;
+      function startG(x,y,t){ if(t && t.closest && t.closest("a,button,.hero-dot,input,textarea,.edit-btn"))return false; active=true; sx=x; sy=y; horiz=false; if(window.__heroTimer){clearTimeout(window.__heroTimer);window.__heroTimer=null;} return true; }
+      function moveG(x,y,ev){ if(!active)return; var dx=x-sx, dy=y-sy; if(!horiz && (Math.abs(dx)>8||Math.abs(dy)>8)){ horiz=Math.abs(dx)>Math.abs(dy); } if(horiz && ev && ev.cancelable){ try{ev.preventDefault();}catch(e){} } }
+      function endG(x,y){ if(!active)return; active=false; var dx=x-sx; if(horiz && Math.abs(dx)>45){ if(dx<0) go(cur+1); else go(cur-1); } scheduleNext(); }
+      heroSwipe.addEventListener("touchstart", function(e){ var t=e.touches[0]; startG(t.clientX,t.clientY,e.target); }, {passive:true});
+      heroSwipe.addEventListener("touchmove", function(e){ var t=e.touches[0]; moveG(t.clientX,t.clientY,e); }, {passive:false});
+      heroSwipe.addEventListener("touchend", function(e){ var t=e.changedTouches[0]; endG(t.clientX,t.clientY); }, {passive:true});
+      heroSwipe.addEventListener("touchcancel", function(){ active=false; scheduleNext(); }, {passive:true});
+      heroSwipe.addEventListener("mousedown", function(e){ if(e.button!==0) return; if(startG(e.clientX,e.clientY,e.target)){ try{e.preventDefault();}catch(err){} } });
+      window.addEventListener("mousemove", function(e){ if(active) moveG(e.clientX,e.clientY,e); });
+      window.addEventListener("mouseup", function(e){ if(active) endG(e.clientX,e.clientY); });
+    }
   }
 
   // home
