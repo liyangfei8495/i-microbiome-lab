@@ -650,20 +650,17 @@ function renderAll(d){
     var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var cur=0;
     if(window.__heroTimer){clearTimeout(window.__heroTimer);window.__heroTimer=null;}
-    function setParts(on){ if(window.__heroSetParticlesActive)window.__heroSetParticlesActive(on); }
     function getVideo(i){ return slides[i]?slides[i].querySelector("video"):null; }
     function isAnimSlide(i){ var s=slides[i]; return !!(s && s.classList.contains('is-anim')); }
     function play(i){ if(isTouch)return; var v=getVideo(i); if(v){ v.loop=false; try{v.play();}catch(e){} } }
     function pause(i){ var v=getVideo(i); if(v){try{v.pause();}catch(e){}} }
-    // 视频帧：彻底暂停 Three.js 粒子渲染（硬开关 partsWanted），释放全部 GPU 给视频解码避免卡顿；图片帧恢复
-    function syncParts(i){ if(isTouch){setParts(true);return;} setParts(!(getVideo(i)||isAnimSlide(i))); }
     function go(n){
       var prev=cur; cur=(n+slides.length)%slides.length;
       slides[prev].classList.remove("active");
       slides[cur].classList.add("active");
       if(dots[prev])dots[prev].classList.remove("active");
       if(dots[cur])dots[cur].classList.add("active");
-      pause(prev); play(cur); syncParts(cur);
+      pause(prev); play(cur);
     }
     // 安排下一次切换：视频帧按视频实际时长停留（播放完再切），图片帧 4s；尊重「减少动效」仅显示首张
     function scheduleNext(){
@@ -681,7 +678,6 @@ function renderAll(d){
       }
     }
     if(slides.length<=1){
-      setParts(isTouch || !(getVideo(0)||isAnimSlide(0))); // 移动端/单图保持粒子动效；桌面单视频/动图帧停粒子让位媒体解码
       return;
     }
     // 视频自然播放结束 → 立即切下一张（满足「播放完再切换」，不靠固定间隔硬切）
@@ -689,7 +685,7 @@ function renderAll(d){
       var v=s.querySelector("video");
       if(v){ v.addEventListener("ended", function(){ if(i===cur && !isTouch){ if(window.__heroTimer)clearTimeout(window.__heroTimer); go(cur+1); } }); }
     });
-    play(0); syncParts(0);
+    play(0);
     if(reduceMotion)return;
     scheduleNext();
     dots.forEach(function(dt,i){ dt.onclick=function(){ if(i!==cur){ if(window.__heroTimer)clearTimeout(window.__heroTimer); go(i); scheduleNext(); } }; });
@@ -2183,8 +2179,7 @@ document.getElementById("be-publish").onclick=function(){
 
   /* ===== Hero 背景：WebGL 粒子（Three.js）+ 2D 回退 ===== */
   var heroCanvas=document.getElementById("hero-canvas");
-  function initHero2D(cv){
-    if(!cv)return;
+  function initHero2D(cv){ if(true)return;
     var ctx=cv.getContext&&cv.getContext("2d"); if(!ctx)return;
     var W=0,H=0,parts=[],raf=null,running=false;
     function resize(){var r=cv.getBoundingClientRect();W=cv.width=Math.max(1,r.width);H=cv.height=Math.max(1,r.height);}
@@ -2196,8 +2191,7 @@ document.getElementById("be-publish").onclick=function(){
     document.addEventListener("visibilitychange",function(){if(document.hidden)stop();else start();});
     setTimeout(start,320);
   }
-  function initHeroWebGL(cv){
-    if(!window.THREE||!cv)return false;
+  function initHeroWebGL(cv){ if(true)return false;
     var renderer;
     try{renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});}catch(e){return false;}
     renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
@@ -2237,11 +2231,8 @@ document.getElementById("be-publish").onclick=function(){
     window.__heroSetParticlesActive=function(on){ partsWanted=!!on; if(on){ if(!running)start(); } else { if(running)stop(); } };
     return true;
   }
-  if(heroCanvas){
-    var ok=false;
-    try{ok=initHeroWebGL(heroCanvas);}catch(e){ok=false;}
-    if(!ok)initHero2D(heroCanvas);
-  }
+  // 粒子动效已关闭（用户要求）
+  // if(heroCanvas){var ok=false;try{ok=initHeroWebGL(heroCanvas);}catch(e){ok=false;}if(!ok)initHero2D(heroCanvas);}
 
 
   /* ===== 磁吸按钮 ===== */
