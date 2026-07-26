@@ -966,8 +966,6 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <!-- ===== 所见即所得内联编辑器（隐藏入口：点击页脚版权3次） ===== -->
 <!-- 登录框 -->
-<button id="admin-entry" class="admin-entry" type="button" title="管理员登录 / 退出管理模式"><i class="fas fa-cog"></i> <span id="admin-entry-label">管理登录</span></button>
-
 <div id="admin-login" class="admin-modal" hidden style="display:none;">
   <div class="admin-backdrop" data-al-close></div>
   <div class="admin-dialog" style="width:340px;">
@@ -1040,15 +1038,11 @@ document.addEventListener("DOMContentLoaded",function(){
 .ap-toast.show{opacity:1;}
 body.admin-mode .edit-zone{position:relative;outline:1px dashed rgba(0,102,204,0.25);outline-offset:2px;}
 body.admin-mode .edit-zone:hover{outline:2px dashed rgba(0,102,204,0.6);}
-.edit-btn{display:none;position:absolute;top:6px;right:6px;z-index:90;background:var(--primary,#0066cc);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.edit-btn{display:none;position:absolute;top:6px;right:6px;z-index:50;background:var(--primary,#0066cc);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
 .edit-btn:hover{opacity:0.88;}
 body.admin-mode .edit-btn{display:inline-flex !important;}
 /* 首屏编辑按钮下移，避开固定导航栏（高 64px）遮挡 */
 #hero .edit-btn{top:72px;right:10px;font-size:12px;padding:5px 11px;}
-/* 常驻「管理登录」浮动按钮：解决入口不可见问题 */
-.admin-entry{position:fixed;left:16px;bottom:16px;z-index:150;display:inline-flex;align-items:center;gap:6px;background:var(--primary,#0066cc);color:#fff;border:none;border-radius:999px;padding:9px 15px;font-size:13px;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:.9;transition:opacity .2s,transform .2s;}
-.admin-entry:hover{opacity:1;transform:translateY(-1px);}
-.admin-entry i{font-size:13px;}
 .img-upload{border:2px dashed #d0d0d5;border-radius:10px;padding:14px;text-align:center;background:#fafafa;cursor:pointer;}
 .img-upload:hover{border-color:var(--primary,#0066cc);background:#f0f6ff;}
 .img-preview{max-width:200px;max-height:140px;border-radius:8px;margin-top:8px;display:block;}
@@ -1163,22 +1157,12 @@ document.getElementById("al-logout").onclick=function(){
   document.getElementById("al-pass").value="";
 };
 
-var adminEntry=document.getElementById("admin-entry");
-if(adminEntry){
-  adminEntry.onclick=function(){
-    if(isAdmin){exitAdminMode();}
-    else{apOpen(document.getElementById("admin-login"));}
-  };
-}
-
 function enterAdminMode(){
   isAdmin=true;
   document.body.classList.add("admin-mode");
   edData=JSON.parse(JSON.stringify(window.__DATA));
   try{var s=localStorage.getItem(ED_KEY);if(s)edData=window.__deepMerge(edData,JSON.parse(s));}catch(e){}
   injectEditButtons();
-  var ae=document.getElementById("admin-entry-label"); if(ae)ae.textContent="退出管理";
-  if(adminEntry)adminEntry.title="点击退出管理模式";
   showToast("已进入管理模式，点击各区块右上角编辑按钮");
 }
 function exitAdminMode(){
@@ -1186,8 +1170,6 @@ function exitAdminMode(){
   document.body.classList.remove("admin-mode");
   removeEditButtons();
   apClose(document.getElementById("admin-login"));
-  var ae=document.getElementById("admin-entry-label"); if(ae)ae.textContent="管理登录";
-  if(adminEntry)adminEntry.title="管理员登录 / 退出管理模式";
 }
 
 function injectEditButtons(){
