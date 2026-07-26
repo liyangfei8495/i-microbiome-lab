@@ -968,8 +968,6 @@ function openDetail(type,id){
   }
   else if(type==="news"){
     var n=find(d.news,id);if(!n)return showToast("未找到："+id);
-    var cover=newsCover(n);
-    if(cover) html+=img(cover,"modal-banner");
     html+='<h2>'+both(n.titleZh,n.titleEn)+'</h2>';
     html+='<p class="modal-role"><i class="fas fa-calendar"></i> '+esc(n.date||"")+'</p>';
     html+=newsBlocksHtml(n);
