@@ -630,12 +630,13 @@ function renderAll(d){
   var slidesEl=document.getElementById("hero-slides");
   var oldDots=document.getElementById("hero-dots"); if(oldDots)oldDots.remove();
   var media=(d.hero.media||[]).filter(function(m){return m&&m.src;});
+  var isTouch=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||(navigator.maxTouchPoints&&navigator.maxTouchPoints>0);
   if(media.length){
     hero.style.backgroundImage="";
     if(slidesEl){
       slidesEl.innerHTML=media.map(function(m,i){
         var inner = (m.type==="video")
-          ? '<video class="hero-slide-media" muted loop playsinline autoplay preload="auto" src="'+esc(m.src)+'"></video>'
+          ? '<video class="hero-slide-media" muted loop playsinline '+(isTouch?'preload="metadata" poster="'+esc(d.hero.image||'')+'"':'autoplay preload="auto"')+' src="'+esc(m.src)+'"></video>'
           : '<img class="hero-slide-media" src="'+esc(m.src)+'" alt="">';
         return '<div class="hero-slide'+(i===0?' active':'')+'" data-idx="'+i+'">'+inner+'</div>';
       }).join("");
@@ -657,18 +658,19 @@ function renderAll(d){
   function initHeroSlides(media){
     var slides=[].slice.call(document.querySelectorAll("#hero-slides .hero-slide"));
     var dots=[].slice.call(document.querySelectorAll("#hero-dots .hero-dot"));
+    var isTouch=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||(navigator.maxTouchPoints&&navigator.maxTouchPoints>0);
     if(window.__heroTimer){clearTimeout(window.__heroTimer);window.__heroTimer=null;}
     function setParts(on){ if(window.__heroSetParticlesActive)window.__heroSetParticlesActive(on); }
     if(slides.length<=1){
-      setParts(!(slides[0]&&slides[0].querySelector("video"))); // 单张视频：暂停粒子保流畅
+      setParts(isTouch || !(slides[0]&&slides[0].querySelector("video"))); // 移动端视频不播放，粒子保持动效
       return;
     }
     var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var cur=0;
-    function play(i){var v=slides[i].querySelector("video");if(v){try{v.play();}catch(e){}}}
+    function play(i){ if(isTouch)return; var v=slides[i].querySelector("video");if(v){try{v.play();}catch(e){}}}
     function pause(i){var v=slides[i].querySelector("video");if(v){try{v.pause();}catch(e){}}}
-    // 视频帧：暂停 Three.js 粒子渲染，释放 GPU 给视频解码避免卡顿；图片帧恢复粒子动效
-    function syncParts(i){ setParts(!(slides[i]&&slides[i].querySelector("video"))); }
+    // 视频帧：暂停 Three.js 粒子渲染，释放 GPU 给视频解码避免卡顿；图片帧恢复粒子动效（移动端不播放视频，粒子不动效）
+    function syncParts(i){ if(isTouch){setParts(true);return;} setParts(!(slides[i]&&slides[i].querySelector("video"))); }
     function go(n){
       var prev=cur; cur=(n+slides.length)%slides.length;
       slides[prev].classList.remove("active");
@@ -2309,19 +2311,16 @@ document.getElementById("be-publish").onclick=function(){
 
   function initStats(){
     var band=document.getElementById("stats"); if(!band)return;
-    var nums=band.querySelectorAll(".stat-num");
-    if(!("IntersectionObserver" in window)){nums.forEach(function(n){n.textContent=(n.getAttribute("data-target")||"0")+(n.getAttribute("data-suffix")||"");});return;}
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(en){
-        if(en.isIntersecting){
-          var el=en.target, t=parseFloat(el.getAttribute("data-target"))||0, suf=el.getAttribute("data-suffix")||"";
-          var dur=1500, st=null;
-          function tick(ts){if(!st)st=ts;var p=Math.min(1,(ts-st)/dur);el.textContent=Math.floor((1-Math.pow(1-p,3))*t)+suf;if(p<1)requestAnimationFrame(tick);}
-          requestAnimationFrame(tick); io.unobserve(el);
-        }
-      });
-    },{threshold:0.35});
+    var nums=[].slice.call(band.querySelectorAll(".stat-num"));
+    function finalize(el){ var t=parseFloat(el.getAttribute("data-target"))||0, suf=el.getAttribute("data-suffix")||""; el.textContent=Math.floor(t)+suf; }
+    function animate(el){ if(el.__statAnimated)return; el.__statAnimated=true; var t=parseFloat(el.getAttribute("data-target"))||0, suf=el.getAttribute("data-suffix")||""; var dur=1500, st=null; function tick(ts){if(!st)st=ts;var p=Math.min(1,(ts-st)/dur);el.textContent=Math.floor((1-Math.pow(1-p,3))*t)+suf;if(p<1)requestAnimationFrame(tick);} requestAnimationFrame(tick); }
+    // 兜底：部分移动端 IO 不回调，2.5s 后仍为 0 则直接落值
+    var fallbackTimer=setTimeout(function(){ nums.forEach(function(n){ if((n.textContent||"").replace(/[^0-9]/g,"")==="0")finalize(n); }); },2500);
+    if(!("IntersectionObserver" in window)){nums.forEach(finalize);clearTimeout(fallbackTimer);return;}
+    var io=new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ animate(en.target); io.unobserve(en.target); } }); },{threshold:0.1,rootMargin:"0px 0px -5% 0px"});
     nums.forEach(function(n){io.observe(n);});
+    // 立即检查已处于视口内的元素（解决某些移动端 IO 不自动触发）
+    setTimeout(function(){ try{ io.takeRecords().forEach(function(en){ if(en.isIntersecting)animate(en.target); }); }catch(e){} },50);
   }
   function bootExtras(){ initSearches(); initStats(); }
   if(document.readyState==="loading"){
