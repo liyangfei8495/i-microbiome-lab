@@ -635,7 +635,7 @@ function renderAll(d){
     if(slidesEl){
       slidesEl.innerHTML=media.map(function(m,i){
         var inner = (m.type==="video")
-          ? '<video class="hero-slide-media" muted loop playsinline preload="metadata" src="'+esc(m.src)+'"></video>'
+          ? '<video class="hero-slide-media" muted loop playsinline autoplay preload="auto" src="'+esc(m.src)+'"></video>'
           : '<img class="hero-slide-media" src="'+esc(m.src)+'" alt="">';
         return '<div class="hero-slide'+(i===0?' active':'')+'" data-idx="'+i+'">'+inner+'</div>';
       }).join("");
@@ -657,24 +657,33 @@ function renderAll(d){
   function initHeroSlides(media){
     var slides=[].slice.call(document.querySelectorAll("#hero-slides .hero-slide"));
     var dots=[].slice.call(document.querySelectorAll("#hero-dots .hero-dot"));
-    if(window.__heroTimer){clearInterval(window.__heroTimer);window.__heroTimer=null;}
-    if(slides.length<=1)return;
+    if(window.__heroTimer){clearTimeout(window.__heroTimer);window.__heroTimer=null;}
+    function setParts(on){ if(window.__heroSetParticlesActive)window.__heroSetParticlesActive(on); }
+    if(slides.length<=1){
+      setParts(!(slides[0]&&slides[0].querySelector("video"))); // 单张视频：暂停粒子保流畅
+      return;
+    }
     var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var cur=0;
     function play(i){var v=slides[i].querySelector("video");if(v){try{v.play();}catch(e){}}}
     function pause(i){var v=slides[i].querySelector("video");if(v){try{v.pause();}catch(e){}}}
+    // 视频帧：暂停 Three.js 粒子渲染，释放 GPU 给视频解码避免卡顿；图片帧恢复粒子动效
+    function syncParts(i){ setParts(!(slides[i]&&slides[i].querySelector("video"))); }
     function go(n){
       var prev=cur; cur=(n+slides.length)%slides.length;
       slides[prev].classList.remove("active");
       slides[cur].classList.add("active");
       if(dots[prev])dots[prev].classList.remove("active");
       if(dots[cur])dots[cur].classList.add("active");
-      pause(prev); play(cur);
+      pause(prev); play(cur); syncParts(cur);
     }
-    play(0);
+    // 按素材类型设置停留时长：图片 4s 切走，视频 7s 让背景动效充分播放（比原 5.2s 更跟手）
+    function dwellOf(i){ return (slides[i]&&slides[i].querySelector("video"))?7000:4000; }
+    function schedule(){ window.__heroTimer=setTimeout(function(){ go(cur+1); schedule(); }, dwellOf(cur)); }
+    play(0); syncParts(0);
     if(reduceMotion)return; // 尊重「减少动效」：仅显示首张，不自动轮播
-    window.__heroTimer=setInterval(function(){ if(slides[cur]&&slides[cur].querySelector("video"))return; go(cur+1); }, 5200);
-    dots.forEach(function(dt,i){ dt.onclick=function(){ if(i!==cur){clearInterval(window.__heroTimer);go(i);window.__heroTimer=setInterval(function(){go(cur+1);},5200);} }; });
+    schedule();
+    dots.forEach(function(dt,i){ dt.onclick=function(){ if(i!==cur){clearTimeout(window.__heroTimer);go(i);schedule();} }; });
   }
 
   // home
@@ -2190,7 +2199,7 @@ document.getElementById("be-publish").onclick=function(){
   function initHeroWebGL(cv){
     if(!window.THREE||!cv)return false;
     var renderer;
-    try{renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});}catch(e){return false;}
+    try{renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});}catch(e){return false;}
     renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
     renderer.setClearColor(0x000000,0);
     var scene=new THREE.Scene();
@@ -2224,6 +2233,8 @@ document.getElementById("be-publish").onclick=function(){
     window.addEventListener("resize",function(){if(running)resize();});
     document.addEventListener("visibilitychange",function(){if(document.hidden)stop();else start();});
     setTimeout(start,300);
+    // 供首屏轮播调用：视频帧暂停粒子渲染以释放 GPU 给视频解码（保留最后一帧静态可见）
+    window.__heroSetParticlesActive=function(on){ if(on){ if(!running)start(); } else { if(running)stop(); } };
     return true;
   }
   if(heroCanvas){
