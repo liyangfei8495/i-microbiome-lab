@@ -636,7 +636,7 @@ function renderAll(d){
     if(slidesEl){
       slidesEl.innerHTML=media.map(function(m,i){
         var inner = (m.type==="video")
-          ? '<video class="hero-slide-media" muted loop playsinline '+(isTouch?'preload="metadata" poster="'+esc(d.hero.image||'')+'"':'autoplay preload="auto"')+' src="'+esc(m.src)+'"></video>'
+          ? '<video class="hero-slide-media" muted playsinline '+(isTouch?'preload="metadata" poster="'+esc(d.hero.image||'')+'"':'autoplay preload="auto"')+' src="'+esc(m.src)+'"></video>'
           : '<img class="hero-slide-media" src="'+esc(m.src)+'" alt="">';
         return '<div class="hero-slide'+(i===0?' active':'')+'" data-idx="'+i+'">'+inner+'</div>';
       }).join("");
@@ -659,18 +659,15 @@ function renderAll(d){
     var slides=[].slice.call(document.querySelectorAll("#hero-slides .hero-slide"));
     var dots=[].slice.call(document.querySelectorAll("#hero-dots .hero-dot"));
     var isTouch=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||(navigator.maxTouchPoints&&navigator.maxTouchPoints>0);
-    if(window.__heroTimer){clearTimeout(window.__heroTimer);window.__heroTimer=null;}
-    function setParts(on){ if(window.__heroSetParticlesActive)window.__heroSetParticlesActive(on); }
-    if(slides.length<=1){
-      setParts(isTouch || !(slides[0]&&slides[0].querySelector("video"))); // 移动端视频不播放，粒子保持动效
-      return;
-    }
     var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var cur=0;
-    function play(i){ if(isTouch)return; var v=slides[i].querySelector("video");if(v){try{v.play();}catch(e){}}}
-    function pause(i){var v=slides[i].querySelector("video");if(v){try{v.pause();}catch(e){}}}
-    // 视频帧：暂停 Three.js 粒子渲染，释放 GPU 给视频解码避免卡顿；图片帧恢复粒子动效（移动端不播放视频，粒子不动效）
-    function syncParts(i){ if(isTouch){setParts(true);return;} setParts(!(slides[i]&&slides[i].querySelector("video"))); }
+    if(window.__heroTimer){clearTimeout(window.__heroTimer);window.__heroTimer=null;}
+    function setParts(on){ if(window.__heroSetParticlesActive)window.__heroSetParticlesActive(on); }
+    function getVideo(i){ return slides[i]?slides[i].querySelector("video"):null; }
+    function play(i){ if(isTouch)return; var v=getVideo(i); if(v){ v.loop=false; try{v.play();}catch(e){} } }
+    function pause(i){ var v=getVideo(i); if(v){try{v.pause();}catch(e){}} }
+    // 视频帧：彻底暂停 Three.js 粒子渲染（硬开关 partsWanted），释放全部 GPU 给视频解码避免卡顿；图片帧恢复
+    function syncParts(i){ if(isTouch){setParts(true);return;} setParts(!getVideo(i)); }
     function go(n){
       var prev=cur; cur=(n+slides.length)%slides.length;
       slides[prev].classList.remove("active");
@@ -679,13 +676,32 @@ function renderAll(d){
       if(dots[cur])dots[cur].classList.add("active");
       pause(prev); play(cur); syncParts(cur);
     }
-    // 按素材类型设置停留时长：图片 4s 切走，视频 7s 让背景动效充分播放（比原 5.2s 更跟手）
-    function dwellOf(i){ return (slides[i]&&slides[i].querySelector("video"))?7000:4000; }
-    function schedule(){ window.__heroTimer=setTimeout(function(){ go(cur+1); schedule(); }, dwellOf(cur)); }
+    // 安排下一次切换：视频帧按视频实际时长停留（播放完再切），图片帧 4s；尊重「减少动效」仅显示首张
+    function scheduleNext(){
+      if(window.__heroTimer){clearTimeout(window.__heroTimer);window.__heroTimer=null;}
+      if(reduceMotion)return;
+      var v=getVideo(cur);
+      if(v && !isTouch){
+        var dur=(v.duration&&isFinite(v.duration)&&v.duration>0)? v.duration*1000 : 8000;
+        dur=Math.min(Math.max(dur,3000),30000); // 兜底 3~30s，防异常
+        window.__heroTimer=setTimeout(function(){ go(cur+1); }, dur);
+      }else{
+        window.__heroTimer=setTimeout(function(){ go(cur+1); }, 4000);
+      }
+    }
+    if(slides.length<=1){
+      setParts(isTouch || !getVideo(0)); // 移动端/单图保持粒子动效；桌面单视频帧停粒子让位视频解码
+      return;
+    }
+    // 视频自然播放结束 → 立即切下一张（满足「播放完再切换」，不靠固定间隔硬切）
+    slides.forEach(function(s,i){
+      var v=s.querySelector("video");
+      if(v){ v.addEventListener("ended", function(){ if(i===cur && !isTouch){ if(window.__heroTimer)clearTimeout(window.__heroTimer); go(cur+1); } }); }
+    });
     play(0); syncParts(0);
-    if(reduceMotion)return; // 尊重「减少动效」：仅显示首张，不自动轮播
-    schedule();
-    dots.forEach(function(dt,i){ dt.onclick=function(){ if(i!==cur){clearTimeout(window.__heroTimer);go(i);schedule();} }; });
+    if(reduceMotion)return;
+    scheduleNext();
+    dots.forEach(function(dt,i){ dt.onclick=function(){ if(i!==cur){ if(window.__heroTimer)clearTimeout(window.__heroTimer); go(i); scheduleNext(); } }; });
   }
 
   // home
@@ -2226,17 +2242,17 @@ document.getElementById("be-publish").onclick=function(){
     });
     var pts=new THREE.Points(geo,mat); scene.add(pts);
     function resize(){var w=cv.clientWidth||cv.parentNode.clientWidth,h=cv.clientHeight||cv.parentNode.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-    var raf=null,running=false,reduced=reduceMotion;
+    var raf=null,running=false,reduced=reduceMotion,partsWanted=true;
     var mx=0,my=0;
     window.addEventListener("mousemove",function(e){mx=e.clientX/window.innerWidth-0.5;my=e.clientY/window.innerHeight-0.5;});
     function loop(){mat.uniforms.uTime.value+=0.016;pts.rotation.y+=0.0011;camera.position.x+=(mx*2.4-camera.position.x)*0.04;camera.position.y+=(-my*1.6-camera.position.y)*0.04;camera.lookAt(0,0,0);renderer.render(scene,camera);raf=requestAnimationFrame(loop);}
-    function start(){if(running)return;running=true;resize();if(reduced){renderer.render(scene,camera);}else loop();}
+    function start(){if(!partsWanted)return;if(running)return;running=true;resize();if(reduced){renderer.render(scene,camera);}else loop();}
     function stop(){running=false;if(raf)cancelAnimationFrame(raf);}
     window.addEventListener("resize",function(){if(running)resize();});
-    document.addEventListener("visibilitychange",function(){if(document.hidden)stop();else start();});
+    document.addEventListener("visibilitychange",function(){if(document.hidden)stop();else if(partsWanted)start();});
     setTimeout(start,300);
     // 供首屏轮播调用：视频帧暂停粒子渲染以释放 GPU 给视频解码（保留最后一帧静态可见）
-    window.__heroSetParticlesActive=function(on){ if(on){ if(!running)start(); } else { if(running)stop(); } };
+    window.__heroSetParticlesActive=function(on){ partsWanted=!!on; if(on){ if(!running)start(); } else { if(running)stop(); } };
     return true;
   }
   if(heroCanvas){
