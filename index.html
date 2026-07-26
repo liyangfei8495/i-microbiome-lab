@@ -1093,7 +1093,7 @@ function enterAdminMode(){
   isAdmin=true;
   document.body.classList.add("admin-mode");
   edData=JSON.parse(JSON.stringify(window.__DATA));
-  try{var s=localStorage.getItem(ED_KEY);if(s)edData=JSON.parse(s);}catch(e){}
+  try{var s=localStorage.getItem(ED_KEY);if(s)edData=window.__deepMerge(edData,JSON.parse(s));}catch(e){}
   injectEditButtons();
   showToast("已进入管理模式，点击各区块右上角编辑按钮");
 }
