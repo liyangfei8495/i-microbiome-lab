@@ -150,7 +150,9 @@
         "logo": "images/plant_image3.jpg",
         "lead": "阎凝翔",
         "pillarId": "pillar-enzyme",
-        "memberIds": [],
+        "memberIds": [
+          "member-liang"
+        ],
         "contentZh": "壳聚糖生物制造",
         "contentEn": "Chitosan Biomanufacturing",
         "goalsZh": "（1）建立2-3个底盘真菌的标准化培养/发酵与壳聚糖提取体系，形成可重复基线数据；\n（2）建立跨界诱导剂库并筛选出可重复的优先候选组合；\n（3）通过DOE和关键过程控制，实现壳聚糖得率提升与DDA/MW批次稳定性提升；",
