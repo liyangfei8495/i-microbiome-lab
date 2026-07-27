@@ -38,6 +38,8 @@
        font-weight:700;text-decoration:none;padding:12px 20px;border-radius:12px;font-size:15px;
        transition:transform .2s ease, box-shadow .2s ease;}
   .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(90,209,168,.35);}
+  .btn-ghost{background:transparent;color:var(--fg);border:1px solid rgba(255,255,255,.22);box-shadow:none;}
+  .btn-ghost:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.08);}
   .hint{margin-top:14px;font-size:12px;color:var(--muted);}
 </style>
 </head>
@@ -49,12 +51,26 @@
       <h1>【学术交流】应梁元可教授邀请，郑仕伟博士、官颖博士来校作学术报告</h1>
       <p class="date">2026.07</p>
       <p class="desc">2026年7月14日下午，受我校梁元可教授邀请，德国波茨坦大学博士候选人郑仕伟、南京农业大学博士后官颖走进西南科技大学东九B2-21会议室，为智能微生态与生物制造实验室师生带来两场前沿学术报告。报告会由蔡元萍教授等组织，实验室师生到场聆听并展开交流。 郑仕伟博士长期致力于植物发育与胁迫应答的表观遗传</p>
-      <a class="btn" href="https://liang-lab.cn/?news=news-grant">在网站查看完整内容 →</a>
-      <p class="hint">即将自动打开网站…</p>
+      <a class="btn" id="shareBtn" href="javascript:void(0)" onclick="shareThis()">分享给朋友 →</a>
+      <a class="btn btn-ghost" href="https://liang-lab.cn/?news=news-grant">在网站查看完整内容</a>
+      <p class="hint">点「分享给朋友」即可直接发到微信等应用</p>
     </div>
   </div>
   <script>
-    setTimeout(function(){ location.href = "https://liang-lab.cn/?news=news-grant"; }, 2000);
+    function shareThis(){
+      var url=location.href;
+      var title=document.title;
+      var meta=document.querySelector('meta[property="og:description"]');
+      var text=meta?meta.getAttribute('content'):'';
+      if(navigator.share){
+        navigator.share({title:title,text:text,url:url}).catch(function(){});
+      } else {
+        var t=document.createElement('textarea');t.value=url;document.body.appendChild(t);t.select();
+        try{document.execCommand('copy');}catch(e){}
+        document.body.removeChild(t);
+        var b=document.getElementById('shareBtn');if(b){b.textContent='链接已复制，去微信粘贴';}
+      }
+    }
   </script>
 </body>
 </html>

@@ -57,6 +57,8 @@ TPL = """<!DOCTYPE html>
        font-weight:700;text-decoration:none;padding:12px 20px;border-radius:12px;font-size:15px;
        transition:transform .2s ease, box-shadow .2s ease;}}
   .btn:hover{{transform:translateY(-2px);box-shadow:0 12px 30px rgba(90,209,168,.35);}}
+  .btn-ghost{{background:transparent;color:var(--fg);border:1px solid rgba(255,255,255,.22);box-shadow:none;}}
+  .btn-ghost:hover{{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.08);}}
   .hint{{margin-top:14px;font-size:12px;color:var(--muted);}}
 </style>
 </head>
@@ -68,12 +70,26 @@ TPL = """<!DOCTYPE html>
       <h1>{title}</h1>
       <p class="date">{date}</p>
       <p class="desc">{desc}</p>
-      <a class="btn" href="{site}/?news={id}">在网站查看完整内容 →</a>
-      <p class="hint">即将自动打开网站…</p>
+      <a class="btn" id="shareBtn" href="javascript:void(0)" onclick="shareThis()">分享给朋友 →</a>
+      <a class="btn btn-ghost" href="{site}/?news={id}">在网站查看完整内容</a>
+      <p class="hint">点「分享给朋友」即可直接发到微信等应用</p>
     </div>
   </div>
   <script>
-    setTimeout(function(){{ location.href = "{site}/?news={id}"; }}, 2000);
+    function shareThis(){{
+      var url=location.href;
+      var title=document.title;
+      var meta=document.querySelector('meta[property="og:description"]');
+      var text=meta?meta.getAttribute('content'):'';
+      if(navigator.share){{
+        navigator.share({{title:title,text:text,url:url}}).catch(function(){{}});
+      }} else {{
+        var t=document.createElement('textarea');t.value=url;document.body.appendChild(t);t.select();
+        try{{document.execCommand('copy');}}catch(e){{}}
+        document.body.removeChild(t);
+        var b=document.getElementById('shareBtn');if(b){{b.textContent='链接已复制，去微信粘贴';}}
+      }}
+    }}
   </script>
 </body>
 </html>

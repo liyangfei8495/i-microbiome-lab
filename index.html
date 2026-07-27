@@ -1759,7 +1759,7 @@ function bindShare(scope){
     el.dataset.shareBound='1';
     el.addEventListener('click',function(e){
       e.preventDefault(); e.stopPropagation();
-      openShareModal(el.getAttribute('data-share'), el.getAttribute('data-id'));
+      shareNews(el.getAttribute('data-id'));
     });
   });
 }
@@ -1800,6 +1800,30 @@ function openShareModal(type,id){
     } else { var q2=document.getElementById('share-qr'); if(q2)q2.innerHTML='<small style="color:var(--light-text-color)">'+both("二维码加载中…","Loading QR…")+'</small>'; }
   }catch(e){ var q3=document.getElementById('share-qr'); if(q3)q3.innerHTML='<small style="color:var(--light-text-color)">'+both("二维码生成失败，请复制链接","QR failed, copy link")+'</small>'; }
 }
+function shareNews(id){
+  if(!id)return;
+  var dd=(window.__DATA)||DATA;
+  var item=find((dd.news||[]),id);
+  var url=location.origin+'/news/'+encodeURIComponent(id)+'.html';
+  var title=item?(item.titleZh||item.titleEn||'团队动态'):'团队动态';
+  var text=item?firstNewsSummary(item):'';
+  if(navigator.share){
+    try{ navigator.share({title:title,text:text,url:url}).catch(function(){ openShareModal('news',id); }); }
+    catch(e){ openShareModal('news',id); }
+  } else { openShareModal('news',id); }
+}
+function firstNewsSummary(n){
+  var blocks=n.blocks||[];
+  for(var i=0;i<blocks.length;i++){
+    var b=blocks[i];
+    if(b.type==='text'){
+      var t=(b.zh||b.en||b.text||'').replace(/\s+/g,' ').trim();
+      if(t) return t.substring(0,120);
+    }
+  }
+  return '';
+}
+
 function handleDeepLink(){
   if(window.__deepLinkHandled)return;
   var id=new URLSearchParams(location.search).get('news');
