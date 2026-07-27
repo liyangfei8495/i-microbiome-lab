@@ -1068,13 +1068,15 @@ document.addEventListener("DOMContentLoaded",function(){
   // 内嵌 window.__DATA 仅作离线/兜底快照（如本地 file:// 打开时 fetch 失败），不参与线上渲染覆盖
   (function(){
     var __fallback=window.__DATA;
-    fetch("content.json?t="+Date.now(),{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
+    // 首屏先用内嵌数据立即渲染，杜绝 fetch 慢/挂起导致整页空白（国内访问 GitHub Pages 常遇此情况）
+    if(__fallback && typeof __fallback==="object"){
+      try{ window.__DATA=__fallback; DATA=__fallback; renderAll(__fallback); }catch(e){ console.warn("[fallback] 内嵌数据渲染失败：",e); }
+    }
+    // 异步拉取最新 content.json 覆盖（保证跨设备一致、最新）；失败则保留内嵌首屏
+    fetch("content.json?t="+Date.now(),{cache:"no-store"})
+      .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
       .then(function(d){ if(!d||typeof d!=="object") throw new Error("bad json"); window.__DATA=d; DATA=d; renderAll(d); })
-      .catch(function(err){
-        console.warn("[content.json] 加载失败，启用内嵌兜底快照：", err&&err.message);
-        if(__fallback){ window.__DATA=__fallback; DATA=__fallback; renderAll(__fallback); }
-        else { var e=document.getElementById("load-error"); if(e) e.style.display="block"; }
-      });
+      .catch(function(err){ console.warn("[content.json] 加载失败，已使用内嵌兜底快照渲染：", err&&err.message); });
   })();
 });
 })();
