@@ -1777,8 +1777,7 @@ function fallbackCopy(text,cb){
 }
 function openShareModal(type,id){
   if(!id)return;
-  var base=location.origin+location.pathname;
-  var url=base+'?news='+encodeURIComponent(id);
+  var url=location.origin+'/news/'+encodeURIComponent(id)+'.html';
   var html=
     '<button class="modal-close" data-close aria-label="关闭">×</button>'+
     '<h2 style="margin:6px 0 4px;">'+both("分享这条动态","Share this update")+'</h2>'+
