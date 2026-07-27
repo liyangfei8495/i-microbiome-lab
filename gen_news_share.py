@@ -2,8 +2,9 @@
 """生成每条新闻的独立分享/阅读页 news/<id>.html。
 
 特性：
-- 渲染完整正文（标题/日期/段落/图片），不仅预览卡片
-- 顶部写入 Open Graph + Twitter Card 标签（微信/QQ 抓取直接出标题+封面卡片）
+- 与主站风格一致：支持日/夜主题切换（data-theme + CSS 变量）与中/英语言切换（lang-zh/lang-en + .zh/.en）
+- 渲染完整双语正文（标题/日期/段落/图片），不仅预览卡片
+- 顶部写入 Open Graph + Twitter Card 标签（微信/QQ 抓取直接出标题+封面卡片，用默认中文）
 - 自动根治 base64 内嵌图：发现 news 图片块为 base64 时，解码上传到仓库
   images/news/<id>-<i>.jpg 并改写为绝对 URL（同时让 content.json 减重、OG 有图）
 - 页面内「分享给朋友」(原生 Web Share) + 「返回实验室网站」
@@ -94,32 +95,38 @@ def esc_attr(s):
 
 
 def render_blocks(blocks):
+    """渲染双语正文：text/heading 分 .zh/.en 两段，image 共用。"""
     out = []
     for b in blocks or []:
         t = b.get("type")
         if t == "image":
             src = b.get("src") or ""
             cap = b.get("caption") or ""
-            if src.startswith("data:image"):
-                out.append('<figure class="n-img"><img src="%s" alt="%s" loading="lazy"></figure>'
-                           % (esc_attr(src), esc_attr(cap)))
-            else:
-                fig = '<figure class="n-img"><img src="%s" alt="%s" loading="lazy">' % (
-                    esc_attr(src), esc_attr(cap))
-                if cap:
-                    fig += '<figcaption>%s</figcaption>' % html.escape(cap)
-                fig += "</figure>"
-                out.append(fig)
+            fig = '<figure class="n-img"><img src="%s" alt="%s" loading="lazy">' % (
+                esc_attr(src), esc_attr(cap))
+            if cap:
+                fig += '<figcaption><span class="zh">%s</span><span class="en">%s</span></figcaption>' % (
+                    html.escape(cap), html.escape(cap))
+            fig += "</figure>"
+            out.append(fig)
         elif t == "heading":
-            out.append("<h2>%s</h2>" % html.escape(b.get("text") or b.get("zh") or ""))
+            zh = b.get("zh") or b.get("text") or ""
+            en = b.get("en") or b.get("text") or ""
+            out.append('<h2><span class="zh">%s</span><span class="en">%s</span></h2>'
+                       % (html.escape(zh), html.escape(en)))
         else:  # text / 默认
-            txt = b.get("text") or b.get("zh") or ""
-            for para in re.split(r"\n{2,}", txt):
-                para = para.strip()
-                if not para:
-                    continue
-                para = para.replace("\n", "<br>")
-                out.append("<p>%s</p>" % para)
+            zh = b.get("zh") or ""
+            en = b.get("en") or ""
+            if zh:
+                for para in re.split(r"\n{2,}", zh.strip()):
+                    para = para.strip().replace("\n", "<br>")
+                    if para:
+                        out.append('<p class="zh">%s</p>' % para)
+            if en:
+                for para in re.split(r"\n{2,}", en.strip()):
+                    para = para.strip().replace("\n", "<br>")
+                    if para:
+                        out.append('<p class="en">%s</p>' % para)
     return "\n".join(out)
 
 
@@ -132,9 +139,11 @@ def first_image(n):
 
 
 def first_summary(n, limit=120):
+    """OG 描述用中文摘要。"""
     for b in n.get("blocks", []) or []:
-        if b.get("type") in (None, "text") and (b.get("text") or b.get("zh")):
-            s = re.sub(r"\s+", " ", (b.get("text") or b.get("zh")).strip())
+        if b.get("type") in (None, "text") and (b.get("zh") or b.get("en")):
+            s = (b.get("zh") or b.get("en") or "").strip()
+            s = re.sub(r"\s+", " ", s)
             return (s[:limit] + "…") if len(s) > limit else s
     return ""
 
@@ -144,7 +153,7 @@ TPL = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>__TITLE__ | 智能微生态与生物制造实验室</title>
+<title>__TITLEZH__ | 智能微生态与生物制造实验室</title>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="智能微生态与生物制造实验室">
 <meta property="og:title" content="__OGTITLE__">
@@ -155,62 +164,117 @@ TPL = """<!DOCTYPE html>
 <meta name="twitter:title" content="__OGTITLE__">
 <meta name="twitter:description" content="__OGDESC__">
 <meta name="twitter:image" content="__OGIMAGE__">
+<link rel="preload" as="style" href="../css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="../css/all.min.css"></noscript>
 <style>
-  :root{--bg:#0f1419;--card:#161d26;--text:#e8edf2;--muted:#9aa7b4;--accent:#5ad1a8;--accent2:#3a8ed0;}
+  :root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;
+        --border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;
+        --hover-color:#f0f4f8;--accent:#0066cc;}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-       background:radial-gradient(1200px 600px at 50% -10%,#1b2734,#0f1419 60%);color:var(--text);
-       line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh}
-  .wrap{max-width:720px;margin:0 auto;padding:32px 20px 64px}
-  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--accent);
-          letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(90,209,168,.3);
-          padding:6px 14px;border-radius:999px;background:rgba(90,209,168,.08)}
-  h1{font-size:26px;line-height:1.4;margin:18px 0 10px;font-weight:700;letter-spacing:.01em}
-  .date{color:var(--muted);font-size:14px;margin-bottom:22px}
-  .content{font-size:16px;color:#dde4ea}
+       color:var(--text-color);background:var(--bg);line-height:1.7;
+       -webkit-font-smoothing:antialiased;min-height:100vh;transition:background .3s,color .3s}
+  [data-theme="dark"]{--primary:#4da3ff;--primary-hover:#79b8ff;--bg:#0d1117;--section-bg:#161b22;
+        --border-color:#30363d;--text-color:#e6edf3;--light-text-color:#8b949e;--hover-color:#21262d;--accent:#4da3ff;}
+  .lang-zh .en,.lang-en .zh{display:none !important}
+  .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+          padding:10px 20px;border-bottom:1px solid var(--border-color);
+          background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(16px);
+          -webkit-backdrop-filter:blur(16px)}
+  .back{color:var(--light-text-color);text-decoration:none;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+  .back:hover{color:var(--text-color)}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+  .lang-toggle-btn{background:transparent;border:1px solid var(--border-color);border-radius:999px;
+          padding:6px 14px;font-size:13px;cursor:pointer;color:var(--text-color);font-family:inherit;line-height:1}
+  #theme-toggle{background:transparent;border:1px solid var(--border-color);border-radius:999px;
+          padding:6px 12px;font-size:14px;cursor:pointer;color:var(--text-color);line-height:1}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 22px 72px}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--primary);
+          letter-spacing:.06em;border:1px solid color-mix(in srgb,var(--primary) 30%,transparent);
+          padding:6px 14px;border-radius:999px;background:color-mix(in srgb,var(--primary) 8%,transparent)}
+  h1{font-size:27px;line-height:1.4;margin:18px 0 8px;font-weight:700;letter-spacing:.01em}
+  .date{color:var(--light-text-color);font-size:14px;margin-bottom:26px}
+  .content{font-size:16px;color:var(--text-color)}
   .content p{margin:0 0 16px}
-  .content h2{font-size:19px;margin:26px 0 12px;color:#fff}
-  .content .n-img{margin:18px 0}
-  .content .n-img img{width:100%;border-radius:12px;display:block}
-  .content .n-img figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:8px}
-  .bar{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
-       justify-content:space-between;padding:12px 0;margin-bottom:8px;
-       background:linear-gradient(180deg,rgba(15,20,25,.95),rgba(15,20,25,.6));backdrop-filter:blur(10px)}
-  .back{color:var(--muted);text-decoration:none;font-size:14px;display:inline-flex;align-items:center;gap:6px}
-  .back:hover{color:var(--text)}
-  .share{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));
-         color:#06121a;font-weight:600;border:none;border-radius:999px;padding:10px 18px;cursor:pointer;
-         font-size:14px;box-shadow:0 8px 22px rgba(90,209,168,.35);transition:transform .2s,box-shadow .2s}
-  .share:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(90,209,168,.5)}
-  .foot{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);
-        text-align:center;color:var(--muted);font-size:13px}
-  .foot a{color:var(--accent);text-decoration:none}
+  .content h2{font-size:19px;margin:28px 0 12px;color:var(--text-color)}
+  .content .n-img{margin:20px 0}
+  .content .n-img img{width:100%;border-radius:14px;display:block;border:1px solid var(--border-color)}
+  .content .n-img figcaption{font-size:13px;color:var(--light-text-color);text-align:center;margin-top:8px}
+  .bar{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:44px}
+  .share{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;
+         font-weight:600;border:none;border-radius:999px;padding:11px 22px;cursor:pointer;
+         font-size:14px;transition:transform .2s,box-shadow .2s}
+  .share:hover{transform:translateY(-2px);box-shadow:0 10px 26px color-mix(in srgb,var(--primary) 40%,transparent)}
+  .foot{margin-top:40px;padding-top:22px;border-top:1px solid var(--border-color);
+        text-align:center;color:var(--light-text-color);font-size:13px}
+  .foot a{color:var(--primary);text-decoration:none}
+  @media(max-width:600px){h1{font-size:22px}.wrap{padding:24px 16px 60px}}
 </style>
 </head>
-<body>
-  <div class="wrap">
-    <div class="bar">
-      <a class="back" href="__SITE__/">← 返回实验室网站</a>
-      <button class="share" id="shareBtn">🔗 分享给朋友</button>
+<body class="lang-zh">
+  <div class="topbar">
+    <a class="back" href="__SITE__/">← <span class="zh">返回实验室网站</span><span class="en">Back to Lab</span></a>
+    <div class="topbar-right">
+      <button id="lang-toggle" class="lang-toggle-btn" type="button">EN</button>
+      <button id="theme-toggle" class="lang-toggle-btn" type="button" title="切换主题" aria-label="切换明暗主题"><i class="fas fa-moon"></i></button>
     </div>
-    <span class="kicker">团队动态 · News</span>
-    <h1>__TITLE__</h1>
+  </div>
+  <div class="wrap">
+    <span class="kicker"><span class="zh">团队动态</span><span class="en">News</span></span>
+    <h1><span class="zh">__TITLEZH__</span><span class="en">__TITLEEN__</span></h1>
     <div class="date">__DATE__</div>
-    __HERO__
     <div class="content">
 __BODY__
     </div>
+    <div class="bar">
+      <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
+    </div>
     <div class="foot">
-      来自 <a href="__SITE__/">智能微生态与生物制造实验室</a> · 蚯蚓粪源微生物与微生物模块化组装研究
+      <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
+      · <span class="zh">蚯蚓粪源微生物与微生物模块化组装研究</span><span class="en">Vermicompost-derived Microbiome & Modular Assembly</span>
     </div>
   </div>
 <script>
+  var ZH_TITLE=__TITLEZH_ESC__, EN_TITLE=__TITLEEN_ESC__;
+  /* ===== 语言切换 ===== */
+  var LK="iMicrobiomeLang";
+  function applyLang(l){
+    document.body.classList.remove("lang-zh","lang-en");
+    document.body.classList.add("lang-"+l);
+    var btn=document.getElementById("lang-toggle");
+    if(btn)btn.textContent=(l==="zh")?"EN":"中文";
+    try{localStorage.setItem(LK,l);}catch(e){}
+    document.documentElement.lang=(l==="zh")?"zh-CN":"en";
+    document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
+  }
+  var savedLang=null;
+  try{savedLang=localStorage.getItem(LK);}catch(e){}
+  applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
+  var lb=document.getElementById("lang-toggle");
+  if(lb)lb.addEventListener("click",function(){applyLang(document.body.classList.contains("lang-zh")?"en":"zh");});
+  /* ===== 明暗主题切换 ===== */
+  var THEME_KEY="__THEME__";
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme",t);
+    var b=document.getElementById("theme-toggle");
+    if(b)b.innerHTML=t==="dark"?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';
+  }
+  var savedTheme=null;
+  try{savedTheme=localStorage.getItem(THEME_KEY);}catch(e){}
+  var initialTheme=savedTheme||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  applyTheme(initialTheme);
+  var tb=document.getElementById("theme-toggle");
+  if(tb)tb.addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+    applyTheme(cur);
+    try{localStorage.setItem(THEME_KEY,cur);}catch(e){}
+  });
+  /* ===== 分享 ===== */
   function shareThis(){
     var u=location.href, t=document.title, d=document.querySelector('meta[name="twitter:description"]');
     var txt=d?d.getAttribute('content'):'';
-    if(navigator.share){
-      navigator.share({title:t,text:txt,url:u}).catch(function(){});
-    }else{
+    if(navigator.share){ navigator.share({title:t,text:txt,url:u}).catch(function(){}); }
+    else{
       var ta=document.createElement('textarea');ta.value=u;document.body.appendChild(ta);
       ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
       alert('链接已复制，去微信粘贴发给朋友：\\n'+u);
@@ -223,23 +287,24 @@ __BODY__
 
 
 def render_page(n):
-    title = n.get("titleZh") or n.get("titleEn") or "团队动态"
+    title_zh = n.get("titleZh") or ""
+    title_en = n.get("titleEn") or ""
     date = n.get("date") or ((n.get("year") or "") + "." + (n.get("month") or ""))
-    ogt = esc_attr(title)
+    ogt = esc_attr(title_zh or title_en)
     ogd = esc_attr(first_summary(n))
     url = "%s/news/%s.html" % (SITE, n.get("id"))
-    # 封面图只用于 OG 卡片，不在详情页顶部重复展示（正文 blocks 里已含完整图片）
     ogimg = esc_attr(first_image(n))
-    hero = ""
     body = render_blocks(n.get("blocks"))
     return (TPL
-            .replace("__TITLE__", html.escape(title))
+            .replace("__TITLEZH__", html.escape(title_zh))
+            .replace("__TITLEEN__", html.escape(title_en))
+            .replace("__TITLEZH_ESC__", json.dumps(title_zh, ensure_ascii=False))
+            .replace("__TITLEEN_ESC__", json.dumps(title_en, ensure_ascii=False))
             .replace("__OGTITLE__", ogt)
             .replace("__OGDESC__", ogd)
             .replace("__OGURL__", esc_attr(url))
             .replace("__OGIMAGE__", ogimg)
             .replace("__DATE__", html.escape(date or ""))
-            .replace("__HERO__", hero)
             .replace("__BODY__", body)
             .replace("__SITE__", SITE))
 
