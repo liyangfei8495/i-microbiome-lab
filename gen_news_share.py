@@ -167,9 +167,6 @@ TPL = """<!DOCTYPE html>
           padding:6px 14px;border-radius:999px;background:rgba(90,209,168,.08)}
   h1{font-size:26px;line-height:1.4;margin:18px 0 10px;font-weight:700;letter-spacing:.01em}
   .date{color:var(--muted);font-size:14px;margin-bottom:22px}
-  .hero{width:100%;border-radius:16px;overflow:hidden;margin:8px 0 26px;
-        box-shadow:0 18px 50px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.06)}
-  .hero img{width:100%;display:block}
   .content{font-size:16px;color:#dde4ea}
   .content p{margin:0 0 16px}
   .content h2{font-size:19px;margin:26px 0 12px;color:#fff}
@@ -231,10 +228,9 @@ def render_page(n):
     ogt = esc_attr(title)
     ogd = esc_attr(first_summary(n))
     url = "%s/news/%s.html" % (SITE, n.get("id"))
+    # 封面图只用于 OG 卡片，不在详情页顶部重复展示（正文 blocks 里已含完整图片）
     ogimg = esc_attr(first_image(n))
     hero = ""
-    if ogimg:
-        hero = '<div class="hero"><img src="%s" alt="%s" loading="lazy"></div>' % (ogimg, ogt)
     body = render_blocks(n.get("blocks"))
     return (TPL
             .replace("__TITLE__", html.escape(title))
