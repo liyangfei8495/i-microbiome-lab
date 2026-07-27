@@ -958,18 +958,18 @@ document.addEventListener("DOMContentLoaded",function(){
     return over;
   }
   window.__deepMerge=deepMerge;
-  var __d=window.__DATA;
-  if(__d){
-    // 服务器内嵌数据即为权威，不再用本机 localStorage 覆盖（防止跨设备内容不一致 / 旧设备发布回退全网）
-    DATA=__d;renderAll(__d);
-  }
-  else{
-    fetch("content.json?t="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
-      .then(function(d){
-        window.__DATA=d;DATA=d;renderAll(d);
-      })
-      .catch(function(){var e=document.getElementById("load-error");if(e)e.style.display="block";});
-  }
+  // 数据以外部 content.json 为线上权威源：每次加载都带时间戳拉取最新，杜绝浏览器缓存导致的旧版本显示
+  // 内嵌 window.__DATA 仅作离线/兜底快照（如本地 file:// 打开时 fetch 失败），不参与线上渲染覆盖
+  (function(){
+    var __fallback=window.__DATA;
+    fetch("content.json?t="+Date.now(),{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
+      .then(function(d){ if(!d||typeof d!=="object") throw new Error("bad json"); window.__DATA=d; DATA=d; renderAll(d); })
+      .catch(function(err){
+        console.warn("[content.json] 加载失败，启用内嵌兜底快照：", err&&err.message);
+        if(__fallback){ window.__DATA=__fallback; DATA=__fallback; renderAll(__fallback); }
+        else { var e=document.getElementById("load-error"); if(e) e.style.display="block"; }
+      });
+  })();
 });
 })();
 </script>
@@ -1993,26 +1993,28 @@ function publishToGitHub(onDone){
   if(!token){ setPubStatus("❌ 请先填 GitHub Token 并点“记住”","err"); var gi=document.getElementById("gh-token"); if(gi){try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus();} if(onDone)onDone(false,"请先填 GitHub Token"); return; }
   // 兜底：edData 未初始化时（用户直接点“保存并发布”而未先保存），用线上真实数据，绝不能写成 window.__DATA=undefined
   if(!edData||typeof edData!=="object"){ try{ edData=JSON.parse(JSON.stringify(window.__DATA||DATA||{})); }catch(e){ edData={}; } }
-  var repo="liyangfei8495/i-microbiome-lab", path="index.html";
+  var repo="liyangfei8495/i-microbiome-lab", path="content.json";
   var proxy=getGhProxy();
   var base=proxy||"https://api.github.com";
-  setPubStatus(proxy?("正在通过代理发布（"+proxy+"）…"):"正在直连 GitHub 发布…","info");
+  setPubStatus(proxy?("正在通过代理发布数据（"+proxy+"）…"):"正在直连 GitHub 发布…","info");
   var ctrl=new AbortController();
   var to=setTimeout(function(){ ctrl.abort(); }, 12000);
   fetch(base+"/repos/"+repo+"/contents/"+path,{
     headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
     signal: ctrl.signal
-  }).then(function(r){ if(!r.ok) throw new Error("获取文件失败("+r.status+")"); return r.json(); })
+  }).then(function(r){
+    if(r.status===404){ return { __create:true, sha:null }; }   // 文件不存在则新建
+    if(!r.ok) throw new Error("获取文件失败("+r.status+")");
+    return r.json();
+  })
    .then(function(meta){
-     var oldHtml=b64decode(meta.content);
-     var newData="window.__DATA="+JSON.stringify(edData)+";\n";
-     var newHtml=oldHtml.replace(/window\.__DATA\s*=\s*\{[\s\S]*?\}\s*;?\s*<\/script>/, function(m){ return newData+"<\/script>"; });
-     if(newHtml===oldHtml){ clearTimeout(to); setPubStatus("⚠️ 未检测到数据段或内容无变化，发布中止","err"); if(onDone)onDone(false,"无变化或格式不符"); return Promise.reject({__abort:true}); }
-     setPubStatus("已读取文件，正在上传更新…","info");
+     setPubStatus("数据已就绪，正在上传…","info");
+     var body={ message:"site: 管理员发布内容更新", content:b64encode(JSON.stringify(edData,null,2)) };
+     if(!meta.__create){ body.sha=meta.sha; }
      return fetch(base+"/repos/"+repo+"/contents/"+path,{
        method:"PUT",
        headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
-       body: JSON.stringify({ message:"site: 管理员发布更新", content:b64encode(newHtml), sha:meta.sha })
+       body: JSON.stringify(body)
      });
    })
    .then(function(r){ if(!r.ok) throw new Error("发布失败("+r.status+")"); return r.json(); })
