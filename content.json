@@ -160,12 +160,16 @@
       },
       {
         "id": "proj-bioprocess",
-        "titleZh": "AMF",
-        "titleEn": "",
+        "titleZh": "大刍草核心内生菌挖掘",
+        "titleEn": "Mining endophytic fungi in napier grass",
         "logo": "images/plant_image5.jpg",
-        "lead": "",
+        "lead": "刘紫旭",
         "pillarId": "pillar-1784985265133",
-        "memberIds": [],
+        "memberIds": [
+          "member-liang",
+          "member-ren",
+          "member-li"
+        ],
         "contentZh": "",
         "contentEn": "",
         "goalsZh": "",
