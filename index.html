@@ -1145,11 +1145,23 @@ document.addEventListener("DOMContentLoaded",function(){
 .ap-detail-group{margin:14px 0;padding:14px 14px 6px;border:1px dashed #c8d6e5;border-radius:12px;background:#f7faff;}
 .ap-detail-group .ap-field textarea{min-height:110px;}
 .ap-group-title{font-size:12px;font-weight:700;color:#0066cc;margin:0 0 10px;letter-spacing:.3px;}
+.ap-toolbar{position:sticky;top:0;z-index:10;display:flex;gap:8px;align-items:center;padding:8px 0 12px;background:#fff;border-bottom:1px solid #e5e5ea;margin-bottom:8px;}
+.ap-toolbar .ap-search{flex:1;min-width:120px;padding:7px 12px;border:1px solid #e5e5ea;border-radius:999px;font-size:13px;font-family:inherit;outline:none;}
+.ap-toolbar .ap-search:focus{border-color:var(--primary,#0066cc);box-shadow:0 0 0 3px rgba(0,102,204,.15);}
+.ap-toolbar .ap-btn{padding:6px 10px;font-size:12px;white-space:nowrap;}
+.ap-items{padding-bottom:10px;}
 .ap-item{border:1px solid #e5e5ea;border-radius:10px;padding:12px;margin:10px 0;background:#fafafa;}
-.ap-item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.ap-item-highlight{background:#e8f4ff;border-color:#b4d7ff;}
+.ap-item-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
 .ap-item-head strong{color:var(--primary,#0066cc);font-size:13px;}
+.ap-item-actions{display:flex;gap:6px;align-items:center;}
+.ap-toggle{background:transparent;border:none;color:#6e6e73;cursor:pointer;font-size:12px;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.ap-toggle:hover{background:#e5e5ea;}
 .ap-del{background:#ff3b30;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;}
 .ap-add{background:#e8f0fe;color:var(--primary,#0066cc);border:1px solid #cfe0ff;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;margin-top:6px;}
+.ap-item-body{margin-top:10px;}
+.ap-item-collapsed .ap-item-body{display:none;}
+.ap-item-collapsed .ap-item-head{margin-bottom:0;}
 .ap-toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none;}
 .ap-toast.show{opacity:1;}
 body.admin-mode .edit-zone{position:relative;outline:1px dashed rgba(0,102,204,0.25);outline-offset:2px;}
@@ -1329,10 +1341,27 @@ function field(path,label,val,type){
   return'<div class="ap-field"><label>'+label+'</label><input data-path="'+path+'" value="'+ev+'"></div>';
 }
 function itemBox(title,fieldsHtml,arrPath,idx){
-  return'<div class="ap-item"><div class="ap-item-head"><strong>'+title+'</strong><button class="ap-del" data-del="'+arrPath+'" data-idx="'+idx+'">删除</button></div>'+fieldsHtml+'</div>';
+  return'<div class="ap-item" data-search-title="'+escAttr(title)+'">'+
+    '<div class="ap-item-head" data-toggle-item>'+
+      '<strong>'+title+'</strong>'+
+      '<span class="ap-item-actions">'+
+        '<button class="ap-toggle" title="折叠/展开" data-toggle-item><i class="fas fa-chevron-up"></i></button>'+
+        '<button class="ap-del" data-del="'+arrPath+'" data-idx="'+idx+'">删除</button>'+
+      '</span>'+
+    '</div>'+
+    '<div class="ap-item-body">'+fieldsHtml+'</div>'+
+  '</div>';
 }
 function subBox(title,fieldsHtml){
-  return'<div class="ap-item"><div class="ap-item-head"><strong>'+title+'</strong></div>'+fieldsHtml+'</div>';
+  return'<div class="ap-item" data-search-title="'+escAttr(title)+'">'+
+    '<div class="ap-item-head" data-toggle-item>'+
+      '<strong>'+title+'</strong>'+
+      '<span class="ap-item-actions">'+
+        '<button class="ap-toggle" title="折叠/展开" data-toggle-item><i class="fas fa-chevron-up"></i></button>'+
+      '</span>'+
+    '</div>'+
+    '<div class="ap-item-body">'+fieldsHtml+'</div>'+
+  '</div>';
 }
 // 单一图片上传控件：本地选图→上传图库（无 Token 则内嵌 base64）→回填，并可手填 URL
 function imgField(path,label,val,folder){
@@ -1640,7 +1669,13 @@ function openBlockEditor(type,label){
             '<button class="ap-del blk-del" data-del-block="'+i+'" data-bidx="'+j+'">删除</button>'+
           '</span></div>'+inner+'</div>';
       }).join("");
-      h+='<div class="ap-item"><div class="ap-item-head"><strong>动态 '+(i+1)+': '+(n.titleZh||"")+'</strong><button class="ap-del" data-del="news" data-idx="'+i+'">删除</button></div>'+
+      h+='<div class="ap-item" data-search-title="'+escAttr('动态 '+(i+1)+': '+(n.titleZh||""))+'">'+
+        '<div class="ap-item-head" data-toggle-item><strong>动态 '+(i+1)+': '+(n.titleZh||"")+'</strong>'+
+        '<span class="ap-item-actions">'+
+          '<button class="ap-toggle" title="折叠/展开" data-toggle-item><i class="fas fa-chevron-up"></i></button>'+
+          '<button class="ap-del" data-del="news" data-idx="'+i+'">删除</button>'+
+        '</span></div>'+
+        '<div class="ap-item-body">'+
         field("news."+i+".titleZh","标题(中)",n.titleZh)+
         field("news."+i+".titleEn","标题(英)",n.titleEn)+
         field("news."+i+".day","日(如 15)",n.day,"text")+
@@ -1650,7 +1685,7 @@ function openBlockEditor(type,label){
           '<button class="ap-add blk-add" data-add-block="text" data-news="'+i+'">+ 文字块</button>'+
           '<button class="ap-add blk-add" data-add-block="image" data-news="'+i+'">+ 图片块</button>'+
         '</div>'+
-        '</div>';
+        '</div></div>';
     });
     h+='<button class="ap-add" data-add="news">+ 添加动态</button>';
   }else if(type==="labLife"){
@@ -1665,7 +1700,12 @@ function openBlockEditor(type,label){
     h+=field("contact.addressZh","地址(中)",d.contact.addressZh,"textarea");
     h+=field("contact.addressEn","地址(英)",d.contact.addressEn,"textarea");
   }
-  beBody.innerHTML=h;
+  beBody.innerHTML='<div class="ap-toolbar">'+
+    '<input type="search" class="ap-search" placeholder="搜索条目（标题/名称）…" data-be-search>'+
+    '<button class="ap-btn" data-be-collapse>折叠全部</button>'+
+    '<button class="ap-btn" data-be-expand>展开全部</button>'+
+    '</div>'+
+    '<div class="ap-items">'+h+'</div>';
   bindBlockEditorEvents();
   apOpen(beModal);
 }
@@ -1892,6 +1932,51 @@ function bindBlockEditorEvents(){
       openBlockEditor(currentEdit,beTitle.textContent.replace(/^编辑：/,""));
     };
   });
+
+  // ===== 编辑器条目：折叠 / 展开 / 搜索 =====
+  function setItemCollapsed(item,collapsed){
+    item.classList.toggle('ap-item-collapsed',collapsed);
+    var icon=item.querySelector('.ap-toggle i');
+    if(icon)icon.className='fas fa-chevron-'+(collapsed?'down':'up');
+  }
+  var itemsWrap=beBody.querySelector('.ap-items');
+  if(itemsWrap){
+    itemsWrap.querySelectorAll('.ap-item-head[data-toggle-item]').forEach(function(head){
+      head.addEventListener('click',function(e){
+        if(e.target.closest('.ap-del')||e.target.closest('.ap-toggle'))return;
+        var item=head.closest('.ap-item');
+        setItemCollapsed(item,!item.classList.contains('ap-item-collapsed'));
+      });
+    });
+    itemsWrap.querySelectorAll('.ap-toggle').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var item=btn.closest('.ap-item');
+        setItemCollapsed(item,!item.classList.contains('ap-item-collapsed'));
+      });
+    });
+    var expandAll=beBody.querySelector('[data-be-expand]');
+    var collapseAll=beBody.querySelector('[data-be-collapse]');
+    if(expandAll)expandAll.onclick=function(){
+      itemsWrap.querySelectorAll('.ap-item').forEach(function(item){setItemCollapsed(item,false);});
+    };
+    if(collapseAll)collapseAll.onclick=function(){
+      itemsWrap.querySelectorAll('.ap-item').forEach(function(item){setItemCollapsed(item,true);});
+    };
+    var searchInput=beBody.querySelector('[data-be-search]');
+    if(searchInput){
+      searchInput.addEventListener('input',function(){
+        var q=this.value.trim().toLowerCase();
+        itemsWrap.querySelectorAll('.ap-item').forEach(function(item){
+          var title=(item.getAttribute('data-search-title')||'').toLowerCase();
+          var show=!q||title.indexOf(q)!==-1;
+          item.style.display=show?'':'none';
+          if(show&&q)item.classList.add('ap-item-highlight');
+          else item.classList.remove('ap-item-highlight');
+        });
+      });
+    }
+  }
 }
 
 function handleImgUpload(file,zone){
