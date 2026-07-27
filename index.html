@@ -437,7 +437,7 @@ function numZh(n){var d=["零","一","二","三","四","五","六","七","八","
 function img(src,cls,zoom){
   if(!src)return'';
   var c=(zoom===false)?(cls?esc(cls):''):('zoomable'+(cls?(' '+esc(cls)):''));
-  var cb=(c?c+' ':'')+'bup';return'<img src="'+esc(src)+'" class="'+cb+'" alt="" loading="lazy" decoding="async">';
+  var cb=(c?c+' ':'')+'bup';return'<img src="'+esc(src)+'" class="'+cb+'" alt="" loading="lazy" decoding="async" onload="this.classList.add(\'img-ready\')" onerror="this.classList.add(\'img-ready\')">';
 }
 function avatar(name){
   var h=0;
@@ -909,6 +909,7 @@ function renderAll(d){
   bindAll();
   bindSearch();
   applyLang(window.__lang||"zh");
+  try{window.__imgBup&&window.__imgBup();}catch(e){}
 }
 
 // ============ bind ============
@@ -2472,7 +2473,7 @@ document.getElementById("be-publish").onclick=function(){
   }
   window.__imgBup=imgBup;
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',imgBup);}else{imgBup();}
-  window.addEventListener('load', function(){setTimeout(function(){var all=document.querySelectorAll('img.bup');for(var i=0;i<all.length;i++)all[i].classList.add('img-ready');},600);});
+  window.addEventListener('load', function(){try{window.__imgBup&&window.__imgBup();}catch(e){}});
 })();
 </script>
 <!-- === MOTION_END === -->
