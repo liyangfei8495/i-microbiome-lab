@@ -432,6 +432,7 @@ function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"
 function zh(s){return '<span class="zh">'+esc(s)+'</span>';}
 function en(s){return '<span class="en">'+esc(s)+'</span>';}
 function both(zhTxt,enTxt){return zh(zhTxt)+en(enTxt);}
+function bothText(zhTxt,enTxt){return (zhTxt||"")+(zhTxt&&enTxt?" / ":"")+(enTxt||"");}
 function numZh(n){var d=["零","一","二","三","四","五","六","七","八","九","十"];if(n<=10)return d[n];if(n<20)return"十"+d[n-10];if(n%10===0)return d[Math.floor(n/10)]+"十";return d[Math.floor(n/10)]+"十"+d[n%10];}
 function img(src,cls,zoom){
   if(!src)return'';
@@ -813,7 +814,7 @@ function renderAll(d){
 
   // publications
   document.getElementById("publications").innerHTML=
-    '<div class="search-bar"><input type="search" class="js-search" placeholder="'+both("搜索论文（标题/作者/期刊）…","Search publications…")+'"></div>'+
+    '<div class="search-bar"><input type="search" class="js-search" placeholder="'+esc(bothText("搜索论文（标题/作者/期刊）…","Search publications…"))+'"></div>'+
     '<h2>'+both("论文成果","Publications")+'</h2>'+
     '<div class="publications-grid"><ul class="publication-list">'+
     d.publications.map(function(p){
@@ -828,7 +829,7 @@ function renderAll(d){
 
   // news
   document.getElementById("news").innerHTML=
-    '<div class="search-bar"><input type="search" class="js-search" placeholder="'+both("搜索动态（标题/内容/日期）…","Search news…")+'"></div>'+
+    '<div class="search-bar"><input type="search" class="js-search" placeholder="'+esc(bothText("搜索动态（标题/内容/日期）…","Search news…"))+'"></div>'+
     '<h2>'+both("团队动态","Lab News")+'</h2>'+
     '<div class="news-grid">'+d.news.map(function(n){
       return'<article class="news-card clickable" data-open="news" data-id="'+esc(n.id)+'" data-search-item data-search-text="'+esc((n.titleZh||"")+(n.titleEn||"")+newsSummary(n)+(z(n.date)||""))+'">'+
@@ -850,7 +851,7 @@ function renderAll(d){
         '</article>';}).join("")+'</div>')
       :'<p style="text-align:center;color:var(--light-text-color);padding:10px 0;">'+both("科研项目持续更新中…","Projects coming soon")+'</p>';
     document.getElementById("projects").innerHTML=
-      '<div class="search-bar"><input type="search" class="js-search" placeholder="'+both("搜索项目（标题/负责人）…","Search projects…")+'"></div>'+
+      '<div class="search-bar"><input type="search" class="js-search" placeholder="'+esc(bothText("搜索项目（标题/负责人）…","Search projects…"))+'"></div>'+
       '<h2>'+both("科研项目","Projects")+'</h2>'+inner+
       '<p class="search-empty" style="display:none;text-align:center;color:var(--light-text-color);padding:20px 0;">'+both("没有匹配的项目","No matching projects")+'</p>';
   })();
@@ -867,7 +868,7 @@ function renderAll(d){
         '</div></article>';}).join("")+'</div>')
       :'<p style="text-align:center;color:var(--light-text-color);padding:10px 0;">'+both("荣誉持续更新中…","Honors coming soon")+'</p>';
     document.getElementById("honors").innerHTML=
-      '<div class="search-bar"><input type="search" class="js-search" placeholder="'+both("搜索荣誉…","Search honors…")+'"></div>'+
+      '<div class="search-bar"><input type="search" class="js-search" placeholder="'+esc(bothText("搜索荣誉…","Search honors…"))+'"></div>'+
       '<h2>'+both("荣誉墙","Honors & Awards")+'</h2>'+inner+
       '<p class="search-empty" style="display:none;text-align:center;color:var(--light-text-color);padding:20px 0;">'+both("没有匹配的荣誉","No matching honors")+'</p>';
   })();
