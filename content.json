@@ -145,7 +145,7 @@
       },
       {
         "id": "proj-enzyme-ai",
-        "titleZh": "Non-animal high-quality fungal chitosan directional synthesis and controllable process driven by cross-border micro-ecological induction and chassis reconstruction",
+        "titleZh": "非动物高质量真菌壳聚糖定向合成及可控工艺，由跨界微生态诱导和底盘重构驱动",
         "titleEn": "Non-animal high-quality fungal chitosan directional synthesis and controllable process driven by cross-border micro-ecological induction and chassis reconstruction",
         "logo": "images/plant_image3.jpg",
         "lead": "阎凝翔",
@@ -182,6 +182,27 @@
         "progressEn": "",
         "images": [],
         "pubIds": []
+      },
+      {
+        "id": "proj-1785154327225",
+        "titleZh": "AMF真菌侵染对玉米氮素利用的影响及其转录组调控机制研究",
+        "titleEn": "Study on the Impact of AMF Fungal Infection on Nitrogen Use in Corn and Its Transcriptome Regulation Mechanism",
+        "contentZh": "",
+        "contentEn": "",
+        "goalsZh": "",
+        "goalsEn": "",
+        "progressZh": "",
+        "progressEn": "",
+        "lead": "任雪杨",
+        "pillarId": "",
+        "memberIds": [
+          "member-liang",
+          "member-li",
+          "member-liuyang"
+        ],
+        "pubIds": [],
+        "images": [],
+        "logo": ""
       }
     ]
   },
