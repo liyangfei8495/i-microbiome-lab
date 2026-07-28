@@ -159,7 +159,7 @@ TPL = """<!DOCTYPE html>
 <meta property="og:site_name" content="智能微生态与生物制造实验室">
 <meta property="og:title" content="__OGTITLE__">
 <meta property="og:description" content="__OGDESC__">
-<meta property="og:url" content="__OGURL__">
+<meta property="og:url" content="__OGURL__?v=__BUILDVER__">
 <meta property="og:image" content="__OGIMAGE__">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="__OGTITLE__">
@@ -247,6 +247,8 @@ __BODY__
     document.documentElement.lang=(l==="zh")?"zh-CN":"en";
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
+  /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
+  (function(){var v="__BUILDVER__";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -271,8 +273,8 @@ __BODY__
   });
   /* ===== 分享 ===== */
   function shareThis(){
-    // 追加固定参数，绕过微信对已缓存 404 的抓取结果，强制重新抓取 OG 卡片
-    var u=location.origin+location.pathname+'?s=1', t=document.title, d=document.querySelector('meta[name="twitter:description"]');
+    // 用当前已带版本参数的 URL（页面加载时已自动补 ?v=），确保微信粘贴后按新链接出卡片
+    var u=location.origin+location.pathname+location.search, t=document.title, d=document.querySelector('meta[name="twitter:description"]');
     var txt=d?d.getAttribute('content'):'';
     var isWx=/MicroMessenger/i.test(navigator.userAgent);
     if(navigator.share && !isWx){ navigator.share({title:t,text:txt,url:u}).catch(function(){}); }
@@ -331,6 +333,8 @@ def render_page(n):
     url = "%s/news/%s.html" % (SITE, n.get("id"))
     ogimg = esc_attr(first_image(n))
     body = render_blocks(n.get("blocks"))
+    # 每次部署生成新的版本号，作为分享 URL 的 ?v= 参数，强制微信当作新链接重新抓取 OG 卡片
+    build_ver = datetime.now().strftime("%Y%m%d%H%M%S")
     return (TPL
             .replace("__TITLEZH__", html.escape(title_zh))
             .replace("__TITLEEN__", html.escape(title_en))
@@ -340,6 +344,7 @@ def render_page(n):
             .replace("__OGDESC__", ogd)
             .replace("__OGURL__", esc_attr(url))
             .replace("__OGIMAGE__", ogimg)
+            .replace("__BUILDVER__", build_ver)
             .replace("__DATE__", html.escape(date or ""))
             .replace("__BODY__", body)
             .replace("__SITE__", SITE))
