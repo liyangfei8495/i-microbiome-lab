@@ -13,6 +13,7 @@
   GH_TOKEN=xxx python gen_news_share.py
 """
 import os, re, json, base64, time, html, urllib.request, urllib.error
+from datetime import datetime
 
 SITE = "https://liang-lab.cn"
 REPO = "liyangfei8495/i-microbiome-lab"
@@ -285,10 +286,43 @@ __BODY__
 </html>"""
 
 
+def build_date(n):
+    """尽量生成 YYYY.MM.DD 完整日期。"""
+    year = n.get("year") or ""
+    month = n.get("month") or ""
+    day = n.get("day") or ""
+    raw = n.get("date") or ""
+
+    # 如果 raw 已经是 YYYY.MM.DD，直接返回
+    if raw and re.match(r"^\d{4}\.\d{2}\.\d{2}$", raw.strip()):
+        return raw.strip()
+
+    # 从 id 中的毫秒时间戳提取年份（例如 n-1785197807527）
+    if not year:
+        m = re.search(r"(\d{13})", n.get("id", ""))
+        if m:
+            try:
+                year = datetime.fromtimestamp(int(m.group(1)) / 1000).strftime("%Y")
+            except Exception:
+                pass
+
+    # 如果还没有年份，退而求其次用当前年
+    if not year:
+        year = datetime.now().strftime("%Y")
+
+    parts = [p for p in [year, month, day] if p]
+    if not parts:
+        return raw
+    # raw 形如 2026.07 且我们有 day，则补全为 2026.07.14
+    if raw and len(parts) == 3 and not day and raw.count(".") == 1:
+        return raw + "." + day
+    return ".".join(parts)
+
+
 def render_page(n):
     title_zh = n.get("titleZh") or ""
     title_en = n.get("titleEn") or ""
-    date = n.get("date") or ((n.get("year") or "") + "." + (n.get("month") or ""))
+    date = build_date(n)
     ogt = esc_attr(title_zh or title_en)
     ogd = esc_attr(first_summary(n))
     url = "%s/news/%s.html" % (SITE, n.get("id"))
