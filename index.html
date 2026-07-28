@@ -1892,13 +1892,24 @@ function shareNews(id){
   if(!id)return;
   var dd=(window.__DATA)||DATA;
   var item=find((dd.news||[]),id);
-  var url=location.origin+'/news/'+encodeURIComponent(id)+'.html';
+  var url=location.origin+'/news/'+encodeURIComponent(id)+'.html'+'?s=1';
   var title=item?(item.titleZh||item.titleEn||'团队动态'):'团队动态';
   var text=item?firstNewsSummary(item):'';
-  if(navigator.share){
+  var isWx=/MicroMessenger/i.test(navigator.userAgent);
+  if(navigator.share && !isWx){
     try{ navigator.share({title:title,text:text,url:url}).catch(function(){ openShareModal('news',id); }); }
     catch(e){ openShareModal('news',id); }
+  } else if(isWx){
+    copyText(url, function(){ showWxShareTip(); });
   } else { openShareModal('news',id); }
+}
+function showWxShareTip(){
+  var old=document.getElementById('wx-share-tip'); if(old)old.remove();
+  var d=document.createElement('div'); d.id='wx-share-tip';
+  d.style.cssText='position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:99999;background:rgba(20,20,22,.9);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;max-width:78vw;text-align:center;line-height:1.5;box-shadow:0 8px 30px rgba(0,0,0,.35)';
+  d.innerHTML='点击右上角 <b>···</b> 发送给朋友<br><span style="opacity:.75;font-size:12px">链接已复制，将自动带标题与封面图</span>';
+  document.body.appendChild(d);
+  setTimeout(function(){ if(d.parentNode)d.parentNode.removeChild(d); }, 3600);
 }
 function firstNewsSummary(n){
   var blocks=n.blocks||[];
