@@ -231,7 +231,6 @@ __BODY__
     </div>
     <div class="foot">
       <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
-      · <span class="zh">蚯蚓粪源微生物与微生物模块化组装研究</span><span class="en">Vermicompost-derived Microbiome & Modular Assembly</span>
     </div>
   </div>
 <script>
