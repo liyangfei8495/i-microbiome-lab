@@ -3203,9 +3203,23 @@ function publishToGitHub(onDone){
   // 兜底：edData 未初始化时（用户直接点“保存并发布”而未先保存），用线上真实数据，绝不能写成 window.__DATA=undefined
   if(!edData||typeof edData!=="object"){ try{ edData=JSON.parse(JSON.stringify(window.__DATA||DATA||{})); }catch(e){ edData={}; } }
   var repo="liyangfei8495/i-microbiome-lab", path="content.json";
-  var proxy=getGhProxy();
-  var base=proxy||"https://api.github.com";
-  setPubStatus(proxy?("正在通过代理发布数据（"+proxy+"）…"):"正在直连 GitHub 发布…","info");
+  // 候选发布通道：直连 GitHub 优先（Token 仅发给 GitHub，最安全）；其次用户自己的 Workers 代理
+  var candidates=[
+    { name:"直连 GitHub", base:"https://api.github.com" },
+    { name:"Workers 代理", base:getGhProxy() }
+  ].filter(function(c){ return c.base; });
+  tryPublish(candidates, 0, token, repo, path, onDone);
+}
+function tryPublish(list, idx, token, repo, path, onDone){
+  if(idx>=list.length){
+    var m="❌ 直连与代理都连不上（可能网络限制）。已自动导出 index.html，发我即可发布";
+    setPubStatus(m,"err"); showToast(m);
+    try{ doExportIndex(); }catch(e){}
+    if(onDone)onDone(false,"all channels failed");
+    return;
+  }
+  var c=list[idx], base=c.base;
+  setPubStatus("正在通过「"+c.name+"」发布…","info");
   var ctrl=new AbortController();
   var to=setTimeout(function(){ ctrl.abort(); }, 12000);
   fetch(base+"/repos/"+repo+"/contents/"+path,{
@@ -3227,44 +3241,46 @@ function publishToGitHub(onDone){
      });
    })
    .then(function(r){ if(!r.ok) throw new Error("发布失败("+r.status+")"); return r.json(); })
-   .then(function(){ clearTimeout(to); var m="✅ 已发布，1–2 分钟全网生效"; setPubStatus(m,"ok"); showToast(m); if(onDone)onDone(true,m); })
+   .then(function(){ clearTimeout(to); var m="✅ 已通过「"+c.name+"」发布，1–2 分钟全网生效"; setPubStatus(m,"ok"); showToast(m); if(onDone)onDone(true,m); })
    .catch(function(e){
      clearTimeout(to);
      if(e&&e.__abort){ if(onDone)onDone(false,"中止"); return; }
-     var msg=(e&&e.name==="AbortError")?"连接超时（你浏览器可能连不上该地址）":(e&&e.message?e.message:"未知错误");
-     var full="❌ 发布出错："+msg+"（已自动导出文件，发我即可发布）";
-     setPubStatus(full,"err"); showToast(full); if(onDone)onDone(false,msg);
-     try{
-       var url=location.href.split("#")[0];
-       fetch(url).then(function(r2){return r2.text();}).then(function(oldHtml){
-         var nd="window.__DATA="+JSON.stringify(edData)+";\n";
-         var nh=oldHtml.replace(/window\.__DATA\s*=\s*\{[\s\S]*?\}\s*;?\s*<\/script>/, function(m){ return nd+"<\/script>"; });
-         if(nh!==oldHtml){
-           var blob=new Blob([nh],{type:"text/html"});
-           var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="index.html"; a.click();
-         }
-       }).catch(function(){});
-     }catch(_){}
+     var msg=(e&&e.name==="AbortError")?"连接超时":(e&&e.message?e.message:"未知错误");
+     // 当前通道失败，自动尝试下一个
+     setPubStatus("「"+c.name+"」失败（"+msg+"），尝试下一通道…","info");
+     tryPublish(list, idx+1, token, repo, path, onDone);
    });
 }
 function testConnection(){
-  var base=getGhProxy();
-  if(!base){ setPubStatus("请先填代理地址并点“记住”","err"); var pi=document.getElementById("gh-proxy"); if(pi) pi.focus(); return; }
   var token=getGhToken();
-  if(!token){ setPubStatus("✅ 代理正常，但⚠️ 还没填 GitHub Token，无法发布","err"); showToast("代理通，但缺 Token"); return; }
-  setPubStatus("正在测试代理 + Token…","info");
-  var ctrl=new AbortController();
-  var to=setTimeout(function(){ ctrl.abort(); }, 8000);
-  fetch(base+"/repos/liyangfei8495/i-microbiome-lab/contents/index.html", {
-    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
-    signal: ctrl.signal
-  })
-    .then(function(r){ clearTimeout(to);
-      if(r.ok){ var m="✅ 代理通 + Token有效，可以发布"; setPubStatus(m,"ok"); showToast(m); }
-      else if(r.status===401||r.status===403){ var m2="代理通，但❌ Token无效/无权限("+r.status+")"; setPubStatus(m2,"err"); showToast(m2); }
-      else { var m3="代理通，但状态异常("+r.status+")"; setPubStatus(m3,"err"); showToast(m3); }
+  if(!token){ setPubStatus("⚠️ 还没填 GitHub Token，先填再测试","err"); showToast("请先填 Token"); return; }
+  setPubStatus("正在测试发布通道（直连优先）…","info");
+  var candidates=[
+    { name:"直连 GitHub", base:"https://api.github.com" },
+    { name:"Workers 代理", base:getGhProxy() }
+  ].filter(function(c){ return c.base; });
+  function testOne(i){
+    if(i>=candidates.length){ setPubStatus("❌ 直连与代理都连不上（可能网络限制），可导出文件发我发布","err"); showToast("所有通道均不可达"); return; }
+    var c=candidates[i];
+    var ctrl=new AbortController();
+    var to=setTimeout(function(){ ctrl.abort(); }, 8000);
+    fetch(c.base+"/repos/liyangfei8495/i-microbiome-lab/contents/index.html", {
+      headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
+      signal: ctrl.signal
     })
-    .catch(function(e){ clearTimeout(to); var m4=(e&&e.name==="AbortError")?"❌ 代理连接超时（很可能 workers.dev 被墙）":"❌ 连接失败 "+(e&&e.message?e.message:e); setPubStatus(m4,"err"); showToast(m4); });
+    .then(function(r){ clearTimeout(to);
+      if(r.ok){ var m="✅ "+c.name+" 通 + Token有效，可以发布"; setPubStatus(m,"ok"); showToast(m); }
+      else if(r.status===401||r.status===403){ var m2=c.name+" 通，但❌ Token无效/无权限("+r.status+")"; setPubStatus(m2,"err"); showToast(m2); }
+      else { var m3=c.name+" 通，但状态异常("+r.status+")"; setPubStatus(m3,"err"); showToast(m3); }
+    })
+    .catch(function(e){ clearTimeout(to);
+      var reason=(e&&e.name==="AbortError")?"连接超时":("连接失败 "+(e&&e.message?e.message:e));
+      // 试下一个通道
+      setPubStatus(c.name+" "+reason+"，尝试下一通道…","info");
+      testOne(i+1);
+    });
+  }
+  testOne(0);
 }
 document.getElementById("gh-test").onclick=testConnection;
 document.getElementById("gh-token-save").onclick=function(){
