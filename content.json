@@ -96,7 +96,7 @@
         "en": "Plant Regeneration and Damage Response Mechanisms",
         "descZh": "解析 ERF 转录因子调控植物创伤后高效再生的分子通路，挖掘作物抗逆与修复新靶点。",
         "descEn": "Analyzing the molecular pathways by which ERF transcription factors regulate efficient plant regeneration after wounding, and exploring new targets for crop stress resistance and repair.",
-        "image": "https://liyangfei8495.github.io/i-microbiome-lab/images/research/1784986185181-2025.jpg",
+        "image": "https://liang-lab.cn/images/research/1784986185181-2025.jpg",
         "introZh": "",
         "introEn": ""
       },
@@ -107,7 +107,7 @@
         "en": "Plant-Microbe Interactions and Efficient Nutrient Use",
         "descZh": "以丛枝菌根共生（AMF）为模型，探索植物-真菌界面的分子交换，助力减少化肥依赖、推动绿色农业。",
         "descEn": "Using arbuscular mycorrhizal fungi (AMF) as a model, we explore the molecular exchanges at the plant-fungi interface to help reduce fertilizer use and promote green farming.",
-        "image": "https://liyangfei8495.github.io/i-microbiome-lab/images/research/1784986197897-3416.jpg",
+        "image": "https://liang-lab.cn/images/research/1784986197897-3416.jpg",
         "introZh": "",
         "introEn": ""
       },
@@ -118,7 +118,7 @@
         "en": "Plant Light Signals and Stress Protection",
         "descZh": "揭示 UV-B 光保护代谢物的合成与调控机制，服务作物抗逆改良。",
         "descEn": "Revealing how UV-B protective metabolites are made and regulated to help improve crop resistance.",
-        "image": "https://liyangfei8495.github.io/i-microbiome-lab/images/research/1784986207793-3790.jpg",
+        "image": "https://liang-lab.cn/images/research/1784986207793-3790.jpg",
         "introZh": "",
         "introEn": ""
       }
@@ -229,7 +229,7 @@
       "nameEn": "Yuanke Liang",
       "roleZh": "实验室负责人 | 教授 /博士生导师（西南科技大学 生命科学与农林学院）",
       "roleEn": "Principal Investigator",
-      "photo": "https://liyangfei8495.github.io/i-microbiome-lab/images/members/member-liang.jpg",
+      "photo": "https://liang-lab.cn/images/members/member-liang.jpg",
       "bioZh": "梁元可，博士，西南科技大学生命科学与农林学院教授、博士生导师，国家级青年人才项目入选者。博士毕业于比利时根特大学（Ghent University，全球 Top 100），随后在瑞士日内瓦大学（全球 Top 50）、德国马普植物分子生理研究所（MPI-MP，全球科研机构 Top 3）等顶尖机构从事博士后研究。\n\n长期从事植物应激响应与再生机制、植物-微生物互作研究，擅长分子生物学、植物遗传转化与多组学数据分析。利用 CRISPR 基因编辑与多组学技术，系统阐明了 ERF 转录因子驱动植物损伤后高效再生的分子通路，并鉴定出全新的紫外光（UV-B）光信号响应与光保护代谢物。相关成果为作物抗逆育种和现代农业发展提供了重要的理论基础与全新的基因靶点。目前致力于 AI+多组学驱动的生物制造研究，对标国家生物经济战略与生物制造行动方案，构建通用的植物基因工程体系与底盘技术。当前正拓展高蛋白玉米的微生物增效、植物内生菌资源开发以及壳聚糖生物制造等新方向。\n\n以第一作者在 Science Advances等国际顶尖期刊发表 SCI 论文 7 篇，担任 Modern Agriculture副编委、New Crops青年编辑。",
       "bioEn": "Liang Yuan'ke, Ph.D., is a professor and doctoral supervisor at the College of Life Sciences and Agriculture of Southwest University of Science and Technology, and a recipient of the National Young Talents Program. He earned his doctorate from Ghent University in Belgium (Global Top 100) and subsequently conducted postdoctoral research at top institutions such as the University of Geneva in Switzerland (Global Top 50) and the Max Planck Institute of Molecular Plant Physiology in Germany (MPI-MP, Top 3 global research institutions).  \n\nHe has long been engaged in research on plant stress responses and regeneration mechanisms, as well as plant-microbe interactions, with expertise in molecular biology, plant genetic transformation, and multi-omics data analysis. Using CRISPR gene editing and multi-omics techniques, he has systematically elucidated the molecular pathways by which ERF transcription factors drive efficient post-injury plant regeneration and identified novel ultraviolet (UV-B) light signal responses and photoprotective metabolites. These findings provide an important theoretical basis and novel gene targets for crop stress-resistance breeding and modern agricultural development. Currently, he is dedicated to AI-driven multi-omics biomanufacturing research, aligned with the national bioeconomy strategy and biomanufacturing action plan, aiming to establish versatile plant genetic engineering systems and platform technologies. He is currently expanding into new directions, including microbial enhancement of high-protein maize, development of plant endophyte resources, and chitosan biomanufacturing.  \n\nHe has published seven SCI papers as the first author in international top journals such as Science Advances and serves as an associate editor for Modern Agriculture and a young editor for New Crops.",
       "introZh": "",
@@ -664,7 +664,7 @@
       "id": "prj-gut",
       "titleZh": "蚯蚓粪源微生物分离鉴定、促氮模块化组装及其分子机制研究",
       "titleEn": "Isolation and Identification of Microorganisms from Earthworm Castings, Modular Assembly of Nitrogen-Promoting Systems, and Their Molecular Mechanisms",
-      "logo": "https://liang-lab.cn/images/projects/1785131567555-1305.png",
+      "logo": "https://liang-lab.cn/images/projects/1785131567555-1305.jpg",
       "lead": "李杨飞",
       "pillarId": "pillar-microbiome",
       "memberIds": [],
