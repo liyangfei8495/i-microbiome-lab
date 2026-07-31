@@ -750,7 +750,7 @@
   "competitions": [
     {
       "id": "c-2026-chitosan",
-      "titleZh": "微生物源壳聚糖国创赛项目",
+      "titleZh": "微生物源壳聚糖国创赛项目（2027双创、挑战杯）",
       "titleEn": "Microbe-derived Chitosan Innovation Competition Project",
       "statusZh": "火热报名中",
       "statusEn": "Open for Registration",
@@ -758,35 +758,15 @@
       "date": "2026.07–2026.09",
       "descZh": "围绕微生物源壳聚糖的产业化应用展开，本团队参赛并开展合成生物学与生物制造方向的创新研究。欢迎对项目感兴趣的同学关注或加入。",
       "descEn": "Our team participates in this competition with innovative research on the industrial application of microbe-derived chitosan in synthetic biology and biomanufacturing. Students interested are welcome to follow or join.",
-      "image": "",
+      "image": "https://liang-lab.cn/images/competitions/1785483285384-2194.jpg",
       "teamZh": "微生物源壳聚糖产业化应用团队",
       "teamEn": "Microbe-derived Chitosan Industrialization Team",
-      "advisorZh": "梁老师、董逸伦博士",
-      "advisorEn": "Prof. Liang, Dr. Dong Yilun",
-      "leaderZh": "张三",
-      "leaderEn": "Zhang San",
-      "membersZh": "张三\n李四\n王五",
-      "membersEn": "Zhang San\nLi Si\nWang Wu"
-    },
-    {
-      "id": "c-2025-bio",
-      "titleZh": "2025 全国大学生生物制造创新大赛",
-      "titleEn": "2025 National Bio-manufacturing Innovation Contest",
-      "statusZh": "已圆满结束",
-      "statusEn": "Concluded",
-      "org": "全国大学生生物制造创新大赛组委会",
-      "date": "2025.05–2025.08",
-      "descZh": "本实验室团队参赛并完成答辩，展示了微生物模块化组装方向的阶段性成果。",
-      "descEn": "Our lab team participated and presented progressive results in microbial modular assembly.",
-      "image": "",
-      "teamZh": "微生物模块化组装参赛队",
-      "teamEn": "Microbial Modular Assembly Team",
-      "advisorZh": "梁老师",
-      "advisorEn": "Prof. Liang",
-      "leaderZh": "李四",
-      "leaderEn": "Li Si",
-      "membersZh": "李四\n王五\n赵六",
-      "membersEn": "Li Si\nWang Wu\nZhao Liu"
+      "advisorZh": "阎凌翔、董逸伦",
+      "advisorEn": "Yan Lingxiang, Dong Yilun",
+      "leaderZh": "",
+      "leaderEn": "",
+      "membersZh": "",
+      "membersEn": ""
     }
   ]
 }
