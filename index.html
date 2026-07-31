@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260728b">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260731a">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="style" href="css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preload" as="fetch" href="content.json" crossorigin>
@@ -1202,7 +1202,7 @@ After the talks, attendees engaged with the speakers in in-depth discussions on 
   ]
 }</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/fraunces-latin-700-normal.woff2" crossorigin>
-<script>(function(){var v="20260728b";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260731a";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1794,8 +1794,8 @@ function renderAll(d){
 // ============ bind ============
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260728b","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260728b","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731a","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731a","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   modalContent.addEventListener("click",function(e){
@@ -1833,8 +1833,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260728b","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260728b","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731a","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731a","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   bindShare(modalContent);
