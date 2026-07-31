@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260731e">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260731f">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="style" href="css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preload" as="fetch" href="content.json" crossorigin>
@@ -117,6 +117,12 @@ section h2{font-size:34px;text-align:center;margin:0 0 14px}
 .news-body{padding:20px}
 .news-date{display:inline-block;background:var(--section-bg);border-radius:8px;padding:4px 10px;margin-bottom:10px;color:var(--primary);font-size:13px;font-weight:600}
 .news-date .day{font-size:18px;margin-right:4px}
+.news-collapsed{display:none}
+.news-more-wrap{text-align:center;margin-top:30px}
+.news-more-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border-color);background:var(--bg);color:var(--primary,#0066cc);font:inherit;font-size:14px;font-weight:600;padding:11px 26px;border-radius:999px;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,background .25s}
+.news-more-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.1);background:var(--section-bg)}
+.news-more-btn i{transition:transform .3s}
+.news-more-btn[data-expanded="1"] i{transform:rotate(180deg)}
 
 /* join */
 .join-banner{width:100%;height:300px;object-fit:cover;border-radius:16px;margin:30px 0;background:var(--section-bg)}
@@ -1214,7 +1220,7 @@ After the talks, attendees engaged with the speakers in in-depth discussions on 
   ]
 }</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/fraunces-latin-700-normal.woff2" crossorigin>
-<script>(function(){var v="20260731e";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260731f";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1324,6 +1330,14 @@ function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"
 function zh(s){return '<span class="zh">'+esc(s)+'</span>';}
 function en(s){return '<span class="en">'+esc(s)+'</span>';}
 function both(zhTxt,enTxt){return zh(zhTxt)+en(enTxt);}
+function newsSortKey(n){
+  var m=(n.id||"").match(/n-(\d{13,})/);
+  if(m) return parseInt(m[1],10);
+  var y=2026, mo=parseInt(z(n.month)||"1",10), d=parseInt(z(n.day)||"1",10);
+  var dm=(z(n.date)||"").match(/(\d{4})[.\-/](\d{1,2})/);
+  if(dm){y=parseInt(dm[1],10);mo=parseInt(dm[2],10);}
+  return new Date(y,mo-1,d).getTime();
+}
 function bothText(zhTxt,enTxt){return (zhTxt||"")+(zhTxt&&enTxt?" / ":"")+(enTxt||"");}
 function numZh(n){var d=["零","一","二","三","四","五","六","七","八","九","十"];if(n<=10)return d[n];if(n<20)return"十"+d[n-10];if(n%10===0)return d[Math.floor(n/10)]+"十";return d[Math.floor(n/10)]+"十"+d[n%10];}
 function img(src,cls,zoom){
@@ -1743,18 +1757,43 @@ function renderAll(d){
         '</p></div></li>';}).join("")+'</ul></div>'+
     '<p class="search-empty" style="display:none;text-align:center;color:var(--light-text-color);padding:20px 0;">'+both("没有匹配的论文","No matching publications")+'</p>';
 
-  // news
-  document.getElementById("news").innerHTML=
-    '<div class="search-bar"><input type="search" class="js-search" placeholder="'+esc(bothText("搜索动态（标题/内容/日期）…","Search news…"))+'"></div>'+
-    '<h2>'+both("团队动态","Lab News")+'</h2>'+
-    '<div class="news-grid">'+d.news.map(function(n){
-      return'<article class="news-card clickable" data-open="news" data-id="'+esc(n.id)+'" data-search-item data-search-text="'+esc((n.titleZh||"")+(n.titleEn||"")+newsSummary(n)+(z(n.date)||""))+'">'+
+  // news（按时间倒序，超过 3 条折叠，顶部显示「更多」）
+  (function(){
+    window.NEWS_VISIBLE=3;
+    var arr=(d.news||[]).slice().sort(function(a,b){return newsSortKey(b)-newsSortKey(a);});
+    var collapsed=arr.length>window.NEWS_VISIBLE;
+    var cards=arr.map(function(n,idx){
+      var cls="news-card clickable"+(collapsed&&idx>=window.NEWS_VISIBLE?" news-collapsed":"");
+      return'<article class="'+cls+'" data-open="news" data-id="'+esc(n.id)+'" data-search-item data-search-text="'+esc((n.titleZh||"")+(n.titleEn||"")+newsSummary(n)+(z(n.date)||""))+'">'+
         '<button class="news-share" data-share="news" data-id="'+esc(n.id)+'" title="分享 / Share" aria-label="分享"><i class="fas fa-share-alt"></i></button>'+
         img(newsCover(n),"news-thumb")+
         '<div class="news-body"><div class="news-date"><span class="day">'+esc(z(n.day))+'</span><span>'+esc(z(n.month))+'</span></div>'+
         '<h3 style="margin:0 0 8px;">'+both(n.titleZh,n.titleEn)+'</h3>'+
-        '<p style="color:var(--light-text-color);margin:0;">'+esc(newsSummary(n))+'</p></div></article>';}).join("")+'</div>'+
-    '<p class="search-empty" style="display:none;text-align:center;color:var(--light-text-color);padding:20px 0;">'+both("没有匹配的团队动态","No matching news")+'</p>';
+        '<p style="color:var(--light-text-color);margin:0;">'+esc(newsSummary(n))+'</p></div></article>';
+    }).join("");
+    var more=collapsed?'<div class="news-more-wrap" id="newsMoreWrap"><button type="button" class="news-more-btn" id="newsMoreBtn" data-expanded="0">'+both("更多动态","More news")+' <i class="fas fa-chevron-down"></i></button></div>':'';
+    document.getElementById("news").innerHTML=
+      '<h2>'+both("团队动态","Lab News")+'</h2>'+
+      '<div class="news-grid">'+cards+'</div>'+more+
+      '<p class="search-empty" style="display:none;text-align:center;color:var(--light-text-color);padding:20px 0;">'+both("没有匹配的团队动态","No matching news")+'</p>';
+    var moreBtn=document.getElementById("newsMoreBtn");
+    if(moreBtn){
+      moreBtn.addEventListener("click",function(){
+        var grid=document.querySelector("#news .news-grid"); if(!grid)return;
+        var cardsAll=grid.querySelectorAll(".news-card");
+        var expanded=moreBtn.getAttribute("data-expanded")==="1";
+        if(expanded){
+          for(var i=window.NEWS_VISIBLE;i<cardsAll.length;i++) cardsAll[i].classList.add("news-collapsed");
+          moreBtn.setAttribute("data-expanded","0");
+          moreBtn.innerHTML=both("更多动态","More news")+' <i class="fas fa-chevron-down"></i>';
+        } else {
+          for(var i=0;i<cardsAll.length;i++) cardsAll[i].classList.remove("news-collapsed");
+          moreBtn.setAttribute("data-expanded","1");
+          moreBtn.innerHTML=both("收起","Show less")+' <i class="fas fa-chevron-up"></i>';
+        }
+      });
+    }
+  })();
 
   // projects（独立科研项目展示，置于论文成果之后）
   (function(){
@@ -1854,8 +1893,8 @@ function renderAll(d){
 // ============ bind ============
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   modalContent.addEventListener("click",function(e){
@@ -1893,8 +1932,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   bindShare(modalContent);
@@ -3587,6 +3626,7 @@ document.getElementById("be-publish").onclick=function(){
         if(!empty){empty=document.createElement("p");empty.className="search-empty";empty.style.cssText="text-align:center;color:var(--light-text-color);padding:22px;margin:0;";parent.appendChild(empty);}
         empty.textContent=opts.empty||"没有匹配的结果";empty.style.display="";
       } else if(empty){empty.style.display="none";}
+      if(opts.onFilter)opts.onFilter(q,shown);
     }
     input.addEventListener("input",filter);
     if(extra)extra.addEventListener("change",filter);
@@ -3600,7 +3640,21 @@ document.getElementById("be-publish").onclick=function(){
     var sel=document.createElement("select");
     sel.innerHTML='<option value="">全部年份</option>'+years.map(function(y){return '<option value="'+y+'">'+y+'</option>';}).join("");
     buildSearch("publications",".publications-grid",".publication-item",{ph:"搜索论文标题 / 作者 / 期刊…",extra:sel,empty:"没有匹配的论文"});
-    buildSearch("news",".news-grid",".news-card",{ph:"搜索动态标题 / 摘要…",empty:"没有匹配的动态"});
+    buildSearch("news",".news-grid",".news-card",{ph:"搜索动态标题 / 摘要…",empty:"没有匹配的动态",onFilter:function(q){
+      var grid=document.querySelector("#news .news-grid"); if(!grid)return;
+      var cardsAll=grid.querySelectorAll(".news-card");
+      var V=window.NEWS_VISIBLE||3;
+      var wrap=document.getElementById("newsMoreWrap");
+      if(q.trim()!==""){
+        for(var i=0;i<cardsAll.length;i++) cardsAll[i].classList.remove("news-collapsed");
+        if(wrap) wrap.style.display="none";
+      } else {
+        for(var i=V;i<cardsAll.length;i++) cardsAll[i].classList.add("news-collapsed");
+        if(wrap) wrap.style.display="";
+        var mb=document.getElementById("newsMoreBtn");
+        if(mb){mb.setAttribute("data-expanded","0"); mb.innerHTML=both("更多动态","More news")+' <i class="fas fa-chevron-down"></i>';}
+      }
+    }});
   }
 
   function bootExtras(){ initSearches(); }
