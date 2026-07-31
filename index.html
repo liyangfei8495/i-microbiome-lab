@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260731d">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260731e">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="style" href="css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preload" as="fetch" href="content.json" crossorigin>
@@ -1214,7 +1214,7 @@ After the talks, attendees engaged with the speakers in in-depth discussions on 
   ]
 }</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/fraunces-latin-700-normal.woff2" crossorigin>
-<script>(function(){var v="20260731d";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260731e";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1540,13 +1540,17 @@ function openDetail(type,id){
       html+='<h2>'+both(c.titleZh,c.titleEn)+'</h2>';
       html+='<p class="modal-role"><span class="competition-status '+(on?"ongoing":"ended")+'">'+both(c.statusZh,c.statusEn)+'</span></p>';
       if(c.org)html+='<p class="modal-role"><i class="fas fa-trophy"></i> '+both("赛事主办","Organizer")+'：'+esc(c.org)+'</p>';
-      if(c.teamZh||c.teamEn)html+='<p class="modal-role"><i class="fas fa-users"></i> '+both("参赛团队/作品","Team / Entry")+'：'+esc(both(c.teamZh,c.teamEn))+'</p>';
-      if(c.advisorZh||c.advisorEn)html+='<p class="modal-role"><i class="fas fa-user-tie"></i> '+both("竞赛指导老师","Advisor")+'：'+esc(both(c.advisorZh,c.advisorEn))+'</p>';
-      if(c.leaderZh||c.leaderEn)html+='<p class="modal-role"><i class="fas fa-user"></i> '+both("项目负责人","Team Leader")+'：'+esc(both(c.leaderZh,c.leaderEn))+'</p>';
+      if(c.teamZh||c.teamEn)html+='<p class="modal-role"><i class="fas fa-users"></i> '+both("参赛团队/作品","Team / Entry")+'：'+both(c.teamZh,c.teamEn)+'</p>';
+      if(c.advisorZh||c.advisorEn)html+='<p class="modal-role"><i class="fas fa-user-tie"></i> '+both("竞赛指导老师","Advisor")+'：'+both(c.advisorZh,c.advisorEn)+'</p>';
+      if(c.leaderZh||c.leaderEn)html+='<p class="modal-role"><i class="fas fa-user"></i> '+both("项目负责人","Team Leader")+'：'+both(c.leaderZh,c.leaderEn)+'</p>';
       if(c.membersZh||c.membersEn){
-        var mems=(both(c.membersZh,c.membersEn)||"").split(/\n/).map(function(s){return s.trim();}).filter(Boolean);
-        if(mems.length){
-          html+='<div class="modal-block"><h3>'+both("参赛成员","Team Members")+'</h3><ul style="margin:0;padding-left:18px;line-height:1.8;">'+mems.map(function(m){return'<li>'+esc(m)+'</li>';}).join("")+'</ul></div>';
+        var zhMems=(c.membersZh||"").split(/\n/).map(function(s){return s.trim();}).filter(Boolean);
+        var enMems=(c.membersEn||"").split(/\n/).map(function(s){return s.trim();}).filter(Boolean);
+        var maxLen=Math.max(zhMems.length,enMems.length);
+        if(maxLen){
+          var mems=[];
+          for(var mi=0;mi<maxLen;mi++) mems.push(both(zhMems[mi],enMems[mi]));
+          html+='<div class="modal-block"><h3>'+both("参赛成员","Team Members")+'</h3><ul style="margin:0;padding-left:18px;line-height:1.8;">'+mems.map(function(m){return'<li>'+m+'</li>';}).join("")+'</ul></div>';
         }
       }
       if(c.date)html+='<p class="modal-role"><i class="fas fa-calendar-alt"></i> '+esc(c.date)+'</p>';
@@ -1850,8 +1854,8 @@ function renderAll(d){
 // ============ bind ============
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731d","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731d","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   modalContent.addEventListener("click",function(e){
@@ -1889,8 +1893,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731d","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731d","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731e","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   bindShare(modalContent);
