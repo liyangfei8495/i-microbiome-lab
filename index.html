@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260731f">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260731g">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="style" href="css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preload" as="fetch" href="content.json" crossorigin>
@@ -1220,7 +1220,7 @@ After the talks, attendees engaged with the speakers in in-depth discussions on 
   ]
 }</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/fraunces-latin-700-normal.woff2" crossorigin>
-<script>(function(){var v="20260731f";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260731g";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1893,8 +1893,8 @@ function renderAll(d){
 // ============ bind ============
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731g","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731g","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   modalContent.addEventListener("click",function(e){
@@ -1932,8 +1932,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731f","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731g","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"){window.open("news/"+el.getAttribute("data-id")+".html?v=20260731g","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.setAttribute("tabindex","0");
   });
   bindShare(modalContent);
@@ -2177,7 +2177,7 @@ document.addEventListener("DOMContentLoaded",function(){
 <!-- 区块编辑弹窗 -->
 <div id="block-editor" class="admin-modal" hidden style="display:none;">
   <div class="admin-backdrop" data-be-close></div>
-  <div class="admin-dialog" style="width:min(92vw,640px);max-height:88vh;display:flex;flex-direction:column;">
+  <div class="admin-dialog" style="width:min(1100px,94vw);max-height:93vh;display:flex;flex-direction:column;">
     <button class="admin-close" data-be-close aria-label="关闭"><i class="fas fa-times"></i></button>
     <h2 id="be-title" style="margin:0 0 14px;font-size:17px;display:flex;align-items:center;gap:8px;"><i class="fas fa-edit" style="color:var(--primary,#0066cc);"></i> 编辑</h2>
     <div id="be-body" style="flex:1;overflow-y:auto;padding:4px 4px 16px;"></div>
@@ -2215,8 +2215,15 @@ document.addEventListener("DOMContentLoaded",function(){
 .ap-btn-pri{background:var(--primary,#0066cc);color:#fff;border:none;}
 .ap-btn-sec{background:#fff;color:#1d1d1f;}
 .ap-btn:hover{opacity:0.88;}
-.ap-field{margin:12px 0;}
+.ap-field{margin:10px 0;}
 .ap-field label{display:block;font-size:12px;color:#6e6e73;margin-bottom:4px;font-weight:500;}
+/* 中/英输入框并排成两列，减少滚动、对照更直观 */
+.ap-pair{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;margin:10px 0;}
+.ap-pair > .ap-field{margin:0;}
+.ap-pair .ap-lang{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;}
+.ap-pair .ap-lang.zh{background:#e8f0fe;color:var(--primary,#0066cc);}
+.ap-pair .ap-lang.en{background:#eafaf0;color:#0a7d3b;}
+@media (max-width:720px){ .ap-pair{grid-template-columns:1fr;} }
 .ap-field input,.ap-field textarea,.ap-field select{width:100%;padding:8px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;font-family:inherit;box-sizing:border-box;}
 .ap-field textarea{min-height:64px;resize:vertical;}
 .ap-detail-group{margin:14px 0;padding:14px 14px 6px;border:1px dashed #c8d6e5;border-radius:12px;background:#f7faff;}
@@ -2243,6 +2250,11 @@ document.addEventListener("DOMContentLoaded",function(){
 .ap-toast.show{opacity:1;}
 body.admin-mode .edit-zone{position:relative;outline:1px dashed rgba(0,102,204,0.25);outline-offset:2px;}
 body.admin-mode .edit-zone:hover{outline:2px dashed rgba(0,102,204,0.6);}
+/* 点「编辑」后，网页对应区块脉冲高亮，明确正在改的是这块 */
+body.admin-mode .edit-zone.edit-focus{outline:3px solid var(--primary,#0066cc);outline-offset:3px;animation:editPulse 1.1s ease-out 3;box-shadow:0 0 0 6px rgba(0,102,204,.12);}
+@keyframes editPulse{0%{box-shadow:0 0 0 0 rgba(0,102,204,.45);}70%{box-shadow:0 0 0 16px rgba(0,102,204,0);}100%{box-shadow:0 0 0 0 rgba(0,102,204,0);}}
+.ap-jump{flex:0 0 auto;max-width:240px;padding:7px 10px;border:1px solid #e5e5ea;border-radius:999px;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1d1d1f;}
+.ap-jump:focus{border-color:var(--primary,#0066cc);box-shadow:0 0 0 3px rgba(0,102,204,.15);}
 .edit-btn{display:none;position:absolute;top:6px;right:6px;z-index:50;background:var(--primary,#0066cc);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
 .edit-btn:hover{opacity:0.88;}
 body.admin-mode .edit-btn{display:inline-flex !important;}
@@ -2338,8 +2350,8 @@ document.addEventListener("keydown",function(e){
   if(e.ctrlKey&&e.shiftKey&&(e.key==="E"||e.key==="e")){e.preventDefault();apOpen(document.getElementById("admin-login"));}
 });
 document.querySelectorAll("[data-al-close]").forEach(function(b){b.onclick=function(){apClose(document.getElementById("admin-login"));};});
-document.querySelectorAll("[data-be-close]").forEach(function(b){b.onclick=function(){apClose(beModal);};});
-document.getElementById("be-cancel").onclick=function(){apClose(beModal);};
+document.querySelectorAll("[data-be-close]").forEach(function(b){b.onclick=function(){clearEditFocus();apClose(beModal);};});
+document.getElementById("be-cancel").onclick=function(){clearEditFocus();apClose(beModal);};
 
 function doLogin(){
   var u=document.getElementById("al-user").value.trim();
@@ -2376,6 +2388,24 @@ function exitAdminMode(){
   apClose(document.getElementById("admin-login"));
 }
 
+var currentEditSel="";
+function clearEditFocus(){document.querySelectorAll(".edit-zone.edit-focus").forEach(function(z){z.classList.remove("edit-focus");});}
+// 把相邻的中/英 .ap-field 包成两列 .ap-pair，减少滚动、对照直观
+function groupLangPairs(root){
+  ["ap-items","ap-item-body","ap-detail-group","blk-item"].forEach(function(sel){
+    root.querySelectorAll("."+sel).forEach(function(container){
+      var kids=Array.prototype.slice.call(container.children);
+      for(var i=0;i<kids.length-1;i++){
+        var a=kids[i],b=kids[i+1];
+        if(a.classList&&a.classList.contains("ap-field")&&a.getAttribute("data-lang")==="zh"&&
+           b.classList&&b.classList.contains("ap-field")&&b.getAttribute("data-lang")==="en"){
+          var pair=document.createElement("div");pair.className="ap-pair";
+          container.insertBefore(pair,a);pair.appendChild(a);pair.appendChild(b);i++;
+        }
+      }
+    });
+  });
+}
 function injectEditButtons(){
   removeEditButtons();
   var zones=[
@@ -2401,7 +2431,7 @@ function injectEditButtons(){
       btn.className="edit-btn";
       btn.setAttribute("data-edit-type",z.type);
       btn.innerHTML='<i class="fas fa-edit"></i> '+z.label;
-      btn.onclick=function(e){e.stopPropagation();e.preventDefault();openBlockEditor(z.type,z.label);};
+      btn.onclick=function(e){e.stopPropagation();e.preventDefault();clearEditFocus();currentEditSel=z.sel;var el=document.querySelector(z.sel);if(el){el.classList.add("edit-focus");try{el.scrollIntoView({behavior:"smooth",block:"center"});}catch(_){}}openBlockEditor(z.type,z.label);};
       el.appendChild(btn);
     }
   });
@@ -2415,8 +2445,13 @@ function escAttr(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/"
 function field(path,label,val,type){
   val=val==null?"":val;
   var ev=String(val).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  if(type==="textarea")return'<div class="ap-field"><label>'+label+'</label><textarea data-path="'+path+'">'+ev+'</textarea></div>';
-  return'<div class="ap-field"><label>'+label+'</label><input data-path="'+path+'" value="'+ev+'"></div>';
+  var lang="",baseLabel=label;
+  if(label.indexOf("(中)")>=0){lang="zh";baseLabel=label.replace("(中)","");}
+  else if(label.indexOf("(英)")>=0){lang="en";baseLabel=label.replace("(英)","");}
+  var langBadge=lang?'<span class="ap-lang '+lang+'">'+(lang==="zh"?"中":"EN")+'</span>':"";
+  var labHtml='<label>'+esc(baseLabel)+langBadge+'</label>';
+  if(type==="textarea")return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<textarea data-path="'+path+'">'+ev+'</textarea></div>';
+  return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<input data-path="'+path+'" value="'+ev+'"></div>';
 }
 function itemBox(title,fieldsHtml,arrPath,idx){
   return'<div class="ap-item" data-search-title="'+escAttr(title)+'">'+
@@ -2804,10 +2839,33 @@ function openBlockEditor(type,label){
   }
   beBody.innerHTML='<div class="ap-toolbar">'+
     '<input type="search" class="ap-search" placeholder="搜索条目（标题/名称）…" data-be-search>'+
+    '<select class="ap-jump" data-be-jump><option value="">跳转条目…</option></select>'+
+    '<button class="ap-btn" data-be-locate title="关闭弹窗并高亮网站对应区块">在网站定位</button>'+
     '<button class="ap-btn" data-be-collapse>折叠全部</button>'+
     '<button class="ap-btn" data-be-expand>展开全部</button>'+
     '</div>'+
     '<div class="ap-items">'+h+'</div>';
+  groupLangPairs(beBody);
+  var jumpSel=beBody.querySelector("[data-be-jump]");
+  if(jumpSel){
+    beBody.querySelectorAll(".ap-item").forEach(function(it,idx){
+      var t=it.getAttribute("data-search-title")||("条目 "+(idx+1));
+      var o=document.createElement("option");o.value=String(idx);o.textContent=t;jumpSel.appendChild(o);
+    });
+    jumpSel.onchange=function(){
+      var v=this.value;if(v==="")return;
+      var items=beBody.querySelectorAll(".ap-item");
+      var target=items[parseInt(v,10)];
+      if(target){target.scrollIntoView({behavior:"smooth",block:"center"});target.classList.add("ap-item-highlight");setTimeout(function(){target.classList.remove("ap-item-highlight");},1200);}
+      this.value="";
+    };
+  }
+  var locateBtn=beBody.querySelector("[data-be-locate]");
+  if(locateBtn)locateBtn.onclick=function(){
+    apClose(beModal);clearEditFocus();
+    var el=currentEditSel?document.querySelector(currentEditSel):null;
+    if(el){el.classList.add("edit-focus");setTimeout(function(){try{el.scrollIntoView({behavior:"smooth",block:"center"});}catch(_){}},60);}
+  };
   bindBlockEditorEvents();
   apOpen(beModal);
 }
@@ -3430,7 +3488,7 @@ function doExportIndex(){
 }
 document.getElementById("be-export").onclick=doExportIndex;
 document.getElementById("be-save").onclick=function(){
-  if(saveEdits()){ apClose(beModal); showToast("已保存并更新预览，刷新后永久生效"); }
+  if(saveEdits()){ clearEditFocus(); apClose(beModal); showToast("已保存并更新预览，刷新后永久生效"); }
 };
 document.getElementById("be-publish").onclick=function(){
   try{
