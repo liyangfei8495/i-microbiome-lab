@@ -22,16 +22,6 @@ SITE = "https://liang-lab.cn"
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_OG = SITE + "/images/site/1784990973538-4875.jpg"
 
-GROUP_LABELS = {
-    "pi": "PI · 实验室负责人",
-    "faculty": "课题组老师",
-    "manager": "团队管理",
-    "phd": "博士研究生",
-    "master": "硕士研究生",
-    "postdoc": "博士后",
-    "alumni": "毕业生",
-}
-
 
 def esc_attr(s):
     return html.escape(s or "", quote=True)
@@ -56,14 +46,14 @@ def both(zh_t, en_t):
 
 def block(zh_title, en_title, zh_c, en_c, pre=False, image=None):
     """对齐首页 modal-block：标题 both()，正文 <p>both(zh,en)</p>；
-    research/repPubs 用 white-space:pre-line 保留换行。内容缺失则整段不渲染。"""
+    换行由全局 CSS .m-body p{white-space:pre-wrap} 统一保留（与首页 .modal-block p 一致）。
+    pre 参数保留仅为兼容旧调用，换行已由 CSS 处理。内容缺失则整段不渲染。"""
     if not (zh_c or en_c):
         return ""
-    st = ' style="white-space:pre-line"' if pre else ""
     out = '<section class="m-sec"><h2>%s</h2>' % both(zh_title, en_title)
     if image:
         out += '<img class="m-banner" src="%s" alt="">' % esc_attr(image)
-    out += '<div class="m-body"><p%s>%s</p></div></section>' % (st, both(zh_c, en_c))
+    out += '<div class="m-body"><p>%s</p></div></section>' % both(zh_c, en_c)
     return out
 
 
@@ -123,15 +113,12 @@ MEM_TPL = """<!DOCTYPE html>
           border:3px solid var(--border-color);flex-shrink:0;background:var(--section-bg)}
   .avatar-fallback{display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff;font-weight:700}
   .hinfo{min-width:0;flex:1}
-  .group-badge{display:inline-block;font-size:12px;color:var(--primary);
-          border:1px solid color-mix(in srgb,var(--primary) 30%,transparent);
-          padding:4px 12px;border-radius:999px;background:color-mix(in srgb,var(--primary) 8%,transparent);margin-bottom:10px}
   h1{font-size:27px;line-height:1.35;margin:0 0 8px;font-weight:700;letter-spacing:.01em}
   .role{color:var(--light-text-color);font-size:15px;line-height:1.6;margin-top:4px}
   .m-sec{margin:30px 0 0;border-top:1px solid var(--border-color);padding-top:22px}
   .m-sec h2{font-size:18px;margin-bottom:14px;color:var(--text-color);display:flex;align-items:center;gap:9px;font-weight:700}
   .m-sec h2::before{content:"";width:4px;height:18px;background:var(--primary);border-radius:2px;display:inline-block;flex-shrink:0}
-  .m-body p{margin:0;font-size:15.5px;line-height:1.85;color:var(--text-color)}
+  .m-body p{margin:0;font-size:15.5px;line-height:1.85;color:var(--text-color);white-space:pre-wrap}
   .m-banner{width:100%;max-height:320px;object-fit:cover;border-radius:14px;margin:4px 0 14px}
   .proj-list{margin:0;padding-left:20px}
   .proj-list li{font-size:15.5px;line-height:1.9;color:var(--text-color)}
@@ -230,8 +217,6 @@ def render_page(m, data):
     name_en = m.get("nameEn") or ""
     role_zh = m.get("roleZh") or ""
     role_en = m.get("roleEn") or ""
-    group = m.get("group") or ""
-    badge = GROUP_LABELS.get(group, group or "团队成员")
     photo = m.get("photo") or ""
     if photo.startswith("http"):
         hero = ('<img class="avatar" src="%s" alt="%s">' % (esc_attr(photo), esc_attr(name_zh)))
@@ -240,8 +225,7 @@ def render_page(m, data):
         hero = ('<div class="avatar avatar-fallback" style="background-color:hsl(%d,52%%,50%%)">%s</div>'
                 % (sum(ord(c) for c in (name_zh or name_en or "?")) % 360, esc((name_zh or name_en or "?")[0])))
     hero += '<div class="hinfo">'
-    hero += '<span class="group-badge">%s</span>' % esc(badge)
-    # 对齐首页：姓名 = esc(nameZh) + ' ' + en(nameEn)
+    # 严格对齐首页 openDetail member：姓名 = esc(nameZh) + ' ' + en(nameEn)，下接 role（无额外徽章）
     hero += '<h1>%s %s</h1>' % (esc(name_zh), en(name_en))
     hero += '<div class="role">%s</div>' % both(role_zh, role_en)
     hero += '</div>'
