@@ -3,11 +3,13 @@
 
 对齐 gen_news_share.py 的成熟机制：
 - 与主站风格一致：日/夜主题切换（data-theme + CSS 变量）与中/英语言切换
-- 渲染完整双语简历（姓名/头衔/简介/教育/成就/寄语/联系方式）+ 关联研究方向/项目
+- 渲染完整双语简历（姓名/头衔/简介/教育/成就/学术报告/招生/导师寄语/联系方式）
+  + 关联研究方向 / 项目 / 平台（按 id 引用解析）
 - 顶部写入 Open Graph + Twitter Card 标签（微信/QQ 抓取出带姓名+封面图的卡片）
 - 页面内联脚本：地址栏无 ?v= 时自动补版本参数（绕过微信对已缓存结果的纯链接）
 - 成员照片已是绝对 URL（https://liang-lab.cn/images/members/...），无需 base64 清理
 - 无照片的成员（photo 为空）回退到站点默认 OG 图
+- 主题/语言图标用 emoji，不依赖外部 Font Awesome，分享页可在任意环境稳定显示
 
 用法：
   python gen_members_share.py
@@ -32,6 +34,14 @@ GROUP_LABELS = {
 }
 
 
+def slug(x):
+    """归一化引用 id：去掉 prj/proj/project/pillar/fac 等前缀，只保留核心 slug，
+    以兼容成员引用与数据定义前缀不一致（如 proj-gut vs prj-gut）。"""
+    if not x:
+        return x
+    return re.sub(r"^(prj|proj|project|pillar|fac)-", "", x)
+
+
 def esc_attr(s):
     return html.escape(s or "", quote=True)
 
@@ -40,19 +50,27 @@ def esc(s):
     return html.escape(s or "")
 
 
+_URL_RE = re.compile(r"(https?://[^\s<]+)")
+
+
+def linkify(escaped):
+    """对已完成 html.escape 的文本，把裸 http(s) 链接包成 <a>。"""
+    return _URL_RE.sub(r'<a href="\1" target="_blank" rel="noopener">\1</a>', escaped)
+
+
 def render_paras(zh, en):
-    """多行文本 → .zh / .en 两段 <p>；空段跳过。"""
+    """多行文本 → .zh / .en 两段 <p>；空段跳过；裸 URL 自动链接化。"""
     out = []
     if zh:
         for para in re.split(r"\n{2,}", zh.strip()):
             para = para.strip().replace("\n", "<br>")
             if para:
-                out.append('<p class="zh">%s</p>' % para)
+                out.append('<p class="zh">%s</p>' % linkify(para))
     if en:
         for para in re.split(r"\n{2,}", en.strip()):
             para = para.strip().replace("\n", "<br>")
             if para:
-                out.append('<p class="en">%s</p>' % para)
+                out.append('<p class="en">%s</p>' % linkify(para))
     return "\n".join(out)
 
 
@@ -68,19 +86,26 @@ def render_section(zh_title, en_title, zh, en):
 
 
 def resolve_chips(ids, lookup):
-    """ids: 列表; lookup: {id: {zh,en}}; 返回 chip HTML。"""
+    """ids: 列表; lookup: {slug: {zh,en}}; 返回 chip HTML。id 经 slug 归一化后再查。"""
     if not ids:
         return ""
     chips = []
     for i in ids:
-        item = lookup.get(i)
+        item = lookup.get(slug(i))
         if not item:
             continue
         zh = item.get("zh") or item.get("titleZh") or ""
         en = item.get("en") or item.get("titleEn") or ""
         chips.append('<span class="chip"><span class="zh">%s</span><span class="en">%s</span></span>'
                      % (esc(zh), esc(en)))
-    return "\n".join(chips)
+    # 去重保序
+    seen = set()
+    uniq = []
+    for c in chips:
+        if c not in seen:
+            seen.add(c)
+            uniq.append(c)
+    return "\n".join(uniq)
 
 
 MEM_TPL = """<!DOCTYPE html>
@@ -99,8 +124,6 @@ MEM_TPL = """<!DOCTYPE html>
 <meta name="twitter:title" content="__OGTITLE__">
 <meta name="twitter:description" content="__OGDESC__">
 <meta name="twitter:image" content="__OGIMAGE__">
-<link rel="preload" as="style" href="../css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="../css/all.min.css"></noscript>
 <style>
   :root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;
         --border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;
@@ -122,7 +145,7 @@ MEM_TPL = """<!DOCTYPE html>
   .lang-toggle-btn{background:transparent;border:1px solid var(--border-color);border-radius:999px;
           padding:6px 14px;font-size:13px;cursor:pointer;color:var(--text-color);font-family:inherit;line-height:1}
   #theme-toggle{background:transparent;border:1px solid var(--border-color);border-radius:999px;
-          padding:6px 12px;font-size:14px;cursor:pointer;color:var(--text-color);line-height:1}
+          padding:6px 12px;font-size:16px;cursor:pointer;color:var(--text-color);line-height:1}
   .wrap{max-width:760px;margin:0 auto;padding:32px 22px 72px}
   .hero{display:flex;gap:22px;align-items:center;margin:10px 0 26px;flex-wrap:wrap}
   .avatar{width:118px;height:118px;border-radius:50%;object-fit:cover;
@@ -139,6 +162,8 @@ MEM_TPL = """<!DOCTYPE html>
   .m-sec h2{font-size:18px;margin-bottom:14px;color:var(--text-color);display:flex;align-items:center;gap:9px;font-weight:700}
   .m-sec h2::before{content:"";width:4px;height:18px;background:var(--primary);border-radius:2px;display:inline-block;flex-shrink:0}
   .m-body p{margin:0 0 12px;font-size:15.5px;line-height:1.8;color:var(--text-color)}
+  .m-body a{color:var(--primary);text-decoration:none;word-break:break-all}
+  .m-body a:hover{text-decoration:underline}
   .m-related{margin:26px 0 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
   .m-rel-label{font-size:13px;color:var(--light-text-color);margin-right:2px}
   .chip{font-size:13px;border:1px solid var(--border-color);border-radius:999px;padding:6px 14px;
@@ -159,7 +184,7 @@ MEM_TPL = """<!DOCTYPE html>
     <a class="back" href="__SITE__/">← <span class="zh">返回实验室网站</span><span class="en">Back to Lab</span></a>
     <div class="topbar-right">
       <button id="lang-toggle" class="lang-toggle-btn" type="button">EN</button>
-      <button id="theme-toggle" class="lang-toggle-btn" type="button" title="切换主题" aria-label="切换明暗主题"><i class="fas fa-moon"></i></button>
+      <button id="theme-toggle" class="lang-toggle-btn" type="button" title="切换主题" aria-label="切换明暗主题">🌙</button>
     </div>
   </div>
   <div class="wrap">
@@ -177,6 +202,8 @@ __BIO__
 __RELATED__
 __EDU__
 __ACH__
+__CONF__
+__RECRUIT__
 __WORDS__
 __CONTACT__
     <div class="bar">
@@ -211,7 +238,7 @@ __CONTACT__
   function applyTheme(t){
     document.documentElement.setAttribute("data-theme",t);
     var b=document.getElementById("theme-toggle");
-    if(b)b.innerHTML=t==="dark"?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';
+    if(b)b.textContent=t==="dark"?"☀️":"🌙";
   }
   var savedTheme=null;
   try{savedTheme=localStorage.getItem(THEME_KEY);}catch(e){}
@@ -265,18 +292,24 @@ def render_page(m, data):
     bio = render_paras(m.get("bioZh"), m.get("bioEn"))
     edu = render_section("教育经历", "Education", m.get("eduZh"), m.get("eduEn"))
     ach = render_section("主要成就", "Selected Achievements", m.get("achZh"), m.get("achEn"))
+    conf = render_section("学术报告 / 会议", "Talks & Conferences",
+                          m.get("confZh"), m.get("confEn"))
+    recruit = render_section("招生信息", "Recruitment",
+                             m.get("recruitZh"), m.get("recruitEn"))
     words = render_section("导师寄语", "Words", m.get("wordsZh"), m.get("wordsEn"))
     contact = render_section("联系方式", "Contact", m.get("contactZh"), m.get("contactEn"))
-    # 关联研究方向 / 项目 / 论文
-    pillars = {p.get("id"): p for p in (data.get("research", {}).get("pillars") or [])}
-    projects = {p.get("id"): p for p in (data.get("projects") or [])}
+    # 关联研究方向 / 项目 / 平台（id 引用，经 slug 归一化后解析，兼容前缀不一致）
+    pillars = {slug(p.get("id")): p for p in (data.get("research", {}).get("pillars") or [])}
+    projects = {slug(p.get("id")): p for p in (data.get("projects") or [])}
+    facilities = {slug(f.get("id")): f for f in (data.get("facilities") or [])}
     chips = resolve_chips(m.get("pillarIds"), pillars)
     chips += ("\n" + resolve_chips(m.get("projectIds"), projects)) if m.get("projectIds") else ""
+    chips += ("\n" + resolve_chips(m.get("facilityIds"), facilities)) if m.get("facilityIds") else ""
     chips = chips.strip()
     related = ""
     if chips:
-        related = ('<div class="m-related"><span class="m-rel-label"><span class="zh">研究方向 / 项目</span>'
-                   '<span class="en">Research / Projects</span></span>%s</div>') % chips
+        related = ('<div class="m-related"><span class="m-rel-label"><span class="zh">研究方向 / 项目 / 平台</span>'
+                   '<span class="en">Research / Projects / Facilities</span></span>%s</div>') % chips
     build_ver = datetime.now().strftime("%Y%m%d%H%M%S")
     return (MEM_TPL
             .replace("__NAMEZH__", esc(name_zh))
@@ -296,6 +329,8 @@ def render_page(m, data):
             .replace("__RELATED__", related)
             .replace("__EDU__", edu)
             .replace("__ACH__", ach)
+            .replace("__CONF__", conf)
+            .replace("__RECRUIT__", recruit)
             .replace("__WORDS__", words)
             .replace("__CONTACT__", contact)
             .replace("__SITE__", SITE))
