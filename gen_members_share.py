@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
 """生成每位团队成员的独立分享/主页 members/<id>.html。
 
-对齐 gen_news_share.py 的成熟机制：
-- 与主站风格一致：日/夜主题切换（data-theme + CSS 变量）与中/英语言切换
-- 渲染完整双语简历（姓名/头衔/简介/教育/成就/学术报告/招生/导师寄语/联系方式）
-  + 关联研究方向 / 项目 / 平台（按 id 引用解析）
+严格对齐首页 openDetail(type==="member") 的历史渲染内容（仅“单开成独立页”，内容字段逐一对齐）：
+  1. 个人简介  2. 自我介绍(intro+introImage)  3. 教育背景与工作经历
+  4. 研究方向(researchZh, pre-line)  5. 主要学术成绩  6. 国内外会议与学术报告(conf)
+  7. 代表性论文(repPubsZh, pre-line)  8. 招生与团队(recruit)  9. 寄语(words)  10. 联系方式(contact)
+  11. 在研课题（按 research.projects[].memberIds 反向关联，原 modal 第10块）
+
+- 与主站风格一致：日/夜主题切换 + 中/英语言切换（both() 输出 span.zh/span.en，随站点 lang 切换）
 - 顶部写入 Open Graph + Twitter Card 标签（微信/QQ 抓取出带姓名+封面图的卡片）
 - 页面内联脚本：地址栏无 ?v= 时自动补版本参数（绕过微信对已缓存结果的纯链接）
-- 成员照片已是绝对 URL（https://liang-lab.cn/images/members/...），无需 base64 清理
-- 无照片的成员（photo 为空）回退到站点默认 OG 图
+- 成员照片已是绝对 URL，无需 base64 清理；无照片回退站点默认 OG 图
 - 主题/语言图标用 emoji，不依赖外部 Font Awesome，分享页可在任意环境稳定显示
 
-用法：
-  python gen_members_share.py
-（不依赖 GH_TOKEN：直接读本地 content.json，成员照片为 URL 引用，无 API 写入需求）
+用法：python gen_members_share.py（不依赖 GH_TOKEN，直接读本地 content.json）
 """
 import os, re, json, html
 from datetime import datetime
 
 SITE = "https://liang-lab.cn"
 HERE = os.path.dirname(os.path.abspath(__file__))
-# 站点默认 OG 图（来自首页 og:image），成员无照片时回退
 DEFAULT_OG = SITE + "/images/site/1784990973538-4875.jpg"
 
 GROUP_LABELS = {
@@ -34,14 +33,6 @@ GROUP_LABELS = {
 }
 
 
-def slug(x):
-    """归一化引用 id：去掉 prj/proj/project/pillar/fac 等前缀，只保留核心 slug，
-    以兼容成员引用与数据定义前缀不一致（如 proj-gut vs prj-gut）。"""
-    if not x:
-        return x
-    return re.sub(r"^(prj|proj|project|pillar|fac)-", "", x)
-
-
 def esc_attr(s):
     return html.escape(s or "", quote=True)
 
@@ -50,62 +41,42 @@ def esc(s):
     return html.escape(s or "")
 
 
-_URL_RE = re.compile(r"(https?://[^\s<]+)")
+# 对齐首页 both()/zh()/en()：双语以 span.zh / span.en 包裹，随站点语言切换显隐
+def zh(s):
+    return '<span class="zh">%s</span>' % esc(s)
 
 
-def linkify(escaped):
-    """对已完成 html.escape 的文本，把裸 http(s) 链接包成 <a>。"""
-    return _URL_RE.sub(r'<a href="\1" target="_blank" rel="noopener">\1</a>', escaped)
+def en(s):
+    return '<span class="en">%s</span>' % esc(s)
 
 
-def render_paras(zh, en):
-    """多行文本 → .zh / .en 两段 <p>；空段跳过；裸 URL 自动链接化。"""
-    out = []
-    if zh:
-        for para in re.split(r"\n{2,}", zh.strip()):
-            para = para.strip().replace("\n", "<br>")
-            if para:
-                out.append('<p class="zh">%s</p>' % linkify(para))
-    if en:
-        for para in re.split(r"\n{2,}", en.strip()):
-            para = para.strip().replace("\n", "<br>")
-            if para:
-                out.append('<p class="en">%s</p>' % linkify(para))
-    return "\n".join(out)
+def both(zh_t, en_t):
+    return zh(zh_t) + en(en_t)
 
 
-def render_section(zh_title, en_title, zh, en):
-    if not (zh or en):
+def block(zh_title, en_title, zh_c, en_c, pre=False, image=None):
+    """对齐首页 modal-block：标题 both()，正文 <p>both(zh,en)</p>；
+    research/repPubs 用 white-space:pre-line 保留换行。内容缺失则整段不渲染。"""
+    if not (zh_c or en_c):
         return ""
-    return (
-        '<section class="m-sec">'
-        '<h2><span class="zh">%s</span><span class="en">%s</span></h2>'
-        '<div class="m-body">%s</div></section>'
-        % (esc(zh_title), esc(en_title), render_paras(zh, en))
-    )
+    st = ' style="white-space:pre-line"' if pre else ""
+    out = '<section class="m-sec"><h2>%s</h2>' % both(zh_title, en_title)
+    if image:
+        out += '<img class="m-banner" src="%s" alt="">' % esc_attr(image)
+    out += '<div class="m-body"><p%s>%s</p></div></section>' % (st, both(zh_c, en_c))
+    return out
 
 
-def resolve_chips(ids, lookup):
-    """ids: 列表; lookup: {slug: {zh,en}}; 返回 chip HTML。id 经 slug 归一化后再查。"""
-    if not ids:
+def projects_block(m, data):
+    """在研课题：research.projects 中 memberIds 含本成员的，原 modal 第10块。"""
+    projs = [p for p in (data.get("research", {}).get("projects") or [])
+             if m.get("id") and m["id"] in (p.get("memberIds") or [])]
+    if not projs:
         return ""
-    chips = []
-    for i in ids:
-        item = lookup.get(slug(i))
-        if not item:
-            continue
-        zh = item.get("zh") or item.get("titleZh") or ""
-        en = item.get("en") or item.get("titleEn") or ""
-        chips.append('<span class="chip"><span class="zh">%s</span><span class="en">%s</span></span>'
-                     % (esc(zh), esc(en)))
-    # 去重保序
-    seen = set()
-    uniq = []
-    for c in chips:
-        if c not in seen:
-            seen.add(c)
-            uniq.append(c)
-    return "\n".join(uniq)
+    items = "".join('<li>%s</li>' % esc(p.get("titleZh") or p.get("titleEn") or p.get("id"))
+                    for p in projs)
+    return ('<section class="m-sec"><h2>%s</h2><div class="m-body"><ul class="proj-list">%s</ul></div></section>'
+            % (both("在研课题", "Current Projects"), items))
 
 
 MEM_TPL = """<!DOCTYPE html>
@@ -150,24 +121,20 @@ MEM_TPL = """<!DOCTYPE html>
   .hero{display:flex;gap:22px;align-items:center;margin:10px 0 26px;flex-wrap:wrap}
   .avatar{width:118px;height:118px;border-radius:50%;object-fit:cover;
           border:3px solid var(--border-color);flex-shrink:0;background:var(--section-bg)}
+  .avatar-fallback{display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff;font-weight:700}
   .hinfo{min-width:0;flex:1}
   .group-badge{display:inline-block;font-size:12px;color:var(--primary);
           border:1px solid color-mix(in srgb,var(--primary) 30%,transparent);
           padding:4px 12px;border-radius:999px;background:color-mix(in srgb,var(--primary) 8%,transparent);margin-bottom:10px}
   h1{font-size:27px;line-height:1.35;margin:0 0 8px;font-weight:700;letter-spacing:.01em}
   .role{color:var(--light-text-color);font-size:15px;line-height:1.6;margin-top:4px}
-  .m-bio{font-size:16.5px;line-height:1.85;margin:6px 0 8px;color:var(--text-color)}
-  .m-bio p{margin:0 0 14px}
   .m-sec{margin:30px 0 0;border-top:1px solid var(--border-color);padding-top:22px}
   .m-sec h2{font-size:18px;margin-bottom:14px;color:var(--text-color);display:flex;align-items:center;gap:9px;font-weight:700}
   .m-sec h2::before{content:"";width:4px;height:18px;background:var(--primary);border-radius:2px;display:inline-block;flex-shrink:0}
-  .m-body p{margin:0 0 12px;font-size:15.5px;line-height:1.8;color:var(--text-color)}
-  .m-body a{color:var(--primary);text-decoration:none;word-break:break-all}
-  .m-body a:hover{text-decoration:underline}
-  .m-related{margin:26px 0 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-  .m-rel-label{font-size:13px;color:var(--light-text-color);margin-right:2px}
-  .chip{font-size:13px;border:1px solid var(--border-color);border-radius:999px;padding:6px 14px;
-        background:var(--section-bg);color:var(--text-color)}
+  .m-body p{margin:0;font-size:15.5px;line-height:1.85;color:var(--text-color)}
+  .m-banner{width:100%;max-height:320px;object-fit:cover;border-radius:14px;margin:4px 0 14px}
+  .proj-list{margin:0;padding-left:20px}
+  .proj-list li{font-size:15.5px;line-height:1.9;color:var(--text-color)}
   .bar{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:44px}
   .share{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;
          font-weight:600;border:none;border-radius:999px;padding:11px 22px;cursor:pointer;
@@ -189,23 +156,9 @@ MEM_TPL = """<!DOCTYPE html>
   </div>
   <div class="wrap">
     <div class="hero">
-      <img class="avatar" src="__PHOTO__" alt="__NAMEZH__">
-      <div class="hinfo">
-        <span class="group-badge">__GROUPBADGE__</span>
-        <h1><span class="zh">__NAMEZH__</span><span class="en">__NAMEEN__</span></h1>
-        <div class="role"><span class="zh">__ROLEZH__</span><span class="en">__ROLEEN__</span></div>
-      </div>
+__HERO__
     </div>
-    <div class="m-bio">
-__BIO__
-    </div>
-__RELATED__
-__EDU__
-__ACH__
-__CONF__
-__RECRUIT__
-__WORDS__
-__CONTACT__
+__CONTENT__
     <div class="bar">
       <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
     </div>
@@ -215,7 +168,6 @@ __CONTACT__
   </div>
 <script>
   var ZH_TITLE=__NAMEZH_ESC__, EN_TITLE=__NAMEEN_ESC__;
-  /* ===== 语言切换 ===== */
   var LK="iMicrobiomeLang";
   function applyLang(l){
     document.body.classList.remove("lang-zh","lang-en");
@@ -233,7 +185,6 @@ __CONTACT__
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
   var lb=document.getElementById("lang-toggle");
   if(lb)lb.addEventListener("click",function(){applyLang(document.body.classList.contains("lang-zh")?"en":"zh");});
-  /* ===== 明暗主题切换 ===== */
   var THEME_KEY="iMicrobiomeTheme";
   function applyTheme(t){
     document.documentElement.setAttribute("data-theme",t);
@@ -250,7 +201,6 @@ __CONTACT__
     applyTheme(cur);
     try{localStorage.setItem(THEME_KEY,cur);}catch(e){}
   });
-  /* ===== 分享 ===== */
   function shareThis(){
     var u=location.origin+location.pathname+location.search, t=document.title, d=document.querySelector('meta[name="twitter:description"]');
     var txt=d?d.getAttribute('content'):'';
@@ -283,56 +233,49 @@ def render_page(m, data):
     group = m.get("group") or ""
     badge = GROUP_LABELS.get(group, group or "团队成员")
     photo = m.get("photo") or ""
-    if not photo.startswith("http"):
+    if photo.startswith("http"):
+        hero = ('<img class="avatar" src="%s" alt="%s">' % (esc_attr(photo), esc_attr(name_zh)))
+    else:
         photo = DEFAULT_OG
+        hero = ('<div class="avatar avatar-fallback" style="background-color:hsl(%d,52%%,50%%)">%s</div>'
+                % (sum(ord(c) for c in (name_zh or name_en or "?")) % 360, esc((name_zh or name_en or "?")[0])))
+    hero += '<div class="hinfo">'
+    hero += '<span class="group-badge">%s</span>' % esc(badge)
+    # 对齐首页：姓名 = esc(nameZh) + ' ' + en(nameEn)
+    hero += '<h1>%s %s</h1>' % (esc(name_zh), en(name_en))
+    hero += '<div class="role">%s</div>' % both(role_zh, role_en)
+    hero += '</div>'
+
+    # 严格按 openDetail(type==="member") 顺序渲染 11 段
+    content = ""
+    content += block("个人简介", "Bio", m.get("bioZh"), m.get("bioEn"))
+    content += block("自我介绍", "About", m.get("introZh"), m.get("introEn"), image=m.get("introImage"))
+    content += block("教育背景与工作经历", "Education & Experience", m.get("eduZh"), m.get("eduEn"))
+    content += block("研究方向", "Research Directions", m.get("researchZh"), m.get("researchEn"), pre=True)
+    content += block("主要学术成绩", "Academic Achievements", m.get("achZh"), m.get("achEn"))
+    content += block("国内外会议与学术报告", "Conferences & Talks", m.get("confZh"), m.get("confEn"))
+    content += block("代表性论文", "Representative Publications", m.get("repPubsZh"), m.get("repPubsEn"), pre=True)
+    content += block("招生与团队", "Recruitment & Team", m.get("recruitZh"), m.get("recruitEn"))
+    content += block("寄语", "Message", m.get("wordsZh"), m.get("wordsEn"))
+    content += block("联系方式", "Contact", m.get("contactZh"), m.get("contactEn"))
+    content += projects_block(m, data)
+
     ogt = esc_attr(name_zh or name_en)
     ogd = esc_attr(first_summary(m))
     url = "%s/members/%s.html" % (SITE, m.get("id"))
-    ogimg = esc_attr(photo)
-    bio = render_paras(m.get("bioZh"), m.get("bioEn"))
-    edu = render_section("教育经历", "Education", m.get("eduZh"), m.get("eduEn"))
-    ach = render_section("主要成就", "Selected Achievements", m.get("achZh"), m.get("achEn"))
-    conf = render_section("学术报告 / 会议", "Talks & Conferences",
-                          m.get("confZh"), m.get("confEn"))
-    recruit = render_section("招生信息", "Recruitment",
-                             m.get("recruitZh"), m.get("recruitEn"))
-    words = render_section("导师寄语", "Words", m.get("wordsZh"), m.get("wordsEn"))
-    contact = render_section("联系方式", "Contact", m.get("contactZh"), m.get("contactEn"))
-    # 关联研究方向 / 项目 / 平台（id 引用，经 slug 归一化后解析，兼容前缀不一致）
-    pillars = {slug(p.get("id")): p for p in (data.get("research", {}).get("pillars") or [])}
-    projects = {slug(p.get("id")): p for p in (data.get("projects") or [])}
-    facilities = {slug(f.get("id")): f for f in (data.get("facilities") or [])}
-    chips = resolve_chips(m.get("pillarIds"), pillars)
-    chips += ("\n" + resolve_chips(m.get("projectIds"), projects)) if m.get("projectIds") else ""
-    chips += ("\n" + resolve_chips(m.get("facilityIds"), facilities)) if m.get("facilityIds") else ""
-    chips = chips.strip()
-    related = ""
-    if chips:
-        related = ('<div class="m-related"><span class="m-rel-label"><span class="zh">研究方向 / 项目 / 平台</span>'
-                   '<span class="en">Research / Projects / Facilities</span></span>%s</div>') % chips
     build_ver = datetime.now().strftime("%Y%m%d%H%M%S")
     return (MEM_TPL
             .replace("__NAMEZH__", esc(name_zh))
             .replace("__NAMEEN__", esc(name_en))
             .replace("__NAMEZH_ESC__", json.dumps(name_zh, ensure_ascii=False))
             .replace("__NAMEEN_ESC__", json.dumps(name_en, ensure_ascii=False))
-            .replace("__ROLEZH__", esc(role_zh))
-            .replace("__ROLEEN__", esc(role_en))
-            .replace("__GROUPBADGE__", esc(badge))
-            .replace("__PHOTO__", esc_attr(photo))
             .replace("__OGTITLE__", ogt)
             .replace("__OGDESC__", ogd)
             .replace("__OGURL__", esc_attr(url))
-            .replace("__OGIMAGE__", ogimg)
+            .replace("__OGIMAGE__", esc_attr(photo))
             .replace("__BUILDVER__", build_ver)
-            .replace("__BIO__", bio)
-            .replace("__RELATED__", related)
-            .replace("__EDU__", edu)
-            .replace("__ACH__", ach)
-            .replace("__CONF__", conf)
-            .replace("__RECRUIT__", recruit)
-            .replace("__WORDS__", words)
-            .replace("__CONTACT__", contact)
+            .replace("__HERO__", hero)
+            .replace("__CONTENT__", content)
             .replace("__SITE__", SITE))
 
 
