@@ -2780,6 +2780,303 @@ function setPubStatus(msg,type){
   el.textContent=msg||"";
   el.style.color = (type==="err")?"#c0392b":(type==="ok")?"#0a7d3b":"#1a73e8";
 }
+/* ===== 新闻详情页：管理员发布时同步生成（根治点击 404）=====
+/* ===== 新闻详情页渲染（移植自 gen_news_share.py，纯函数，无外部依赖）===== */
+var SITE = "https://liang-lab.cn";
+function news_esc(s){
+  return String(s==null?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#x27;");
+}
+function news_render_blocks(blocks){
+  var out=[];
+  var bs=blocks||[];
+  for(var i=0;i<bs.length;i++){
+    var b=bs[i]; var t=b.type;
+    if(t==="image"){
+      var src=b.src||""; var cap=b.caption||"";
+      var fig='<figure class="n-img"><img src="'+news_esc(src)+'" alt="'+news_esc(cap)+'" loading="lazy">';
+      if(cap){ fig+='<figcaption><span class="zh">'+news_esc(cap)+'</span><span class="en">'+news_esc(cap)+'</span></figcaption>'; }
+      fig+="</figure>"; out.push(fig);
+    } else if(t==="heading"){
+      var zh=b.zh||b.text||""; var en=b.en||b.text||"";
+      out.push('<h2><span class="zh">'+news_esc(zh)+'</span><span class="en">'+news_esc(en)+'</span></h2>');
+    } else {
+      var z=b.zh||""; var e=b.en||"";
+      if(z){
+        var zps=z.trim().split(/\n{2,}/);
+        for(var k=0;k<zps.length;k++){ var zp=zps[k].trim().replace(/\n/g,"<br>"); if(zp) out.push('<p class="zh">'+zp+'</p>'); }
+      }
+      if(e){
+        var eps=e.trim().split(/\n{2,}/);
+        for(var k2=0;k2<eps.length;k2++){ var ep=eps[k2].trim().replace(/\n/g,"<br>"); if(ep) out.push('<p class="en">'+ep+'</p>'); }
+      }
+    }
+  }
+  return out.join("\n");
+}
+function news_build_date(n){
+  var year=n.year||"", month=n.month||"", day=n.day||"", raw=n.date||"";
+  if(raw && /^\d{4}\.\d{2}\.\d{2}$/.test(String(raw).trim())) return String(raw).trim();
+  if(!year){
+    var m=String(n.id||"").match(/(\d{13})/);
+    if(m){ try{ year=new Date(parseInt(m[1],10)).getFullYear().toString(); }catch(e){} }
+  }
+  if(!year){ year=new Date().getFullYear().toString(); }
+  var parts=[year,month,day].filter(function(p){return p;});
+  if(!parts.length) return raw||"";
+  return parts.join(".");
+}
+function news_first_image(n){
+  var bs=n.blocks||[];
+  for(var i=0;i<bs.length;i++){ var b=bs[i]; if(b.type==="image" && typeof b.src==="string" && b.src.indexOf("http")===0) return b.src; }
+  return "";
+}
+function news_first_summary(n,limit){
+  limit=limit||120;
+  var bs=n.blocks||[];
+  for(var i=0;i<bs.length;i++){
+    var b=bs[i];
+    if((b.type==null||b.type==="text") && (b.zh||b.en)){
+      var s=(b.zh||b.en||"").trim().replace(/\s+/g," ");
+      return s.length>limit ? s.slice(0,limit)+"…" : s;
+    }
+  }
+  return "";
+}
+function news_build_ver(){
+  var d=new Date();
+  function p(x){ return (x<10?"0":"")+x; }
+  return ""+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds());
+}
+function renderNewsPage(n){
+  var title_zh=n.titleZh||"";
+  var title_en=n.titleEn||"";
+  var date=news_build_date(n);
+  var ogt=news_esc(title_zh||title_en);
+  var ogd=news_esc(news_first_summary(n));
+  var url=SITE+"/news/"+n.id+".html";
+  var ogimg=news_esc(news_first_image(n));
+  var body=news_render_blocks(n.blocks);
+  var build_ver=news_build_ver();
+  return NEWS_TPL
+    .split("__TITLEZH__").join(news_esc(title_zh))
+    .split("__TITLEEN__").join(news_esc(title_en))
+    .split("__TITLEZH_ESC__").join(JSON.stringify(title_zh))
+    .split("__TITLEEN_ESC__").join(JSON.stringify(title_en))
+    .split("__OGTITLE__").join(ogt)
+    .split("__OGDESC__").join(ogd)
+    .split("__OGURL__").join(news_esc(url))
+    .split("__OGIMAGE__").join(ogimg)
+    .split("__BUILDVER__").join(build_ver)
+    .split("__DATE__").join(news_esc(date))
+    .split("__BODY__").join(body)
+    .split("__SITE__").join(SITE);
+}
+
+var NEWS_TPL = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLEZH__ | 智能微生态与生物制造实验室</title>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="智能微生态与生物制造实验室">
+<meta property="og:title" content="__OGTITLE__">
+<meta property="og:description" content="__OGDESC__">
+<meta property="og:url" content="__OGURL__?v=__BUILDVER__">
+<meta property="og:image" content="__OGIMAGE__">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="__OGTITLE__">
+<meta name="twitter:description" content="__OGDESC__">
+<meta name="twitter:image" content="__OGIMAGE__">
+<link rel="preload" as="style" href="../css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="../css/all.min.css"></noscript>
+<style>
+  :root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;
+        --border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;
+        --hover-color:#f0f4f8;--accent:#0066cc;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       color:var(--text-color);background:var(--bg);line-height:1.7;
+       -webkit-font-smoothing:antialiased;min-height:100vh;transition:background .3s,color .3s}
+  [data-theme="dark"]{--primary:#4da3ff;--primary-hover:#79b8ff;--bg:#0d1117;--section-bg:#161b22;
+        --border-color:#30363d;--text-color:#e6edf3;--light-text-color:#8b949e;--hover-color:#21262d;--accent:#4da3ff;}
+  .lang-zh .en,.lang-en .zh{display:none !important}
+  .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+          padding:10px 20px;border-bottom:1px solid var(--border-color);
+          background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(16px);
+          -webkit-backdrop-filter:blur(16px)}
+  .back{color:var(--light-text-color);text-decoration:none;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+  .back:hover{color:var(--text-color)}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+  .lang-toggle-btn{background:transparent;border:1px solid var(--border-color);border-radius:999px;
+          padding:6px 14px;font-size:13px;cursor:pointer;color:var(--text-color);font-family:inherit;line-height:1}
+  #theme-toggle{background:transparent;border:1px solid var(--border-color);border-radius:999px;
+          padding:6px 12px;font-size:14px;cursor:pointer;color:var(--text-color);line-height:1}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 22px 72px}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--primary);
+          letter-spacing:.06em;border:1px solid color-mix(in srgb,var(--primary) 30%,transparent);
+          padding:6px 14px;border-radius:999px;background:color-mix(in srgb,var(--primary) 8%,transparent)}
+  h1{font-size:27px;line-height:1.4;margin:18px 0 8px;font-weight:700;letter-spacing:.01em}
+  .date{color:var(--light-text-color);font-size:14px;margin-bottom:26px}
+  .content{font-size:16px;color:var(--text-color)}
+  .content p{margin:0 0 16px}
+  .content h2{font-size:19px;margin:28px 0 12px;color:var(--text-color)}
+  .content .n-img{margin:20px 0}
+  .content .n-img img{width:100%;border-radius:14px;display:block;border:1px solid var(--border-color)}
+  .content .n-img figcaption{font-size:13px;color:var(--light-text-color);text-align:center;margin-top:8px}
+  .bar{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:44px}
+  .share{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;
+         font-weight:600;border:none;border-radius:999px;padding:11px 22px;cursor:pointer;
+         font-size:14px;transition:transform .2s,box-shadow .2s}
+  .share:hover{transform:translateY(-2px);box-shadow:0 10px 26px color-mix(in srgb,var(--primary) 40%,transparent)}
+  .foot{margin-top:40px;padding-top:22px;border-top:1px solid var(--border-color);
+        text-align:center;color:var(--light-text-color);font-size:13px}
+  .foot a{color:var(--primary);text-decoration:none}
+  @media(max-width:600px){h1{font-size:22px}.wrap{padding:24px 16px 60px}}
+</style>
+</head>
+<body class="lang-zh">
+  <div class="topbar">
+    <a class="back" href="__SITE__/">← <span class="zh">返回实验室网站</span><span class="en">Back to Lab</span></a>
+    <div class="topbar-right">
+      <button id="lang-toggle" class="lang-toggle-btn" type="button">EN</button>
+      <button id="theme-toggle" class="lang-toggle-btn" type="button" title="切换主题" aria-label="切换明暗主题"><i class="fas fa-moon"></i></button>
+    </div>
+  </div>
+  <div class="wrap">
+    <span class="kicker"><span class="zh">团队动态</span><span class="en">News</span></span>
+    <h1><span class="zh">__TITLEZH__</span><span class="en">__TITLEEN__</span></h1>
+    <div class="date">__DATE__</div>
+    <div class="content">
+__BODY__
+    </div>
+    <div class="bar">
+      <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
+    </div>
+    <div class="foot">
+      <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
+    </div>
+  </div>
+<script>
+  var ZH_TITLE=__TITLEZH_ESC__, EN_TITLE=__TITLEEN_ESC__;
+  /* ===== 语言切换 ===== */
+  var LK="iMicrobiomeLang";
+  function applyLang(l){
+    document.body.classList.remove("lang-zh","lang-en");
+    document.body.classList.add("lang-"+l);
+    var btn=document.getElementById("lang-toggle");
+    if(btn)btn.textContent=(l==="zh")?"EN":"中文";
+    try{localStorage.setItem(LK,l);}catch(e){}
+    document.documentElement.lang=(l==="zh")?"zh-CN":"en";
+    document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
+  }
+  /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
+  (function(){var v="__BUILDVER__";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  var savedLang=null;
+  try{savedLang=localStorage.getItem(LK);}catch(e){}
+  applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
+  var lb=document.getElementById("lang-toggle");
+  if(lb)lb.addEventListener("click",function(){applyLang(document.body.classList.contains("lang-zh")?"en":"zh");});
+  /* ===== 明暗主题切换 ===== */
+  var THEME_KEY="__THEME__";
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme",t);
+    var b=document.getElementById("theme-toggle");
+    if(b)b.innerHTML=t==="dark"?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';
+  }
+  var savedTheme=null;
+  try{savedTheme=localStorage.getItem(THEME_KEY);}catch(e){}
+  var initialTheme=savedTheme||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  applyTheme(initialTheme);
+  var tb=document.getElementById("theme-toggle");
+  if(tb)tb.addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+    applyTheme(cur);
+    try{localStorage.setItem(THEME_KEY,cur);}catch(e){}
+  });
+  /* ===== 分享 ===== */
+  function shareThis(){
+    // 用当前已带版本参数的 URL（页面加载时已自动补 ?v=），确保微信粘贴后按新链接出卡片
+    var u=location.origin+location.pathname+location.search, t=document.title, d=document.querySelector('meta[name="twitter:description"]');
+    var txt=d?d.getAttribute('content'):'';
+    var isWx=/MicroMessenger/i.test(navigator.userAgent);
+    if(navigator.share && !isWx){ navigator.share({title:t,text:txt,url:u}).catch(function(){}); }
+    else{
+      var ta=document.createElement('textarea');ta.value=u;document.body.appendChild(ta);
+      ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+      if(isWx){ alert('链接已复制，请点击右上角「···」粘贴发送给朋友，将自动显示标题与封面图'); }
+      else{ alert('链接已复制，去微信粘贴发给朋友：\\n'+u); }
+    }
+  }
+  var sb=document.getElementById('shareBtn');if(sb)sb.onclick=shareThis;
+<\/script>
+</body>
+</html>`;
+
+/* ===== 发布时同步上传新闻详情页（根治点击 404）===== */
+function ghPutFile(base, token, repo, path, contentB64, message){
+  var url=base+"/repos/"+repo+"/contents/"+path;
+  function attempt(sha){
+    var body={message:message, content:contentB64};
+    if(sha) body.sha=sha;
+    return fetch(url,{method:"PUT",headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){
+      if(r.ok) return r.json();
+      if(r.status===409){
+        return fetch(url,{headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json"}}).then(function(r2){return r2.json();}).then(function(m){ return attempt(m.sha); });
+      }
+      if(r.status===404){ return attempt(null); }
+      throw new Error("PUT "+path+" 失败("+r.status+")");
+    });
+  }
+  return attempt(null);
+}
+function cleanNewsBase64(base, token, data){
+  var repo="liyangfei8495/i-microbiome-lab";
+  var proms=[];
+  (data.news||[]).forEach(function(n){
+    (n.blocks||[]).forEach(function(b, i){
+      if(b.type==="image" && typeof b.src==="string" && b.src.indexOf("data:image")===0){
+        var mm=b.src.match(/^data:image\/([a-zA-Z0-9.+-]+);base64,/);
+        var ext=(mm&&mm[1]==="png")?"png":(mm&&mm[1]==="webp")?"webp":"jpg";
+        var b64=b.src.split(",")[1];
+        var path="images/news/"+n.id+"-"+i+"."+ext;
+        var p=ghPutFile(base, token, repo, path, b64, "site: 上传新闻图片 "+path).then(function(){ b.src=SITE+"/"+path; }).catch(function(e){ console.warn("图片上传失败",path,e); });
+        proms.push(p);
+      }
+    });
+  });
+  return Promise.all(proms);
+}
+function publishAllNewsPages(base, cname, token, data){
+  var repo="liyangfei8495/i-microbiome-lab";
+  var news=data.news||[];
+  var chain=Promise.resolve();
+  news.forEach(function(n){
+    chain=chain.then(function(){
+      var html=renderNewsPage(n);
+      return ghPutFile(base, token, repo, "news/"+n.id+".html", b64encode(html), "site: 生成新闻详情页 "+n.id);
+    });
+  });
+  return chain;
+}
+function publishHomeVersion(base, token, repo){
+  var url=base+"/repos/"+repo+"/contents/index.html";
+  return fetch(url,{headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json"}}).then(function(r){
+    if(!r.ok) throw new Error("获取 index.html 失败("+r.status+")");
+    return r.json();
+  }).then(function(meta){
+    var html=b64decode(meta.content);
+    var nv=news_build_ver();
+    var newHtml=html.replace(/\?v=20\d{6,12}[a-z]?/g, "?v="+nv);
+    if(newHtml===html) return null;
+    return ghPutFile(base, token, repo, "index.html", b64encode(newHtml), "site: 发布时刷新主页版本戳 ?v="+nv).then(function(){ return nv; });
+  });
+}
+
+/* ===== 新闻详情页注入结束 ===== */
+
 function publishToGitHub(onDone){
   var token=getGhToken();
   if(!token){ setPubStatus("❌ 请先填 GitHub Token 并点“记住”","err"); var gi=document.getElementById("gh-token"); if(gi){try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus();} if(onDone)onDone(false,"请先填 GitHub Token"); return; }
@@ -2814,6 +3111,10 @@ function tryPublish(list, idx, token, repo, path, onDone){
     return r.json();
   })
    .then(function(meta){
+     setPubStatus("正在处理新闻图片与详情页…","info");
+     return cleanNewsBase64(base, token, edData).then(function(){ return meta; });
+   })
+   .then(function(meta){
      setPubStatus("数据已就绪，正在上传…","info");
      var body={ message:"site: 管理员发布内容更新", content:b64encode(JSON.stringify(edData,null,2)) };
      if(!meta.__create){ body.sha=meta.sha; }
@@ -2824,7 +3125,14 @@ function tryPublish(list, idx, token, repo, path, onDone){
      });
    })
    .then(function(r){ if(!r.ok) throw new Error("发布失败("+r.status+")"); return r.json(); })
-   .then(function(){ clearTimeout(to); var m="✅ 已通过「"+c.name+"」发布，1–2 分钟全网生效"; setPubStatus(m,"ok"); showToast(m); if(onDone)onDone(true,m); })
+   .then(function(){
+     setPubStatus("正在生成新闻详情页（防 404）…","info");
+     return publishAllNewsPages(base, c.name, token, edData);
+   })
+   .then(function(){
+     return publishHomeVersion(base, token, repo).catch(function(e){ console.warn("主页版本刷新失败(不影响详情页):",e); });
+   })
+   .then(function(){ clearTimeout(to); var m="✅ 已通过「"+c.name+"」发布，主页与详情页均已更新，1–2 分钟全网生效"; setPubStatus(m,"ok"); showToast(m); if(onDone)onDone(true,m); })
    .catch(function(e){
      clearTimeout(to);
      if(e&&e.__abort){ if(onDone)onDone(false,"中止"); return; }
