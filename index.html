@@ -282,7 +282,7 @@ section h2{font-size:clamp(26px,4vw,38px);font-weight:700;letter-spacing:-.01em;
 .hero-content{position:relative;z-index:2;}
 #hero-canvas{z-index:0;}
 /* ===== Hero 背景轮播（图片/GIF/视频） ===== */
-.hero-slides{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#0a1422;}
+.hero-slides{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#0a1422 url('images/plant_image2.jpg') center/cover no-repeat;}
 .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.1s cubic-bezier(.4,0,.2,1);z-index:0;}
 .hero-slide.active{opacity:1;}
 .hero-slide-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
@@ -717,7 +717,7 @@ function renderAll(d){
       slidesEl.innerHTML=media.map(function(m,i){
         var inner = (m.type==="video")
           ? '<video class="hero-slide-media" muted playsinline '+(isTouch?'preload="metadata" poster="'+esc(d.hero.image||'')+'"':'autoplay preload="metadata"')+' src="'+esc(m.src)+'"></video>'
-          : '<img class="hero-slide-media'+((/\.(gif|webp)(\?|$)/i).test(m.src)?' is-anim':'')+'" src="'+esc(m.src)+'" alt="">';
+          : '<img class="hero-slide-media'+((/\.(gif|webp)(\?|$)/i).test(m.src)?' is-anim':'')+'" src="'+esc(m.src)+'" alt="" fetchpriority="high" decoding="async">';
         return '<div class="hero-slide'+(i===0?' active':'')+'" data-idx="'+i+'">'+inner+'</div>';
       }).join("");
     }
