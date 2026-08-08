@@ -1311,16 +1311,20 @@ window.renderAll=renderAll; window.showToast=showToast;
 <!-- 登录框 -->
 <div id="admin-login" class="admin-modal" hidden style="display:none;">
   <div class="admin-backdrop" data-al-close></div>
-  <div class="admin-dialog" style="width:340px;">
-    <button class="admin-close" data-al-close aria-label="关闭"><i class="fas fa-times"></i></button>
-    <h2 style="margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px;"><i class="fas fa-lock" style="color:var(--primary,#0066cc);"></i> 管理员登录</h2>
-    <label style="display:block;font-size:13px;color:#6e6e73;margin:10px 0 4px;">账号</label>
-    <input id="al-user" style="width:100%;padding:9px 11px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;box-sizing:border-box;" autocomplete="off">
-    <label style="display:block;font-size:13px;color:#6e6e73;margin:10px 0 4px;">密码</label>
-    <input id="al-pass" type="password" style="width:100%;padding:9px 11px;border:1px solid #e5e5ea;border-radius:8px;font-size:14px;box-sizing:border-box;" autocomplete="off">
-    <p id="al-err" style="color:#ff3b30;font-size:13px;min-height:18px;margin:8px 0 0;"></p>
-    <button id="al-btn" style="width:100%;margin-top:14px;padding:10px;background:var(--primary,#0066cc);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">登录</button>
-    <button id="al-logout" style="width:100%;margin-top:10px;padding:9px;background:transparent;color:#6e6e73;border:1px solid #e5e5ea;border-radius:8px;font-size:13px;cursor:pointer;display:none;">退出管理模式</button>
+  <div class="admin-dialog">
+    <div class="admin-login-header">
+      <h2><i class="fas fa-lock"></i> 管理员登录</h2>
+      <button class="admin-close" data-al-close aria-label="关闭"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="admin-login-body">
+      <label>账号</label>
+      <input id="al-user" autocomplete="off">
+      <label>密码</label>
+      <input id="al-pass" type="password" autocomplete="off">
+      <p id="al-err"></p>
+      <button id="al-btn">登录</button>
+      <button id="al-logout">退出管理模式</button>
+    </div>
   </div>
 </div>
 
@@ -1368,16 +1372,22 @@ window.renderAll=renderAll; window.showToast=showToast;
 .admin-close{position:absolute;top:14px;right:14px;background:var(--section-bg,#f5f5f7);border:none;font-size:16px;cursor:pointer;color:var(--light-text-color,#6e6e73);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:.15s;z-index:5;}
 .admin-close:hover{background:var(--hover-color,#f0f4f8);color:var(--text-color,#1d1d1f);}
 
-/* Login dialog keeps compact padding */
-#admin-login .admin-dialog{padding:24px;width:360px;max-width:calc(100vw - 32px);}
-#admin-login h2{margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px;color:var(--text-color,#1d1d1f);}
-#admin-login label{display:block;font-size:13px;color:var(--light-text-color,#6e6e73);margin:10px 0 4px;font-weight:500;}
-#admin-login input{width:100%;padding:10px 12px;border:1px solid var(--border-color,#e5e5ea);border-radius:10px;font-size:14px;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);box-sizing:border-box;transition:.15s;}
-#admin-login input:focus{outline:none;border-color:var(--primary,#0066cc);box-shadow:0 0 0 3px var(--focus-outline-color,rgba(0,102,204,.15));}
-#admin-login button{width:100%;margin-top:14px;padding:10px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;border:none;background:var(--primary,#0066cc);color:#fff;transition:.15s;}
-#admin-login button:hover{background:var(--primary-hover,#0052a3);}
-#al-logout{margin-top:10px;background:transparent !important;color:var(--light-text-color,#6e6e73) !important;border:1px solid var(--border-color,#e5e5ea) !important;}
-#al-err{color:#ff3b30;font-size:13px;min-height:18px;margin:8px 0 0;}
+/* Login dialog */
+#admin-login .admin-dialog{width:400px;max-width:calc(100vw - 32px);padding:0;overflow:hidden;border-radius:16px;}
+.admin-login-header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;background:linear-gradient(135deg,var(--primary,#0066cc),var(--primary-hover,#0052a3));color:#fff;}
+.admin-login-header h2{margin:0;font-size:18px;font-weight:600;display:flex;align-items:center;gap:10px;color:#fff;}
+.admin-login-header .admin-close{position:static;background:rgba(255,255,255,.22);color:#fff;width:32px;height:32px;border-radius:8px;font-size:15px;}
+.admin-login-header .admin-close:hover{background:rgba(255,255,255,.38);color:#fff;}
+.admin-login-body{padding:22px 24px 26px;}
+.admin-login-body label{display:block;font-size:13px;color:var(--light-text-color,#6e6e73);margin:14px 0 6px;font-weight:500;}
+.admin-login-body label:first-child{margin-top:0;}
+.admin-login-body input{width:100%;padding:11px 13px;border:1px solid var(--border-color,#e5e5ea);border-radius:10px;font-size:15px;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);box-sizing:border-box;transition:.15s;}
+.admin-login-body input:focus{outline:none;border-color:var(--primary,#0066cc);box-shadow:0 0 0 3px var(--focus-outline-color,rgba(0,102,204,.15));}
+#al-btn{width:100%;margin-top:18px;padding:11px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;border:none;background:var(--primary,#0066cc);color:#fff;transition:.15s;}
+#al-btn:hover{background:var(--primary-hover,#0052a3);}
+#al-logout{width:100%;margin-top:10px;padding:10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--light-text-color,#6e6e73);border:1px solid var(--border-color,#e5e5ea);display:none;}
+#al-logout:hover{background:var(--section-bg,#f5f5f7);}
+#al-err{color:#ff3b30;font-size:13px;min-height:18px;margin:10px 0 0;}
 
 /* Block editor layout */
 #block-editor .admin-dialog{width:min(1200px,96vw);max-height:92vh;}
