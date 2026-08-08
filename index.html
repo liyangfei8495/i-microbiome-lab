@@ -326,8 +326,9 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
   .modal.is-open .modal-dialog{transform:none;opacity:1;}
   .modal-backdrop{opacity:0;transition:opacity .3s;}
   .modal.is-open .modal-backdrop{opacity:1;}
-  .bup{filter:blur(10px);transform:scale(1.03);opacity:.45;transition:filter .55s ease,transform .55s ease,opacity .55s ease;}
-  .bup.img-ready{filter:none;transform:none;opacity:1;}
+  .bup{opacity:0;background:linear-gradient(135deg,#e9eef5,#dde5f1);transition:opacity .45s ease;}
+  .bup.img-ready{opacity:1;background:transparent;}
+  [data-theme="dark"] .bup{background:linear-gradient(135deg,#1b2433,#232f44);}
   @keyframes riseIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
   @keyframes aurora{from{transform:translate3d(-2%,-1%,0) scale(1)}to{transform:translate3d(3%,2%,0) scale(1.08)}}
 }
@@ -3096,6 +3097,41 @@ function publishHomeVersion(base, token, repo){
   });
 }
 
+/* ===== 发布后预热 CDN 缓存（新图秒开，不依赖图片压缩） ===== */
+function __collectImgUrls(obj, out){
+  out = out || {};
+  if(obj==null) return out;
+  if(typeof obj==="string"){
+    if(/\.(jpe?g|png|webp|gif)(\?|$)/i.test(obj)){
+      if(/^https?:\/\//.test(obj)){
+        if(obj.indexOf("liang-lab.cn")>=0) out[obj]=1;   // 只预热本站图片，不预热外部 CDN
+      } else if(/^images\//.test(obj) || /\/images\//.test(obj)){
+        out[obj]=1;   // 相对路径 images/... 或 /images/...
+      }
+    }
+    return out;
+  }
+  if(Array.isArray(obj)){ for(var i=0;i<obj.length;i++) __collectImgUrls(obj[i],out); return out; }
+  if(typeof obj==="object"){ for(var k in obj){ if(Object.prototype.hasOwnProperty.call(obj,k)) __collectImgUrls(obj[k],out); } }
+  return out;
+}
+function warmCdnCache(){
+  try{
+    var urls={};
+    __collectImgUrls((typeof edData!=="undefined"?edData:null), urls);
+    var host=SITE.replace(/\/+$/,"");
+    var n=0;
+    Object.keys(urls).forEach(function(u){
+      try{
+        var abs = /^https?:\/\//.test(u) ? u : (host+"/"+u.replace(/^\//,""));
+        var im=new Image(); im.loading="eager"; im.src=abs; n++;
+      }catch(e){}
+    });
+    console.log("[CDN预热] 触发预取图片数:", n);
+    return n;
+  }catch(e){ console.warn("[CDN预热] 失败", e); return 0; }
+}
+
 /* ===== 新闻详情页注入结束 ===== */
 /* ===== 成员独立页：渲染 + 发布（防 404，与新闻对称） ===== */
 var DEFAULT_OG = SITE + "/images/site/1784990973538-4875.jpg";
@@ -3374,6 +3410,13 @@ function tryPublish(list, idx, token, repo, path, onDone){
    })
    .then(function(){
      return publishHomeVersion(base, token, repo).catch(function(e){ console.warn("主页版本刷新失败(不影响详情页):",e); });
+   })
+   .then(function(){
+     // 预热 CDN：把当前内容里所有图片 URL 各请求一遍，让 Fastly 边缘节点缓存热起来，新访客首屏即走热缓存
+     try{ var n=warmCdnCache(); setPubStatus("正在预热 CDN 缓存（"+n+" 张图）…","info"); }catch(e){}
+     // GitHub Pages 部署约 90s 后生效，二次预热覆盖本次新上传的图片
+     setTimeout(function(){ try{ warmCdnCache(); }catch(e){} }, 95000);
+     return true;
    })
    .then(function(){ clearTimeout(to); try{ sessionStorage.setItem("__forceFreshContent","1"); }catch(e){} var m="✅ 已通过「"+c.name+"」发布，主页与详情页均已更新，1–2 分钟全网生效"; setPubStatus(m,"ok"); showToast(m); if(onDone)onDone(true,m); })
    .catch(function(e){
