@@ -3076,6 +3076,226 @@ function publishHomeVersion(base, token, repo){
 }
 
 /* ===== 新闻详情页注入结束 ===== */
+/* ===== 成员独立页：渲染 + 发布（防 404，与新闻对称） ===== */
+var DEFAULT_OG = SITE + "/images/site/1784990973538-4875.jpg";
+function m_esc(s){ s=String(s==null?"":s); return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#x27;"); }
+function m_zh(s){ return '<span class="zh">'+m_esc(s)+'</span>'; }
+function m_en(s){ return '<span class="en">'+m_esc(s)+'</span>'; }
+function m_both(zh_t,en_t){ return m_zh(zh_t)+m_en(en_t); }
+function m_block(zh_title,en_title,zh_c,en_c,image){
+  if(!(zh_c||en_c)) return "";
+  var out='<section class="m-sec"><h2>'+m_both(zh_title,en_title)+'</h2>';
+  if(image) out+='<img class="m-banner" src="'+m_esc(image)+'" alt="">';
+  out+='<div class="m-body"><p>'+m_both(zh_c,en_c)+'</p></div></section>';
+  return out;
+}
+function m_projects_block(m,data){
+  var projs=((data.research&&data.research.projects)||[]).filter(function(p){ return m.id && (p.memberIds||[]).indexOf(m.id)>=0; });
+  if(!projs.length) return "";
+  var items=projs.map(function(p){ return '<li>'+m_esc(p.titleZh||p.titleEn||p.id)+'</li>'; }).join("");
+  return '<section class="m-sec"><h2>'+m_both("在研课题","Current Projects")+'</h2><div class="m-body"><ul class="proj-list">'+items+'</ul></div></section>';
+}
+function m_first_summary(m,limit){
+  limit=limit||120;
+  var s=(m.bioZh||m.roleZh||"").trim().replace(/\s+/g," ");
+  return s.length>limit ? s.slice(0,limit)+"…" : s;
+}
+function renderMemberPage(m,data){
+  var name_zh=m.nameZh||"", name_en=m.nameEn||"";
+  var role_zh=m.roleZh||"", role_en=m.roleEn||"";
+  var photo=m.photo||"";
+  var hero;
+  if(/^https?:/i.test(photo)){
+    hero='<img class="avatar" src="'+m_esc(photo)+'" alt="'+m_esc(name_zh)+'">';
+  } else {
+    photo=DEFAULT_OG;
+    var h=0, nm=name_zh||name_en||"?";
+    for(var i=0;i<nm.length;i++) h+=nm.charCodeAt(i);
+    hero='<div class="avatar avatar-fallback" style="background-color:hsl('+(h%360)+',52%,50%)">'+m_esc(nm.charAt(0))+'</div>';
+  }
+  hero+='<div class="hinfo">';
+  hero+='<h1>'+m_esc(name_zh)+' '+m_en(name_en)+'</h1>';
+  hero+='<div class="role">'+m_both(role_zh,role_en)+'</div>';
+  hero+='</div>';
+  var content="";
+  content+=m_block("个人简介","Bio",m.bioZh,m.bioEn);
+  content+=m_block("自我介绍","About",m.introZh,m.introEn,m.introImage);
+  content+=m_block("教育背景与工作经历","Education & Experience",m.eduZh,m.eduEn);
+  content+=m_block("研究方向","Research Directions",m.researchZh,m.researchEn);
+  content+=m_block("主要学术成绩","Academic Achievements",m.achZh,m.achEn);
+  content+=m_block("国内外会议与学术报告","Conferences & Talks",m.confZh,m.confEn);
+  content+=m_block("代表性论文","Representative Publications",m.repPubsZh,m.repPubsEn);
+  content+=m_block("招生与团队","Recruitment & Team",m.recruitZh,m.recruitEn);
+  content+=m_block("寄语","Message",m.wordsZh,m.wordsEn);
+  content+=m_block("联系方式","Contact",m.contactZh,m.contactEn);
+  content+=m_projects_block(m,data);
+  var ogt=m_esc(name_zh||name_en);
+  var ogd=m_esc(m_first_summary(m));
+  var url=SITE+"/members/"+m.id+".html";
+  var build_ver=news_build_ver();
+  return MEMBER_TPL
+    .split("__NAMEZH__").join(m_esc(name_zh))
+    .split("__NAMEEN__").join(m_esc(name_en))
+    .split("__NAMEZH_ESC__").join(JSON.stringify(name_zh))
+    .split("__NAMEEN_ESC__").join(JSON.stringify(name_en))
+    .split("__OGTITLE__").join(ogt)
+    .split("__OGDESC__").join(ogd)
+    .split("__OGURL__").join(m_esc(url))
+    .split("__OGIMAGE__").join(m_esc(photo))
+    .split("__BUILDVER__").join(build_ver)
+    .split("__HERO__").join(hero)
+    .split("__CONTENT__").join(content)
+    .split("__SITE__").join(SITE);
+}
+var MEMBER_TPL = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__NAMEZH__ | 智能微生态与生物制造实验室</title>
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="智能微生态与生物制造实验室">
+<meta property="og:title" content="__OGTITLE__">
+<meta property="og:description" content="__OGDESC__">
+<meta property="og:url" content="__OGURL__?v=__BUILDVER__">
+<meta property="og:image" content="__OGIMAGE__">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="__OGTITLE__">
+<meta name="twitter:description" content="__OGDESC__">
+<meta name="twitter:image" content="__OGIMAGE__">
+<style>
+  :root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;
+        --border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;
+        --hover-color:#f0f4f8;--accent:#0066cc;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       color:var(--text-color);background:var(--bg);line-height:1.7;
+       -webkit-font-smoothing:antialiased;min-height:100vh;transition:background .3s,color .3s}
+  [data-theme="dark"]{--primary:#4da3ff;--primary-hover:#79b8ff;--bg:#0d1117;--section-bg:#161b22;
+        --border-color:#30363d;--text-color:#e6edf3;--light-text-color:#8b949e;--hover-color:#21262d;--accent:#4da3ff;}
+  .lang-zh .en,.lang-en .zh{display:none !important}
+  .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+          padding:10px 20px;border-bottom:1px solid var(--border-color);
+          background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(16px);
+          -webkit-backdrop-filter:blur(16px)}
+  .back{color:var(--light-text-color);text-decoration:none;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+  .back:hover{color:var(--text-color)}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+  .lang-toggle-btn{background:transparent;border:1px solid var(--border-color);border-radius:999px;
+          padding:6px 14px;font-size:13px;cursor:pointer;color:var(--text-color);font-family:inherit;line-height:1}
+  #theme-toggle{background:transparent;border:1px solid var(--border-color);border-radius:999px;
+          padding:6px 12px;font-size:16px;cursor:pointer;color:var(--text-color);line-height:1}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 22px 72px}
+  .hero{display:flex;gap:22px;align-items:center;margin:10px 0 26px;flex-wrap:wrap}
+  .avatar{width:118px;height:118px;border-radius:50%;object-fit:cover;
+          border:3px solid var(--border-color);flex-shrink:0;background:var(--section-bg)}
+  .avatar-fallback{display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff;font-weight:700}
+  .hinfo{min-width:0;flex:1}
+  h1{font-size:27px;line-height:1.35;margin:0 0 8px;font-weight:700;letter-spacing:.01em}
+  .role{color:var(--light-text-color);font-size:15px;line-height:1.6;margin-top:4px}
+  .m-sec{margin:30px 0 0;border-top:1px solid var(--border-color);padding-top:22px}
+  .m-sec h2{font-size:18px;margin-bottom:14px;color:var(--text-color);display:flex;align-items:center;gap:9px;font-weight:700}
+  .m-sec h2::before{content:"";width:4px;height:18px;background:var(--primary);border-radius:2px;display:inline-block;flex-shrink:0}
+  .m-body p{margin:0;font-size:15.5px;line-height:1.85;color:var(--text-color);white-space:pre-wrap}
+  .m-banner{width:100%;max-height:320px;object-fit:cover;border-radius:14px;margin:4px 0 14px}
+  .proj-list{margin:0;padding-left:20px}
+  .proj-list li{font-size:15.5px;line-height:1.9;color:var(--text-color)}
+  .bar{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:44px}
+  .share{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;
+         font-weight:600;border:none;border-radius:999px;padding:11px 22px;cursor:pointer;
+         font-size:14px;transition:transform .2s,box-shadow .2s}
+  .share:hover{transform:translateY(-2px);box-shadow:0 10px 26px color-mix(in srgb,var(--primary) 40%,transparent)}
+  .foot{margin-top:40px;padding-top:22px;border-top:1px solid var(--border-color);
+        text-align:center;color:var(--light-text-color);font-size:13px}
+  .foot a{color:var(--primary);text-decoration:none}
+  @media(max-width:600px){h1{font-size:22px}.avatar{width:92px;height:92px}.wrap{padding:24px 16px 60px}}
+</style>
+</head>
+<body class="lang-zh">
+  <div class="topbar">
+    <a class="back" href="__SITE__/">← <span class="zh">返回实验室网站</span><span class="en">Back to Lab</span></a>
+    <div class="topbar-right">
+      <button id="lang-toggle" class="lang-toggle-btn" type="button">EN</button>
+      <button id="theme-toggle" class="lang-toggle-btn" type="button" title="切换主题" aria-label="切换明暗主题">🌙</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="hero">
+__HERO__
+    </div>
+__CONTENT__
+    <div class="bar">
+      <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
+    </div>
+    <div class="foot">
+      <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
+    </div>
+  </div>
+<script>
+  var ZH_TITLE=__NAMEZH_ESC__, EN_TITLE=__NAMEEN_ESC__;
+  var LK="iMicrobiomeLang";
+  function applyLang(l){
+    document.body.classList.remove("lang-zh","lang-en");
+    document.body.classList.add("lang-"+l);
+    var btn=document.getElementById("lang-toggle");
+    if(btn)btn.textContent=(l==="zh")?"EN":"中文";
+    try{localStorage.setItem(LK,l);}catch(e){}
+    document.documentElement.lang=(l==="zh")?"zh-CN":"en";
+    document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
+  }
+  /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
+  (function(){var v="__BUILDVER__";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  var savedLang=null;
+  try{savedLang=localStorage.getItem(LK);}catch(e){}
+  applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
+  var lb=document.getElementById("lang-toggle");
+  if(lb)lb.addEventListener("click",function(){applyLang(document.body.classList.contains("lang-zh")?"en":"zh");});
+  var THEME_KEY="iMicrobiomeTheme";
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme",t);
+    var b=document.getElementById("theme-toggle");
+    if(b)b.textContent=t==="dark"?"☀️":"🌙";
+  }
+  var savedTheme=null;
+  try{savedTheme=localStorage.getItem(THEME_KEY);}catch(e){}
+  var initialTheme=savedTheme||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  applyTheme(initialTheme);
+  var tb=document.getElementById("theme-toggle");
+  if(tb)tb.addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+    applyTheme(cur);
+    try{localStorage.setItem(THEME_KEY,cur);}catch(e){}
+  });
+  function shareThis(){
+    var u=location.origin+location.pathname+location.search, t=document.title, d=document.querySelector('meta[name="twitter:description"]');
+    var txt=d?d.getAttribute('content'):'';
+    var isWx=/MicroMessenger/i.test(navigator.userAgent);
+    if(navigator.share && !isWx){ navigator.share({title:t,text:txt,url:u}).catch(function(){}); }
+    else{
+      var ta=document.createElement('textarea');ta.value=u;document.body.appendChild(ta);
+      ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+      if(isWx){ alert('链接已复制，请点击右上角「···」粘贴发送给朋友，将自动显示标题与封面图'); }
+      else{ alert('链接已复制，去微信粘贴发给朋友：\\n'+u); }
+    }
+  }
+  var sb=document.getElementById('shareBtn');if(sb)sb.onclick=shareThis;
+</script>
+</body>
+</html>`;
+function publishAllMembersPages(base, cname, token, data){
+  var repo="liyangfei8495/i-microbiome-lab";
+  var members=data.members||[];
+  var chain=Promise.resolve();
+  members.forEach(function(m){
+    if(!m.id) return;
+    chain=chain.then(function(){
+      var html=renderMemberPage(m,data);
+      return ghPutFile(base, token, repo, "members/"+m.id+".html", b64encode(html), "site: 生成成员独立页 "+m.id);
+    });
+  });
+  return chain;
+}
+/* ===== 成员独立页注入结束 ===== */
 
 function publishToGitHub(onDone){
   var token=getGhToken();
@@ -3128,6 +3348,10 @@ function tryPublish(list, idx, token, repo, path, onDone){
    .then(function(){
      setPubStatus("正在生成新闻详情页（防 404）…","info");
      return publishAllNewsPages(base, c.name, token, edData);
+   })
+   .then(function(){
+     setPubStatus("正在生成成员独立页（防 404）…","info");
+     return publishAllMembersPages(base, c.name, token, edData);
    })
    .then(function(){
      return publishHomeVersion(base, token, repo).catch(function(e){ console.warn("主页版本刷新失败(不影响详情页):",e); });
