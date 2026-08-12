@@ -2865,12 +2865,11 @@ function removeAvatar(memberIndex){
 
 // 保存编辑到本机（localStorage + 当前页面内存 + 内嵌固化）
 function saveEdits(){
-  if(!edData||typeof edData!=="object"){ try{edData=JSON.parse(JSON.stringify(window.__DATA||DATA||{}));}catch(e){edData={};} }
+  if(!edData||typeof edData!=="object"){ try{edData=JSON.parse(JSON.stringify(window.__DATA||{}));}catch(e){edData={};} }
   try{
     localStorage.setItem(ED_KEY,JSON.stringify(edData));
   }catch(e){showToast("保存失败："+e.message);return false;}
   try{
-    DATA=edData;
     window.__DATA=edData;
     if(typeof window.renderAll==="function"){ window.renderAll(edData); }
   }catch(e){
@@ -3477,7 +3476,7 @@ function publishToGitHub(onDone){
   // Token 可为空：Workers 代理可用内置 GITHUB_TOKEN 代为认证，实现跨设备免配置发布
   if(!token){ setPubStatus("未填 GitHub Token，将尝试由 Workers 代理内置 Token 代为发布…","info"); }
   // 兜底：edData 未初始化时（用户直接点“保存并发布”而未先保存），用线上真实数据，绝不能写成 window.__DATA=undefined
-  if(!edData||typeof edData!=="object"){ try{ edData=JSON.parse(JSON.stringify(window.__DATA||DATA||{})); }catch(e){ edData={}; } }
+  if(!edData||typeof edData!=="object"){ try{ edData=JSON.parse(JSON.stringify(window.__DATA||{})); }catch(e){ edData={}; } }
   var repo="liyangfei8495/i-microbiome-lab", path="content.json";
   // 候选发布通道：直连 GitHub 优先（Token 仅发给 GitHub，最安全）；其次用户自己的 Workers 代理
   var candidates=[
