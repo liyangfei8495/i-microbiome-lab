@@ -2770,23 +2770,28 @@ function handleMediaUpload(file, opts){
 // 上传文件到 GitHub 仓库（通过代理），返回 GitHub Pages 可访问的 URL
 function uploadFileToRepo(relPath, base64, onOk, onErr){
   var token=getGhToken();
-  if(!token){ onErr("未填 GitHub Token，无法上传（可手动填图片 URL）"); return; }
   var repo="liyangfei8495/i-microbiome-lab";
   var proxy=getGhProxy();
   var base=proxy||"https://api.github.com";
+  function makeHeaders(extra){
+    var h={Accept:"application/vnd.github+json"};
+    if(extra && extra["Content-Type"]) h["Content-Type"]=extra["Content-Type"];
+    if(token) h.Authorization="Bearer "+token;
+    return h;
+  }
   function put(sha){
     var body={ message:"site: 上传图片 "+relPath, content:base64 };
     if(sha) body.sha=sha;
     fetch(base+"/repos/"+repo+"/contents/"+relPath,{
       method:"PUT",
-      headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
+      headers:makeHeaders({"Content-Type":"application/json"}),
       body: JSON.stringify(body)
     }).then(function(r){ if(!r.ok) throw new Error("上传失败("+r.status+")"); return r.json(); })
       .then(function(){ onOk("https://liang-lab.cn/"+relPath); })
       .catch(function(e){ onErr(e&&e.message?e.message:e); });
   }
   fetch(base+"/repos/"+repo+"/contents/"+relPath,{
-    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" }
+    headers:makeHeaders()
   }).then(function(r){
     if(r.status===200) return r.json().then(function(m){ return m.sha; });
     if(r.status===404) return null;
@@ -3122,13 +3127,19 @@ __BODY__
 /* ===== 发布时同步上传新闻详情页（根治点击 404）===== */
 function ghPutFile(base, token, repo, path, contentB64, message){
   var url=base+"/repos/"+repo+"/contents/"+path;
+  function makeHeaders(extra){
+    var h={Accept:"application/vnd.github+json"};
+    if(extra && extra["Content-Type"]) h["Content-Type"]=extra["Content-Type"];
+    if(token) h.Authorization="Bearer "+token;
+    return h;
+  }
   function attempt(sha){
     var body={message:message, content:contentB64};
     if(sha) body.sha=sha;
-    return fetch(url,{method:"PUT",headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){
+    return fetch(url,{method:"PUT",headers:makeHeaders({"Content-Type":"application/json"}),body:JSON.stringify(body)}).then(function(r){
       if(r.ok) return r.json();
       if(r.status===409){
-        return fetch(url,{headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json"}}).then(function(r2){return r2.json();}).then(function(m){ return attempt(m.sha); });
+        return fetch(url,{headers:makeHeaders()}).then(function(r2){return r2.json();}).then(function(m){ return attempt(m.sha); });
       }
       if(r.status===404){ return attempt(null); }
       throw new Error("PUT "+path+" 失败("+r.status+")");
@@ -3167,7 +3178,9 @@ function publishAllNewsPages(base, cname, token, data){
 }
 function publishHomeVersion(base, token, repo){
   var url=base+"/repos/"+repo+"/contents/index.html";
-  return fetch(url,{headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json"}}).then(function(r){
+  var headers={Accept:"application/vnd.github+json"};
+  if(token) headers.Authorization="Bearer "+token;
+  return fetch(url,{headers:headers}).then(function(r){
     if(!r.ok) throw new Error("获取 index.html 失败("+r.status+")");
     return r.json();
   }).then(function(meta){
@@ -3440,7 +3453,8 @@ function publishAllMembersPages(base, cname, token, data){
 
 function publishToGitHub(onDone){
   var token=getGhToken();
-  if(!token){ setPubStatus("❌ 请先填 GitHub Token 并点“记住”","err"); var gi=document.getElementById("gh-token"); if(gi){try{gi.scrollIntoView({block:"center"});}catch(e){} gi.focus();} if(onDone)onDone(false,"请先填 GitHub Token"); return; }
+  // Token 可为空：Workers 代理可用内置 GITHUB_TOKEN 代为认证，实现跨设备免配置发布
+  if(!token){ setPubStatus("未填 GitHub Token，将尝试由 Workers 代理内置 Token 代为发布…","info"); }
   // 兜底：edData 未初始化时（用户直接点“保存并发布”而未先保存），用线上真实数据，绝不能写成 window.__DATA=undefined
   if(!edData||typeof edData!=="object"){ try{ edData=JSON.parse(JSON.stringify(window.__DATA||DATA||{})); }catch(e){ edData={}; } }
   var repo="liyangfei8495/i-microbiome-lab", path="content.json";
@@ -3463,8 +3477,10 @@ function tryPublish(list, idx, token, repo, path, onDone){
   setPubStatus("正在通过「"+c.name+"」发布…","info");
   var ctrl=new AbortController();
   var to=setTimeout(function(){ ctrl.abort(); }, 12000);
+  var headers={"Accept":"application/vnd.github+json"};
+  if(token) headers["Authorization"]="Bearer "+token;
   fetch(base+"/repos/"+repo+"/contents/"+path,{
-    headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
+    headers:headers,
     signal: ctrl.signal
   }).then(function(r){
     if(r.status===404){ return { __create:true, sha:null }; }   // 文件不存在则新建
@@ -3479,9 +3495,11 @@ function tryPublish(list, idx, token, repo, path, onDone){
      setPubStatus("数据已就绪，正在上传…","info");
      var body={ message:"site: 管理员发布内容更新", content:b64encode(JSON.stringify(edData,null,2)) };
      if(!meta.__create){ body.sha=meta.sha; }
+     var putHeaders={"Accept":"application/vnd.github+json", "Content-Type":"application/json"};
+     if(token) putHeaders["Authorization"]="Bearer "+token;
      return fetch(base+"/repos/"+repo+"/contents/"+path,{
        method:"PUT",
-       headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json" },
+       headers:putHeaders,
        body: JSON.stringify(body)
      });
    })
@@ -3516,7 +3534,7 @@ function tryPublish(list, idx, token, repo, path, onDone){
 }
 function testConnection(){
   var token=getGhToken();
-  if(!token){ setPubStatus("⚠️ 还没填 GitHub Token，先填再测试","err"); showToast("请先填 Token"); return; }
+  if(!token){ setPubStatus("未填 Token：将测试 Workers 代理内置 Token 是否可用…","info"); }
   setPubStatus("正在测试发布通道（直连优先）…","info");
   var candidates=[
     { name:"直连 GitHub", base:"https://api.github.com" },
@@ -3527,13 +3545,15 @@ function testConnection(){
     var c=candidates[i];
     var ctrl=new AbortController();
     var to=setTimeout(function(){ ctrl.abort(); }, 8000);
+    var headers={"Accept":"application/vnd.github+json"};
+    if(token) headers["Authorization"]="Bearer "+token;
     fetch(c.base+"/repos/liyangfei8495/i-microbiome-lab/contents/index.html", {
-      headers:{ "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
+      headers:headers,
       signal: ctrl.signal
     })
     .then(function(r){ clearTimeout(to);
-      if(r.ok){ var m="✅ "+c.name+" 通 + Token有效，可以发布"; setPubStatus(m,"ok"); showToast(m); }
-      else if(r.status===401||r.status===403){ var m2=c.name+" 通，但❌ Token无效/无权限("+r.status+")"; setPubStatus(m2,"err"); showToast(m2); }
+      if(r.ok){ var m="✅ "+c.name+" 通"+(token?" + Token有效":"（代理内置 Token 有效）"); setPubStatus(m,"ok"); showToast(m); }
+      else if(r.status===401||r.status===403){ var m2=c.name+" 通，但❌ "+(token?"Token无效/无权限":"代理未配置内置 Token")+"("+r.status+")"; setPubStatus(m2,"err"); showToast(m2); }
       else { var m3=c.name+" 通，但状态异常("+r.status+")"; setPubStatus(m3,"err"); showToast(m3); }
     })
     .catch(function(e){ clearTimeout(to);
@@ -3574,22 +3594,18 @@ document.getElementById("be-save").onclick=function(){
 document.getElementById("be-publish").onclick=function(){
   try{
     var tk=getGhToken();
-    if(!tk){
-      setPubStatus("⚠️ 未填 GitHub Token，无法直连发布。已为你导出改好的网页，发我即可发布","err");
-      showToast("未填Token：已自动导出 index.html，发我即可发布");
-      doExportIndex();
-      return;
-    }
+    if(!tk){ setPubStatus("未填 GitHub Token，将尝试由 Workers 代理内置 Token 发布…","info"); }
     setPubStatus("正在保存修改…","info");
     if(!saveEdits()){ setPubStatus("保存失败","err"); return; }
     setPubStatus("正在发布到 GitHub…","info");
     publishToGitHub(function(ok,msg){
       if(ok){ setTimeout(function(){ try{apClose(beModal);}catch(e){} }, 1800); }
+      else if(!tk){ setPubStatus("发布失败。原因：未填 Token 且代理也无内置 Token。请填 Token 或给代理设置 GITHUB_TOKEN 环境变量。","err"); }
     });
   }catch(err){
     var em=(err&&err.message)?err.message:(""+err);
-    setPubStatus("❌ 发布流程异常："+em+"（已自动导出，发我即可发布）","err");
-    showToast("发布异常，已为你导出文件");
+    setPubStatus("❌ 发布流程异常："+em+"，可导出 index.html 发我发布","err");
+    showToast("发布异常，可导出文件");
     try{doExportIndex();}catch(e){}
   }
 };
