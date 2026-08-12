@@ -2336,6 +2336,25 @@ function openBlockEditor(type,label){
     h+=field("join.introZh","简介(中)",d.join.introZh,"textarea");
     h+=field("join.introEn","简介(英)",d.join.introEn,"textarea");
     h+=imgListField("join.images","招新图集",d.join.images||[],"images/join");
+    h+='<h3 style="margin:20px 0 8px;color:var(--primary,#0066cc);font-size:14px;">招新卡片（可增删）</h3>';
+    (d.join.cards||[]).forEach(function(c,i){
+      h+=itemBox("卡片 "+(i+1)+": "+(c.zh||""),[
+        field("join.cards."+i+".icon","图标",c.icon),
+        field("join.cards."+i+".zh","标题(中)",c.zh),
+        field("join.cards."+i+".en","标题(英)",c.en),
+        field("join.cards."+i+".descZh","描述(中)",c.descZh,"textarea"),
+        field("join.cards."+i+".descEn","描述(英)",c.descEn,"textarea")
+      ].join(""),"join.cards",i);
+    });
+    h+='<button class="ap-add" data-add="join.cards">+ 添加卡片</button>';
+    h+='<h3 style="margin:20px 0 8px;color:var(--primary,#0066cc);font-size:14px;">当前开放方向（可增删）</h3>';
+    (d.join.openings||[]).forEach(function(o,i){
+      h+=itemBox("方向 "+(i+1)+": "+(o.zh||""),[
+        field("join.openings."+i+".zh","方向(中)",o.zh),
+        field("join.openings."+i+".en","方向(英)",o.en)
+      ].join(""),"join.openings",i);
+    });
+    h+='<button class="ap-add" data-add="join.openings">+ 添加方向</button>';
   }else if(type==="contact"){
     h+=field("contact.email","邮箱",d.contact.email,"text");
     h+=field("contact.phone","电话",d.contact.phone,"text");
@@ -2428,6 +2447,8 @@ function bindBlockEditorEvents(){
       else if(path==="honors")tpl={id:"hon-"+Date.now(),titleZh:"新荣誉",titleEn:"",org:"",date:"",descZh:"",descEn:"",image:""};
       else if(path==="competitions")tpl={id:"comp-"+Date.now(),titleZh:"新竞赛",titleEn:"",statusZh:"",statusEn:"",org:"",date:"",teamZh:"",teamEn:"",advisorZh:"",advisorEn:"",leaderZh:"",leaderEn:"",membersZh:"",membersEn:"",descZh:"",descEn:"",image:""};
       else if(path==="news")tpl={id:"n-"+Date.now(),titleZh:"",titleEn:"",day:"1",month:"01",blocks:[{type:"text",zh:"",en:""}]};
+      else if(path==="join.cards")tpl={icon:"fa-graduation-cap",zh:"新卡片",en:"",descZh:"",descEn:""};
+      else if(path==="join.openings")tpl={zh:"新开放方向",en:""};
       arr.push(tpl);
       openBlockEditor(currentEdit,beTitle.textContent.replace(/^编辑：/,""));
     };
