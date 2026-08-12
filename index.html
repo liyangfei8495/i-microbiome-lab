@@ -1337,7 +1337,7 @@ window.renderAll=renderAll; window.showToast=showToast;
       <h2 id="be-title"><i class="fas fa-edit" style="color:var(--primary,#0066cc);"></i> 编辑</h2>
     </div>
     <div id="be-body" class="admin-body"></div>
-    <details class="ap-pub-settings">
+    <details class="ap-pub-settings" open>
       <summary>发布设置（GitHub Token / 代理）</summary>
       <div class="ap-pub-settings-inner">
         <div class="ap-pub-row">
@@ -3504,7 +3504,7 @@ function tryPublish(list, idx, token, repo, path, onDone){
     signal: ctrl.signal
   }).then(function(r){
     if(r.status===404){ return { __create:true, sha:null }; }   // 文件不存在则新建
-    if(!r.ok) throw new Error("获取文件失败("+r.status+")");
+    if(!r.ok){ var _gh=(r.status===401||r.status===403)&&!token?"（Worker 代理未配置内置 GITHUB_TOKEN 或脚本未部署）":""; throw new Error("获取文件失败("+r.status+")"+_gh); }
     return r.json();
   })
    .then(function(meta){
@@ -3523,7 +3523,7 @@ function tryPublish(list, idx, token, repo, path, onDone){
        body: JSON.stringify(body)
      });
    })
-   .then(function(r){ if(!r.ok) throw new Error("发布失败("+r.status+")"); return r.json(); })
+   .then(function(r){ if(!r.ok){ var _gh=(r.status===401||r.status===403)&&!token?"（Worker 代理未配置内置 GITHUB_TOKEN）":""; throw new Error("发布失败("+r.status+")"+_gh); } return r.json(); })
    .then(function(){
      setPubStatus("正在生成新闻详情页（防 404）…","info");
      return publishAllNewsPages(base, c.name, token, edData);
