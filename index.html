@@ -3874,5 +3874,55 @@ window.getByPath=getByPath; window.setByPath=setByPath;
 </script>
 <!-- === MOTION_END === -->
 
+<style>
+/* ===== 移动端兼容性加固 (2026-08-13) ===== */
+/* 安全网：禁止横向滚动；clip 不破坏 sticky */
+html,body{max-width:100%;overflow-x:clip;}
+body{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+
+/* 平板竖屏：hero 标题平滑过渡，避免 54px 突兀断档 */
+@media (max-width:768px){
+  .hero{min-height:460px;padding:100px 20px 64px;}
+  .hero-title{font-size:40px;}
+  .hero-subtitle{font-size:18px;}
+  section h2{font-size:28px;}
+}
+
+/* 手机：全面收紧间距与字号；弹窗/后台编辑全屏化 */
+@media (max-width:600px){
+  .hero{padding:86px 16px 52px !important;min-height:400px;}
+  .hero-title{font-size:32px !important;}
+  .hero-subtitle{font-size:15px !important;}
+  section.reveal{padding:52px 16px !important;}
+  section h2{font-size:23px !important;}
+  .large-text{font-size:16px;}
+  .section-eyebrow{font-size:12px;}
+
+  /* 详情弹窗内边距收紧，手机上不再被两侧大留白挤压 */
+  .modal-content{padding:22px 16px 20px !important;}
+  .modal-content h2{font-size:20px;}
+  .modal-banner{height:170px;}
+  .modal-logo{width:58px;height:58px;}
+
+  /* 项目图廊手机单列，避免两列过窄 */
+  .proj-gallery{grid-template-columns:1fr !important;}
+  .proj-gallery img{height:150px;}
+
+  /* 后台编辑弹窗手机全屏化；工具栏换行避免横向溢出 */
+  .admin-modal{padding:0 !important;}
+  #block-editor .admin-dialog{width:100% !important;max-width:100% !important;max-height:100vh !important;height:100vh !important;border-radius:0 !important;}
+  #block-editor .admin-header{padding:16px 14px 12px 14px !important;padding-right:52px !important;}
+  #block-editor .admin-body{padding:16px 14px !important;}
+  #block-editor .admin-footer{padding:12px 14px !important;}
+  .ap-toolbar{flex-wrap:wrap !important;gap:8px;}
+  .ap-toolbar .ap-jump{max-width:none !important;width:100% !important;}
+  .ap-toolbar .ap-search{width:100% !important;}
+  .ap-field input,.ap-field textarea,.ap-field select{font-size:16px;} /* 防止 iOS 聚焦缩放 */
+
+  /* 导航下拉字号与点击区 */
+  .nav-links a{font-size:15px;padding:11px 0;}
+}
+</style>
+
 </body>
 </html>
