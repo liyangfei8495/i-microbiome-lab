@@ -3187,14 +3187,15 @@ function cleanNewsBase64(base, token, data){
 function publishAllNewsPages(base, cname, token, data){
   var repo="liyangfei8495/i-microbiome-lab";
   var news=data.news||[];
-  var chain=Promise.resolve();
-  news.forEach(function(n){
-    chain=chain.then(function(){
+  // 逐条容错：任一条新闻渲染/上传失败只记日志，不阻断其余新闻页生成（防单条异常拖垮全批→404）
+  var tasks=news.map(function(n){
+    try{
       var html=renderNewsPage(n);
-      return ghPutFile(base, token, repo, "news/"+n.id+".html", b64encode(html), "site: 生成新闻详情页 "+n.id);
-    });
+      return ghPutFile(base, token, repo, "news/"+n.id+".html", b64encode(html), "site: 生成新闻详情页 "+n.id)
+        .catch(function(e){ console.error("新闻页上传失败(跳过):", n.id, e); return null; });
+    }catch(e){ console.error("新闻页渲染失败(跳过):", n.id, e); return Promise.resolve(null); }
   });
-  return chain;
+  return Promise.all(tasks).then(function(){ return true; });
 }
 function publishHomeVersion(base, token, repo){
   var url=base+"/repos/"+repo+"/contents/index.html";
@@ -3459,15 +3460,16 @@ __CONTENT__
 function publishAllMembersPages(base, cname, token, data){
   var repo="liyangfei8495/i-microbiome-lab";
   var members=data.members||[];
-  var chain=Promise.resolve();
-  members.forEach(function(m){
-    if(!m.id) return;
-    chain=chain.then(function(){
+  // 逐条容错：任一条成员页渲染/上传失败只记日志，不阻断其余成员页生成
+  var tasks=members.map(function(m){
+    if(!m.id) return Promise.resolve(null);
+    try{
       var html=renderMemberPage(m,data);
-      return ghPutFile(base, token, repo, "members/"+m.id+".html", b64encode(html), "site: 生成成员独立页 "+m.id);
-    });
+      return ghPutFile(base, token, repo, "members/"+m.id+".html", b64encode(html), "site: 生成成员独立页 "+m.id)
+        .catch(function(e){ console.error("成员页上传失败(跳过):", m.id, e); return null; });
+    }catch(e){ console.error("成员页渲染失败(跳过):", m.id, e); return Promise.resolve(null); }
   });
-  return chain;
+  return Promise.all(tasks).then(function(){ return true; });
 }
 /* ===== 成员独立页注入结束 ===== */
 
@@ -3525,12 +3527,12 @@ function tryPublish(list, idx, token, repo, path, onDone){
    })
    .then(function(r){ if(!r.ok){ var _gh=(r.status===401||r.status===403)&&!token?"（Worker 代理未配置内置 GITHUB_TOKEN）":""; throw new Error("发布失败("+r.status+")"+_gh); } return r.json(); })
    .then(function(){
-     setPubStatus("正在生成新闻详情页（防 404）…","info");
-     return publishAllNewsPages(base, c.name, token, edData);
-   })
-   .then(function(){
-     setPubStatus("正在生成成员独立页（防 404）…","info");
-     return publishAllMembersPages(base, c.name, token, edData);
+     setPubStatus("正在生成新闻/成员详情页（防 404）…","info");
+     // 新闻页与成员页并行生成，各自容错：一条失败不影响另一条，也不阻断主页刷新
+     return Promise.all([
+       publishAllNewsPages(base, c.name, token, edData).catch(function(e){ console.error("新闻页批量生成异常:",e); return null; }),
+       publishAllMembersPages(base, c.name, token, edData).catch(function(e){ console.error("成员页批量生成异常:",e); return null; })
+     ]);
    })
    .then(function(){
      return publishHomeVersion(base, token, repo).catch(function(e){ console.warn("主页版本刷新失败(不影响详情页):",e); });
