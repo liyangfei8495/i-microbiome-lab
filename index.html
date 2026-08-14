@@ -41,7 +41,7 @@ nav{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.85);backdro
 .hero-content{position:relative;text-align:center;max-width:760px}
 .hero-title{font-size:54px;font-weight:700;margin:0 0 18px}
 .hero-subtitle{font-size:20px;opacity:.92;margin:0}
-section.reveal{padding:80px 24px;max-width:1200px;margin:0 auto;opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s}
+section.reveal{padding:80px 24px;max-width:1200px;margin:0 auto;opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s;content-visibility:auto;contain-intrinsic-size:auto 720px}
 section.reveal.visible{opacity:1;transform:none}
 section h2{font-size:34px;text-align:center;margin:0 0 14px}
 .section-eyebrow{text-align:center;color:var(--primary);text-transform:uppercase;font-size:13px;letter-spacing:.12em;font-weight:600;margin:0 0 8px}
@@ -1300,10 +1300,14 @@ document.addEventListener("DOMContentLoaded",function(){
     // 仅当本会话刚发布过（tryPublish 成功置 __forceFreshContent），才破缓存强拉一次最新，拉完即清标记——兼顾速度与发布后新内容即时可见
     var __bust="";
     try{ if(sessionStorage.getItem("__forceFreshContent")){ __bust="?t="+Date.now(); sessionStorage.removeItem("__forceFreshContent"); } }catch(e){}
-    fetch("content.json"+__bust, __bust?{cache:"no-store"}:{cache:"no-cache"})
-      .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
-      .then(function(d){ if(!d||typeof d!=="object") throw new Error("bad json"); window.__DATA=d; DATA=d; renderAll(d); })
-      .catch(function(err){ console.warn("[content.json] 加载失败，已使用内嵌兜底快照渲染：", err&&err.message); });
+    // 仅当本会话刚发布过（__forceFreshContent）才破缓存强拉一次最新；正常访问完全不 fetch content.json，
+    // 直接用内联 __DATA 渲染——内联数据即发布时最新（index.html 随发布重生成并 bump ?v= 版本戳），省去一次网络往返。
+    if(__bust){
+      fetch("content.json"+__bust, {cache:"no-store"})
+        .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
+        .then(function(d){ if(!d||typeof d!=="object") throw new Error("bad json"); window.__DATA=d; DATA=d; renderAll(d); })
+        .catch(function(err){ console.warn("[content.json] 加载失败，已使用内嵌兜底快照渲染：", err&&err.message); });
+    }
   })();
 });
 // 暴露本 IIFE 内的辅助函数给独立 IIFE 块（UPGRADE/MOTION 等）复用，避免跨闭包 "xxx is not defined"
