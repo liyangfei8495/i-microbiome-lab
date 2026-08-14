@@ -499,6 +499,11 @@ function lookup(id){
 }
 function typeOf(id){
   if(!id)return null;
+  // 关联 chip 的 id 前缀需映射到 openDetail 的分支名（否则弹窗内跳转静默失败→空白弹窗）
+  if(id.indexOf("proj-")===0)return "project";
+  if(id.indexOf("prj-")===0)return "rproject";
+  if(id.indexOf("fac-")===0)return "facility";
+  if(id.indexOf("hon-")===0)return "honor";
   var p=id.indexOf("-");
   return p<0?id:id.slice(0,p);
 }
@@ -700,6 +705,7 @@ function openDetail(type,id){
       if(c.date)html+='<p class="modal-role"><i class="fas fa-calendar-alt"></i> '+esc(c.date)+'</p>';
       if(c.descZh)html+='<div class="modal-block"><h3>'+both("简介","About")+'</h3><p>'+both(c.descZh,c.descEn)+'</p></div>';
     }
+    else { return showToast("暂不支持查看该类型："+type); }   // 防御：未知 type 不打开空白弹窗
     openModal(html);
 }
 
