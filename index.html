@@ -3197,18 +3197,30 @@ function cleanNewsBase64(base, token, data){
   });
   return Promise.all(proms);
 }
+function publishOneNewsPage(base, token, repo, n, attempt){
+  attempt = attempt || 0;
+  var html;
+  try{ html = renderNewsPage(n); }
+  catch(e){ console.error("新闻页渲染失败:", n.id, e); return Promise.resolve({id:n.id, ok:false, err:e}); }
+  return ghPutFile(base, token, repo, "news/"+n.id+".html", b64encode(html), "site: 生成新闻详情页 "+n.id)
+    .then(function(){ return {id:n.id, ok:true}; })
+    .catch(function(e){
+      if(attempt < 1){ return publishOneNewsPage(base, token, repo, n, attempt+1); } // 瞬时失败重试一次
+      console.error("新闻页上传失败(跳过):", n.id, e);
+      return {id:n.id, ok:false, err:e};
+    });
+}
 function publishAllNewsPages(base, cname, token, data){
   var repo="liyangfei8495/i-microbiome-lab";
   var news=data.news||[];
-  // 逐条容错：任一条新闻渲染/上传失败只记日志，不阻断其余新闻页生成（防单条异常拖垮全批→404）
-  var tasks=news.map(function(n){
-    try{
-      var html=renderNewsPage(n);
-      return ghPutFile(base, token, repo, "news/"+n.id+".html", b64encode(html), "site: 生成新闻详情页 "+n.id)
-        .catch(function(e){ console.error("新闻页上传失败(跳过):", n.id, e); return null; });
-    }catch(e){ console.error("新闻页渲染失败(跳过):", n.id, e); return Promise.resolve(null); }
-  });
-  return Promise.all(tasks).then(function(){ return true; });
+  // 逐条容错 + 失败重试一次：任一条异常只记日志，不阻断其余新闻页生成（防单条异常拖垮全批→404）；
+  // 但不再静默吞——返回 failed 列表，由 tryPublish 显式告知用户哪几条没生成成功。
+  return Promise.all(news.map(function(n){ return publishOneNewsPage(base, token, repo, n); }))
+    .then(function(results){
+      var failed=results.filter(function(r){ return !r.ok; });
+      if(failed.length){ console.warn("有 "+failed.length+" 条新闻详情页未生成:", failed.map(function(f){return f.id;})); }
+      return { ok: failed.length===0, failed: failed };
+    });
 }
 function publishHomeVersion(base, token, repo){
   var url=base+"/repos/"+repo+"/contents/index.html";
@@ -3477,19 +3489,29 @@ __CONTENT__
 </html>
 `;
 
+function publishOneMemberPage(base, token, repo, m, data, attempt){
+  attempt = attempt || 0;
+  var html;
+  try{ html = renderMemberPage(m, data); }
+  catch(e){ console.error("成员页渲染失败:", m.id, e); return Promise.resolve({id:m.id, ok:false, err:e}); }
+  return ghPutFile(base, token, repo, "members/"+m.id+".html", b64encode(html), "site: 生成成员独立页 "+m.id)
+    .then(function(){ return {id:m.id, ok:true}; })
+    .catch(function(e){
+      if(attempt < 1){ return publishOneMemberPage(base, token, repo, m, data, attempt+1); }
+      console.error("成员页上传失败(跳过):", m.id, e);
+      return {id:m.id, ok:false, err:e};
+    });
+}
 function publishAllMembersPages(base, cname, token, data){
   var repo="liyangfei8495/i-microbiome-lab";
-  var members=data.members||[];
-  // 逐条容错：任一条成员页渲染/上传失败只记日志，不阻断其余成员页生成
-  var tasks=members.map(function(m){
-    if(!m.id) return Promise.resolve(null);
-    try{
-      var html=renderMemberPage(m,data);
-      return ghPutFile(base, token, repo, "members/"+m.id+".html", b64encode(html), "site: 生成成员独立页 "+m.id)
-        .catch(function(e){ console.error("成员页上传失败(跳过):", m.id, e); return null; });
-    }catch(e){ console.error("成员页渲染失败(跳过):", m.id, e); return Promise.resolve(null); }
-  });
-  return Promise.all(tasks).then(function(){ return true; });
+  var members=(data.members||[]).filter(function(m){ return !!m.id; });
+  // 逐条容错 + 失败重试一次；返回 failed 列表，由 tryPublish 显式告知用户哪几条没生成成功。
+  return Promise.all(members.map(function(m){ return publishOneMemberPage(base, token, repo, m, data); }))
+    .then(function(results){
+      var failed=results.filter(function(r){ return !r.ok; });
+      if(failed.length){ console.warn("有 "+failed.length+" 条成员页未生成:", failed.map(function(f){return f.id;})); }
+      return { ok: failed.length===0, failed: failed };
+    });
 }
 /* ===== 成员独立页注入结束 ===== */
 
@@ -3548,31 +3570,38 @@ function tryPublish(list, idx, token, repo, path, onDone){
    .then(function(r){ if(!r.ok){ var _gh=(r.status===401||r.status===403)&&!token?"（Worker 代理未配置内置 GITHUB_TOKEN）":""; throw new Error("发布失败("+r.status+")"+_gh); } return r.json(); })
    .then(function(){
      setPubStatus("正在生成新闻/成员详情页（防 404）…","info");
-     // 新闻页与成员页并行生成，各自容错：单条失败只记日志，不阻断主页刷新
+     // 新闻页与成员页并行生成，各自容错 + 失败重试一次；返回 failed 列表（不再静默吞）
      return Promise.all([
        publishAllNewsPages(base, c.name, token, edData).catch(function(e){ console.error("新闻页批量生成异常:",e); return {ok:false,err:e}; }),
        publishAllMembersPages(base, c.name, token, edData).catch(function(e){ console.error("成员页批量生成异常:",e); return {ok:false,err:e}; })
      ]);
    })
-   .then(function(){
-     setPubStatus("正在刷新主页（内联最新数据 + 版本戳）…","info");
+   .then(function(detailResults){
+     // detailResults = [newsResult, membersResult]，各含 {ok, failed:[{id,err}]}
+     var newsFail=(detailResults[0]&&detailResults[0].failed)?detailResults[0].failed:[];
+     var memFail =(detailResults[1]&&detailResults[1].failed)?detailResults[1].failed:[];
+     var fails=newsFail.concat(memFail);
      // 主页刷新是关键步骤，失败必须显式暴露，不再静默吞掉谎报成功
-     return publishHomeVersion(base, token, repo).then(function(nv){ return {ok:true, nv:nv}; })
-       .catch(function(e){ console.error("主页版本刷新失败:",e); return {ok:false, err:e}; });
+     return publishHomeVersion(base, token, repo)
+       .then(function(nv){ return {home:{ok:true, nv:nv}, fails:fails}; })
+       .catch(function(e){ console.error("主页版本刷新失败:",e); return {home:{ok:false, err:e}, fails:fails}; });
    })
-   .then(function(homeRes){
+   .then(function(res){
+     var homeRes=res.home, fails=res.fails||[];
      // 预热 CDN：把当前内容里所有图片 URL 各请求一遍，让 Fastly 边缘节点缓存热起来，新访客首屏即走热缓存
      try{ var n=warmCdnCache(); setPubStatus("正在预热 CDN 缓存（"+n+" 张图）…","info"); }catch(e){}
      // GitHub Pages 部署约 90s 后生效，二次预热覆盖本次新上传的图片
      setTimeout(function(){ try{ warmCdnCache(); }catch(e){} }, 95000);
      clearTimeout(to);
      try{ sessionStorage.setItem("__forceFreshContent","1"); }catch(e){}
-     if(homeRes && homeRes.ok){
-       var m="✅ 已通过「"+c.name+"」发布，主页与详情页均已更新，1–2 分钟全网生效";
+     if(homeRes && homeRes.ok && fails.length===0){
+       var m="✅ 已通过「"+c.name+"」发布，主页与全部详情页均已更新，1–2 分钟全网生效";
        setPubStatus(m,"ok"); showToast(m); if(onDone)onDone(true,m);
      } else {
-       var em=(homeRes&&homeRes.err&&homeRes.err.message)||"未知错误";
-       var m2="⚠️ 数据已发布成功，但主页刷新失败（"+em+"）。详情页通常已更新；若主页未变，请再点一次「保存并发布」重试主页刷新";
+       var parts=[];
+       if(!(homeRes&&homeRes.ok)){ parts.push("主页刷新失败（"+((homeRes&&homeRes.err&&homeRes.err.message)||"未知")+"）"); }
+       if(fails.length){ parts.push(fails.length+" 个详情页未生成："+fails.map(function(f){return f.id;}).join("、")); }
+       var m2="⚠️ 数据已发布成功，但 "+parts.join("；")+"。可再点一次「保存并发布」重试";
        setPubStatus(m2,"warn"); showToast(m2); if(onDone)onDone(false,m2);
      }
    })
