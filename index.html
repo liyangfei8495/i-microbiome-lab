@@ -2988,6 +2988,7 @@ function news_build_ver(){
   function p(x){ return (x<10?"0":"")+x; }
   return ""+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds());
 }
+function safeDataJs(obj){ return "window.__DATA="+JSON.stringify(obj).replace(/</g,"\u003c")+";"; }
 function renderNewsPage(n){
   var title_zh=n.titleZh||"";
   var title_en=n.titleEn||"";
@@ -3220,7 +3221,7 @@ function publishHomeVersion(base, token, repo){
     var newHtml=html.replace(/\?v=20\d{6,12}[a-z]?/g, "?v="+nv);
     // 关键：把最新 edData 重新内联进 window.__DATA——首屏渲染只依赖内联数据，不内联则发布后访客看不到更新
     try{
-      var newData="window.__DATA="+JSON.stringify(edData)+";";
+      var newData=safeDataJs(edData);
       newHtml=newHtml.replace(/window\.__DATA\s*=\s*\{[\s\S]*?\}\s*;?\s*<\/script>/, function(m){ return newData+"<\/script>"; });
     }catch(e){ console.warn("内联 __DATA 失败:",e); }
     if(newHtml===html) return null;
@@ -3616,7 +3617,7 @@ function doExportIndex(){
   if(!saveEdits()) return;
   var url=location.href.split("#")[0];
   fetch(url).then(function(r){return r.text();}).then(function(oldHtml){
-    var newData="window.__DATA="+JSON.stringify(edData)+";\n";
+    var newData=safeDataJs(edData)+"\n";
     var newHtml=oldHtml.replace(/window\.__DATA\s*=\s*\{[\s\S]*?\}\s*;?\s*<\/script>/, function(m){ return newData+"<\/script>"; });
     if(newHtml===oldHtml){ showToast("导出失败：未检测到数据段"); return; }
     var blob=new Blob([newHtml],{type:"text/html"});
