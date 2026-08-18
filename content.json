@@ -636,6 +636,24 @@
           "src": "https://liang-lab.cn/images/news/n-1787064453609-1.jpg"
         }
       ]
+    },
+    {
+      "id": "n-1787066451269",
+      "titleZh": "1",
+      "titleEn": "",
+      "day": "19",
+      "month": "08",
+      "blocks": [
+        {
+          "type": "text",
+          "zh": "",
+          "en": ""
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1787066451269-1.jpg"
+        }
+      ]
     }
   ],
   "join": {
