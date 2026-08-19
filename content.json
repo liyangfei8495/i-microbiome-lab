@@ -447,6 +447,36 @@
       "achEn": "•\tCore courses (Microbiology, Biochemistry, Genetic Engineering) all above 90\n•\tThesis integrates LC-MS/MS, virtual screening, and molecular docking\n•\tCET-6 and Putonghua proficiency; earnest, rigorous, and reflective",
       "wordsZh": "“她相信好的科学，始于一次认真的实验。”",
       "wordsEn": "She believes \"good science begins with one serious experiment.\""
+    },
+    {
+      "id": "m-1787097827690",
+      "nameZh": "调试",
+      "nameEn": "",
+      "roleZh": "",
+      "roleEn": "",
+      "group": "master",
+      "bioZh": "调试",
+      "bioEn": "",
+      "introZh": "",
+      "introEn": "",
+      "introImage": "",
+      "eduZh": "",
+      "eduEn": "",
+      "achZh": "",
+      "achEn": "",
+      "confZh": "",
+      "confEn": "",
+      "recruitZh": "",
+      "recruitEn": "",
+      "wordsZh": "",
+      "wordsEn": "",
+      "contactZh": "",
+      "contactEn": "",
+      "photo": "https://liang-lab.cn/images/members/m-1787097827690.jpg",
+      "researchZh": "",
+      "researchEn": "",
+      "repPubsZh": "",
+      "repPubsEn": ""
     }
   ],
   "publications": [],
@@ -620,7 +650,7 @@
       ]
     },
     {
-      "id": "n-1787097369850",
+      "id": "n-1787064453609",
       "titleZh": "网站优化",
       "titleEn": "",
       "day": "19",
@@ -633,7 +663,7 @@
         },
         {
           "type": "image",
-          "src": "https://liang-lab.cn/images/news/n-1787097369850-1.jpg"
+          "src": "https://liang-lab.cn/images/news/n-1787064453609-1.jpg"
         }
       ]
     }
