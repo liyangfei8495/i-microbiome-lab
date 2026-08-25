@@ -842,6 +842,29 @@
           "en": "Content | Li Yangfei\nPhotography | Ren Xueyang, Li Yangfei, Liu Zixu, Xu Hongwei"
         }
       ]
+    },
+    {
+      "id": "n-1787625577901",
+      "titleZh": "",
+      "titleEn": "",
+      "day": "1",
+      "month": "01",
+      "blocks": [
+        {
+          "type": "text",
+          "zh": "1",
+          "en": "1"
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1787625577901-1.png"
+        },
+        {
+          "type": "text",
+          "zh": "2",
+          "en": "2"
+        }
+      ]
     }
   ],
   "join": {
