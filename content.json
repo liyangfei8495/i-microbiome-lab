@@ -812,51 +812,10 @@
           "en": "Content | Li Yangfei\nPhotography | Ren Xueyang, Li Yangfei, Liu Zixu, Xu Hongwei"
         }
       ]
-    },
-    {
-      "id": "n-1787716021244",
-      "titleZh": "【学术交流】i‑Microbiome Lab 线上开展学术交流，中国海洋大学刘旭辉硕士作专题报告",
-      "titleEn": "[Academic Exchange] i-Microbiome Lab conducts online academic exchanges. Liu Xuhui, a master's student from Ocean University of China, delivers a special report.",
-      "day": "25",
-      "month": "08",
-      "blocks": [
-        {
-          "type": "text",
-          "zh": "近日，西南科技大学智能微生态与生物制造实验室（i‑Microbiome Lab）组织线上学术交流报告会，邀请中国海洋大学刘旭辉硕士作题为《高质量石斑鱼基因组组装和生长关键基因鉴定》的专题报告，实验室全体师生线上线下共同参与本次交流学习。",
-          "en": "Recently, the i-Microbiome Lab of Southwest University of Science and Technology organized an online academic exchange seminar, inviting Liu Xuhui, a master's student from Ocean University of China, to deliver a special report titled \"High-Quality Genome Assembly of Large-Scale Reef Fish and Identification of Key Genes for Growth\". All the teachers and students of the laboratory participated in this exchange and learning session both online and offline."
-        },
-        {
-          "type": "text",
-          "zh": "报告伊始，刘旭辉硕士介绍个人教育背景与科研经历。他本科毕业于烟台大学海洋学院水产养殖学专业，硕士就读于中国海洋大学海洋生命学院生物技术与工程专业，师从周茜研教授、陈松林院士；先后在青岛华大基因研究院、北京大学现代农业研究院开展学习工作，熟练掌握基因组组装注释、转录组分析、GWAS 分析以及 AI 辅助生物信息分析等技术，曾荣获硕士研究生文体和社会活动奖学金、研究生学术（实践）创新奖学金。",
-          "en": "At the beginning of the report, Master Liu Xuhui introduced his educational background and research experience. He graduated from the School of Oceanography of Yantai University with a bachelor's degree in Aquaculture. He then pursued his master's degree at the College of Marine Life Sciences of Ocean University of China, under the supervision of Professor Zhou Xianyan and Academician Chen Songlin. He has conducted studies and work at Qingdao BGI Institute and Peking University Modern Agriculture Research Institute. He is proficient in technologies such as genome assembly and annotation, transcriptome analysis, GWAS analysis, and AI-assisted bioinformatics analysis. He has received the Master's Student Cultural and Social Activity Scholarship and the Graduate Student Academic (Practical) Innovation Scholarship."
-        },
-        {
-          "type": "image",
-          "src": "https://liang-lab.cn/images/news/n-1787716021244-2.jpg"
-        },
-        {
-          "type": "image",
-          "src": "https://liang-lab.cn/images/news/n-1787716021244-3.jpg"
-        },
-        {
-          "type": "text",
-          "zh": "报告结束后进入互动研讨环节，实验室师生就基因组组装参数设置、生长性状候选基因筛选、多组学联合分析、AI 在组学数据分析中的实际应用等问题积极提问。刘旭辉硕士结合自身项目实践经验逐一进行细致解答，双方针对水产基因组研究与陆生作物组学研究之间可借鉴互通的技术思路展开充分探讨，线上交流氛围热烈浓厚。",
-          "en": "After the report, the interactive discussion session began. The teachers and students from the laboratory actively raised questions regarding issues such as setting of genome assembly parameters, screening of candidate genes for growth traits, combined analysis of multiple omics, and the practical application of AI in omics data analysis. Master Liu Xuhui, based on his own project experience, provided detailed answers to each question. Both sides extensively discussed the technical ideas that could be borrowed and exchanged between aquatic genome research and terrestrial crop omics research. The online communication atmosphere was lively and intense."
-        },
-        {
-          "type": "image",
-          "src": "https://liang-lab.cn/images/news/n-1787716021244-5.jpg"
-        },
-        {
-          "type": "text",
-          "zh": "本次线上学术交流，为实验室师生搭建了跨院校、跨研究方向的学习平台。大家学习到水产动物基因组与关键基因挖掘的完整研究范式，拓宽了多组学、生物信息学与 AI 辅助分析的学术视野，也为课题组后续开展玉米、微生物相关组学研究提供新的思路参考，进一步促进不同研究领域之间的技术借鉴与思想碰撞。",
-          "en": "This online academic exchange has provided a cross-institutional and cross-disciplinary learning platform for the teachers and students of the laboratory. Through this event, everyone has learned the complete research paradigm of aquatic animal genomes and the exploration of key genes, broadening the academic horizons of multi-omics, bioinformatics and AI-assisted analysis. It has also provided new ideas and references for the research group to carry out subsequent studies on corn and microbial omics, further promoting the technical borrowing and ideological collision among different research fields."
-        }
-      ]
     }
   ],
   "join": {
-    "introZh": "我们寻找对微生物科学充满好奇、对工程落地充满热情的同学！",
+    "introZh": "我们寻找对微生物科学充满好奇、对工程落地充满热情的同学！！！",
     "introEn": "We look for students who are curious about microbial science and passionate about engineering applications！",
     "images": [
       "images/travel_3.jpg",
@@ -937,7 +896,27 @@
       "suffix": "+"
     }
   ],
-  "projects": [],
+  "projects": [
+    {
+      "id": "prj-1787734057872",
+      "titleZh": "【国家自然科学基金青年科学基金项目】地钱损伤响应因子MpERF21抑制生长素信号调控再生的分子机制",
+      "titleEn": "",
+      "lead": "梁元可",
+      "contentZh": "批准经费：30万\n项目起止年月：2027.01——2029.12",
+      "contentEn": "",
+      "goalsZh": "",
+      "goalsEn": "",
+      "progressZh": "",
+      "progressEn": "",
+      "pillarId": "pillar-1784985245245",
+      "memberIds": [
+        "member-liang"
+      ],
+      "pubIds": [],
+      "images": [],
+      "logo": ""
+    }
+  ],
   "honors": [
     {
       "id": "hon-1",
