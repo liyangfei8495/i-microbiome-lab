@@ -937,59 +937,7 @@
       "suffix": "+"
     }
   ],
-  "projects": [
-    {
-      "id": "prj-gut",
-      "titleZh": "蚯蚓粪源微生物分离鉴定、促氮模块化组装及其分子机制研究",
-      "titleEn": "Isolation and Identification of Microorganisms from Earthworm Castings, Modular Assembly of Nitrogen-Promoting Systems, and Their Molecular Mechanisms",
-      "logo": "https://liang-lab.cn/images/projects/1785131567555-1305.jpg",
-      "lead": "李杨飞",
-      "pillarId": "pillar-microbiome",
-      "memberIds": [],
-      "contentZh": "蚯蚓粪源微生物分离鉴定、促氮模块化组装及其分子机制研究",
-      "contentEn": "Isolation and Identification of Microorganisms from Earthworm Castings, Modular Assembly of Nitrogen-Promoting Systems, and Their Molecular Mechanisms",
-      "goalsZh": "",
-      "goalsEn": "",
-      "progressZh": "",
-      "progressEn": "",
-      "images": [],
-      "pubIds": []
-    },
-    {
-      "id": "prj-enzyme-ai",
-      "titleZh": "壳聚糖生物制造",
-      "titleEn": "Chitosan Biomanufacturing",
-      "logo": "images/plant_image3.jpg",
-      "lead": "阎凝翔",
-      "pillarId": "pillar-enzyme",
-      "memberIds": [],
-      "contentZh": "壳聚糖生物制造",
-      "contentEn": "Chitosan Biomanufacturing",
-      "goalsZh": "",
-      "goalsEn": "",
-      "progressZh": "",
-      "progressEn": "",
-      "images": [],
-      "pubIds": []
-    },
-    {
-      "id": "prj-bioprocess",
-      "titleZh": "AMF",
-      "titleEn": "",
-      "logo": "images/plant_image5.jpg",
-      "lead": "",
-      "pillarId": "pillar-1784985265133",
-      "memberIds": [],
-      "contentZh": "",
-      "contentEn": "",
-      "goalsZh": "",
-      "goalsEn": "",
-      "progressZh": "",
-      "progressEn": "",
-      "images": [],
-      "pubIds": []
-    }
-  ],
+  "projects": [],
   "honors": [
     {
       "id": "hon-1",
