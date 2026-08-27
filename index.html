@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260827191000">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260827192800">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
 <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
@@ -443,7 +443,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
 
 
 
-<script>(function(){var v="20260827191000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260827192800";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1369,7 +1369,7 @@ function renderAll(d){
 // 详情页预取：卡片悬停/聚焦即预取对应静态页，点击 window.open 时命中缓存秒开（零压缩、纯代码优化）
 function __prefetchDetail(type,id){
   if(type!=="news"&&type!=="member")return;
-  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827191000";
+  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827192800";
   var done=__prefetchDetail._c||(__prefetchDetail._c={});
   if(done[url])return;          // 去重，避免重复注入
   done[url]=1;
@@ -1377,8 +1377,8 @@ function __prefetchDetail(type,id){
 }
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827192800","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827192800","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -1422,8 +1422,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827192800","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827192800","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -1793,6 +1793,9 @@ window.renderAll=renderAll; window.showToast=showToast;
 .ap-toolbar .ap-jump{flex:0 0 auto;max-width:220px;padding:9px 12px;border:1px solid var(--border-color,#e5e5ea);border-radius:999px;font-size:13px;font-family:inherit;outline:none;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);}
 .ap-toolbar .ap-jump:focus{border-color:var(--primary,#0066cc);box-shadow:0 0 0 3px var(--focus-outline-color,rgba(0,102,204,.15));}
 .ap-toolbar .ap-btn{padding:8px 12px;font-size:12px;white-space:nowrap;}
+  .ap-translate-btn{margin-top:6px;padding:3px 9px;font-size:11px;line-height:1.4;border:1px solid var(--primary,#0066cc);background:rgba(0,102,204,.08);color:var(--primary,#0066cc);border-radius:999px;cursor:pointer;font-family:inherit;}
+  .ap-translate-btn:hover{background:rgba(0,102,204,.16);}
+  .ap-translate-btn:disabled{opacity:.55;cursor:default;}
 
 /* Detail group */
 .ap-detail-group{margin:16px 0;padding:16px;border:1px dashed var(--border-color,#c8d6e5);border-radius:14px;background:rgba(0,102,204,.03);}
@@ -2308,8 +2311,69 @@ function field(path,label,val,type){
   else if(label.indexOf("(英)")>=0){lang="en";baseLabel=label.replace("(英)","");}
   var langBadge=lang?'<span class="ap-lang '+lang+'">'+(lang==="zh"?"中":"EN")+'</span>':"";
   var labHtml='<label>'+esc(baseLabel)+langBadge+'</label>';
-  if(type==="textarea")return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<textarea data-path="'+path+'">'+ev+'</textarea></div>';
-  return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<input data-path="'+path+'" value="'+ev+'"></div>';
+  var trBtn = lang==="zh" ? '<button type="button" class="ap-translate-btn" data-tr="'+escAttr(path)+'">译→EN</button>' : "";
+  if(type==="textarea")return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<textarea data-path="'+path+'">'+ev+'</textarea>'+trBtn+'</div>';
+  return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<input data-path="'+path+'" value="'+ev+'">'+trBtn+'</div>';
+}
+// ---- 中文自动翻译为英文（免费免密钥 MyMemory，浏览器直连，CORS 已开） ----
+function myMemoryTranslate(text, cb){
+  if(!text||!text.trim()){cb("无中文内容",null);return;}
+  var url="https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=zh|en";
+  fetch(url).then(function(r){return r.json();}).catch(function(){return {responseStatus:0,responseDetails:"网络错误"};}).then(function(j){
+    if(j && j.responseData && j.responseData.translatedText){
+      var t=j.responseData.translatedText;
+      if(/MYMEMORY WARNING/i.test(t)){ cb("今日免费额度已满(约5000词)，明日再试或手动填英文", null); return; }
+      cb(null, t);
+    } else if(j && (j.responseStatus===403 || j.responseStatus===0)) {
+      cb(j.responseDetails||"翻译服务暂不可用", null);
+    } else { cb("翻译无返回", null); }
+  });
+}
+function enPathOf(zhPath){
+  if(/Zh$/.test(zhPath)) return zhPath.slice(0,-2)+"En";
+  if(/zh$/.test(zhPath)) return zhPath.slice(0,-2)+"en";
+  return null;
+}
+function translateZhToEn(zhPath, btn){
+  var zhInp=beBody.querySelector('[data-path="'+zhPath+'"]');
+  var zh=zhInp?zhInp.value.trim():"";
+  if(!zh){ if(btn) showToast("请先填写中文内容"); return; }
+  var enPath=enPathOf(zhPath);
+  if(!enPath){ if(btn) showToast("该字段无对应英文框"); return; }
+  if(btn){ btn.disabled=true; btn.textContent="翻译中…"; }
+  myMemoryTranslate(zh, function(err, en){
+    if(btn){ btn.disabled=false; btn.textContent="译→EN"; }
+    if(err){ showToast("翻译失败："+err+"（可手动填英文）"); return; }
+    var enInp=beBody.querySelector('[data-path="'+enPath+'"]');
+    if(enInp){ enInp.value=en; setByPath(edData, enPath, en); showToast("已翻译并填入英文，可在英文框继续修正"); }
+  });
+}
+function collectLangPairs(root){
+  var pairs=[];
+  root.querySelectorAll('[data-path]').forEach(function(inp){
+    var p=inp.getAttribute("data-path");
+    var en=enPathOf(p);
+    if(!en) return;
+    var enInp=root.querySelector('[data-path="'+en+'"]');
+    if(enInp && enInp.value.trim()==="") pairs.push({zh:p,en:en,zhInp:inp,enInp:enInp});
+  });
+  return pairs;
+}
+function translateAll(pairs, btn){
+  if(!pairs.length){ showToast("没有需要翻译的空白英文框（已填的不会覆盖）"); return; }
+  var total=pairs.length, i=0;
+  if(btn){ btn.disabled=true; btn.textContent="翻译中 0/"+total; }
+  function step(){
+    if(i>=pairs.length){ if(btn){ btn.disabled=false; btn.textContent="🌐 翻译全部英文"; } showToast("翻译完成，共 "+total+" 条，请核对英文后点「保存并发布」"); return; }
+    var pr=pairs[i]; var zh=pr.zhInp.value.trim();
+    if(!zh){ i++; step(); return; }
+    myMemoryTranslate(zh, function(err, en){
+      if(!err && en){ pr.enInp.value=en; setByPath(edData, pr.en, en); }
+      i++; if(btn) btn.textContent="翻译中 "+i+"/"+total;
+      step();
+    });
+  }
+  step();
 }
 function itemBox(title,fieldsHtml,arrPath,idx){
   return'<div class="ap-item" data-search-title="'+escAttr(title)+'">'+
@@ -2734,6 +2798,7 @@ function openBlockEditor(type,label){
     '<button class="ap-btn" data-be-locate title="关闭弹窗并高亮网站对应区块">在网站定位</button>'+
     '<button class="ap-btn" data-be-collapse>折叠全部</button>'+
     '<button class="ap-btn" data-be-expand>展开全部</button>'+
+    '<button class="ap-btn" data-be-translate-all title="把当前所有空白英文框按中文自动翻译（免费·可再手改）">🌐 翻译全部英文</button>'+
     '</div>'+
     '<div class="ap-items">'+h+'</div>';
   groupLangPairs(beBody);
@@ -2758,6 +2823,9 @@ function openBlockEditor(type,label){
     if(el){el.classList.add("edit-focus");setTimeout(function(){try{el.scrollIntoView({behavior:"smooth",block:"center"});}catch(_){}},60);}
   };
   bindBlockEditorEvents();
+  beBody.querySelectorAll("[data-tr]").forEach(function(b){ b.onclick=function(){ translateZhToEn(this.getAttribute("data-tr"), this); }; });
+  var taAll=beBody.querySelector("[data-be-translate-all]");
+  if(taAll) taAll.onclick=function(){ translateAll(collectLangPairs(beBody), taAll); };
   apOpen(beModal);
 }
 
@@ -3470,7 +3538,7 @@ __BODY__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827191000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827192800";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -3845,7 +3913,7 @@ __CONTENT__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827191000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827192800";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
