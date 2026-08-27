@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260827173200">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260827180600">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
 <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
@@ -26,7 +26,7 @@
 <link rel="preload" as="image" href="images/contact/qr-wechat-official.jpg" fetchpriority="high">
 
 <style>
-:root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;--border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;--hover-color:#f0f4f8;--focus-outline-color:rgba(0,102,204,.6);}
+:root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;--border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;--hover-color:#f0f4f8;--focus-outline-color:rgba(0,102,204,.6);--map-label:#e6edf3;--map-label-halo:rgba(5,13,20,.85);--map-chip:rgba(13,17,23,.66);--map-chip-border:rgba(55,224,200,.30);--map-home:#ffd166;--map-chip-home:rgba(40,32,10,.8);}
 *{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--text-color);background:var(--bg);margin:0;line-height:1.6;-webkit-font-smoothing:antialiased;}
 .skip-link{position:absolute;top:-40px;left:0;background:var(--primary);color:#fff;padding:8px;z-index:1000;transition:.2s}.skip-link:focus{top:0}
 nav{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);z-index:100;transition:transform .3s}
@@ -244,7 +244,7 @@ footer p{margin:4px 0}
 @media(max-width:600px){.hero-title{font-size:36px}.hero-subtitle{font-size:16px}.intro-container{grid-template-columns:1fr;gap:30px}.contact-container{grid-template-columns:1fr}.pi-card{flex-direction:column;text-align:center}.pi-card h2,.pi-card h3,.pi-card p{text-align:center !important}}
 
 /* ===== 暗色主题 ===== */
-[data-theme="dark"]{--primary:#4da3ff;--primary-hover:#79b8ff;--bg:#0d1117;--section-bg:#161b22;--border-color:#30363d;--text-color:#e6edf3;--light-text-color:#8b949e;--hover-color:#21262d;--focus-outline-color:rgba(77,163,255,.6);}
+[data-theme="dark"]{--primary:#4da3ff;--primary-hover:#79b8ff;--bg:#0d1117;--section-bg:#161b22;--border-color:#30363d;--text-color:#e6edf3;--light-text-color:#8b949e;--hover-color:#21262d;--focus-outline-color:rgba(77,163,255,.6);--map-label:#e6edf3;--map-label-halo:rgba(5,13,20,.85);--map-chip:rgba(13,17,23,.72);--map-chip-border:rgba(55,224,200,.35);--map-home:#ffd166;--map-chip-home:rgba(40,32,10,.85);}
 [data-theme="dark"] nav{background:rgba(13,17,23,.82);}
 [data-theme="dark"] .hero::before{z-index:1;background:linear-gradient(135deg,rgba(0,0,0,.72),rgba(10,30,60,.55));}
 [data-theme="dark"] .modal-backdrop{background:rgba(0,0,0,.7);}
@@ -397,9 +397,11 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
   @keyframes pulse{0%{opacity:.55;transform:scale(.4);}70%{opacity:0;transform:scale(2.4);}100%{opacity:0;transform:scale(2.4);}}
   .world-svg .map-point.hl .core{fill:#ffd166;}
   .world-svg .map-point.dim{opacity:.1 !important;}
-  .world-svg .map-point text{fill:rgba(220,240,250,.82);font-size:10px;paint-order:stroke;stroke:#050d14;stroke-width:2.4px;pointer-events:none;}
+  .world-svg .map-point text{fill:var(--map-label);font-family:inherit;font-size:10.5px;font-weight:600;letter-spacing:.2px;paint-order:stroke;stroke:var(--map-label-halo);stroke-width:3px;stroke-linejoin:round;pointer-events:none;}
+  .world-svg .map-label-bg{fill:var(--map-chip);stroke:var(--map-chip-border);stroke-width:.6;pointer-events:none;}
   .world-svg .home-point{fill:#ffd166;filter:url(#glow);}
-  .world-svg .home-label{fill:#ffd166;font-size:10px;font-weight:600;paint-order:stroke;stroke:#050d14;stroke-width:2.4px;pointer-events:none;}
+  .world-svg .home-label{fill:var(--map-home);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.2px;paint-order:stroke;stroke:var(--map-label-halo);stroke-width:3px;stroke-linejoin:round;pointer-events:none;}
+  .world-svg .home-label-bg{fill:var(--map-chip-home);stroke:var(--map-chip-border);stroke-width:.6;pointer-events:none;}
   .partner-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:18px;margin-top:6px;}
   .partner-card{display:flex;gap:14px;padding:18px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;}
   .partner-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.20);border-color:var(--accent);}
@@ -1631,7 +1633,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
 
 
 
-<script>(function(){var v="20260827173200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260827180600";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -2089,15 +2091,18 @@ function initPartnersMap(){
       var q=proj(pl.coords[0],pl.coords[1]);
       var cx=(q[0]+H[0])/2, cy=(q[1]+H[1])/2 - Math.sqrt(Math.pow(q[0]-H[0],2)+Math.pow(q[1]-H[1],2))*0.18;
       s+='<path class="map-arc" d="M '+H[0].toFixed(1)+' '+H[1].toFixed(1)+' Q '+cx.toFixed(1)+' '+cy.toFixed(1)+' '+q[0].toFixed(1)+' '+q[1].toFixed(1)+'"/>';
+      var lbl=esc(pl.region||""); var lw=Math.max(14,lbl.length*6.6+10); var below=(li%2===1);
+      var lty=(below?(q[1]+13):(q[1]-9)).toFixed(1);
       s+='<g class="map-point" data-pid="'+esc(p.id)+'" data-cat="'+esc(p.category)+'" style="transition-delay:'+(li*0.12).toFixed(2)+'s">'+
          '<circle class="halo" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="5" style="animation-delay:'+(li*0.12).toFixed(2)+'s"/>'+
          '<circle class="core" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="3.4"/>'+
-         '<text x="'+(q[0]+7).toFixed(1)+'" y="'+(q[1]+3).toFixed(1)+'">'+esc(pl.region||"")+'</text></g>';
+         (lbl?'<g class="map-label" transform="translate('+(q[0]+7).toFixed(1)+','+lty+')"><rect class="map-label-bg" x="0" y="-9" width="'+lw.toFixed(1)+'" height="14" rx="4"/><text x="5" y="3.5">'+lbl+'</text></g>':'')+'</g>';
       li++;
     }
   }
   s+='<circle class="home-point" cx="'+H[0].toFixed(1)+'" cy="'+H[1].toFixed(1)+'" r="4.2"/>';
-  s+='<text class="home-label" x="'+(H[0]+7).toFixed(1)+'" y="'+(H[1]-6).toFixed(1)+'">'+both("实验室","Lab")+'</text>';
+  var hlabel=both("实验室","Lab"); var hw=Math.max(20,hlabel.length*6.6+10);
+  s+='<g class="home-label-g" transform="translate('+(H[0]+8).toFixed(1)+','+(H[1]-9).toFixed(1)+')"><rect class="home-label-bg" x="0" y="-9" width="'+hw.toFixed(1)+'" height="14" rx="4"/><text class="home-label" x="5" y="3.5">'+hlabel+'</text></g>';
   svg.innerHTML=s;
   var landEls=svg.querySelectorAll(".land");
   function setFocus(isoSet){
@@ -2535,7 +2540,7 @@ function renderAll(d){
 // 详情页预取：卡片悬停/聚焦即预取对应静态页，点击 window.open 时命中缓存秒开（零压缩、纯代码优化）
 function __prefetchDetail(type,id){
   if(type!=="news"&&type!=="member")return;
-  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827173200";
+  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827180600";
   var done=__prefetchDetail._c||(__prefetchDetail._c={});
   if(done[url])return;          // 去重，避免重复注入
   done[url]=1;
@@ -2543,8 +2548,8 @@ function __prefetchDetail(type,id){
 }
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827173200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827173200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827180600","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827180600","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -2588,8 +2593,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827173200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827173200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827180600","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827180600","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -4636,7 +4641,7 @@ __BODY__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827173200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827180600";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -5011,7 +5016,7 @@ __CONTENT__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827173200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827180600";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
