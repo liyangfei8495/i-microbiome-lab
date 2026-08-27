@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260827170000">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260827172000">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
 <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
@@ -411,6 +411,24 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
   .partner-region{font-size:12px;color:var(--light-text-color);margin-top:2px;}
   .partner-desc{font-size:13px;color:var(--light-text-color);margin:8px 0 0;line-height:1.6;}
   .partner-link{display:inline-block;margin-top:8px;font-size:13px;color:var(--accent);text-decoration:none;}
+  /* projects: 纵向/横向 卡片 */
+  .proj-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px;}
+  .proj-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;letter-spacing:.4px;}
+  .proj-badge.pv{background:rgba(56,128,255,.14);color:#2f6bff;border:1px solid rgba(56,128,255,.35);}
+  .proj-badge.ph{background:rgba(34,160,110,.14);color:#1f9e6b;border:1px solid rgba(34,160,110,.35);}
+  .proj-badge-lg{font-size:12px;margin-bottom:8px;}
+  .proj-cat{font-size:12px;color:var(--light-text-color);}
+  .project-card.pv{border-left:3px solid rgba(56,128,255,.5);}
+  .project-card.ph{border-left:3px solid rgba(34,160,110,.5);}
+  .proj-meta{margin:5px 0 0;color:var(--light-text-color);font-size:13px;}
+  .proj-meta i{width:15px;text-align:center;opacity:.65;margin-right:3px;}
+  .proj-meta-row i{margin-left:9px;}
+  .proj-meta-row i:first-child{margin-left:0;}
+  .proj-lead{margin:7px 0 0;font-size:13px;color:var(--text);}
+  .proj-detail table{width:100%;border-collapse:collapse;font-size:14px;margin:0;}
+  .proj-detail th{text-align:left;padding:7px 12px 7px 0;color:var(--light-text-color);font-weight:600;white-space:nowrap;vertical-align:top;width:88px;}
+  .proj-detail td{padding:7px 0;vertical-align:top;}
+  .proj-detail tr+tr th,.proj-detail tr+tr td{border-top:1px solid var(--border-color);}
   @media (prefers-reduced-motion: reduce){
     .world-svg.lit .map-point{transition:none;}
     .world-svg.lit .map-arc,.world-svg .map-point .halo{animation:none !important;}
@@ -1359,17 +1377,57 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
   ],
   "projects": [
     {
-      "id": "prj-1787734057872",
-      "titleZh": "【国家自然科学基金青年科学基金项目】地钱损伤响应因子MpERF21抑制生长素信号调控再生的分子机制",
-      "titleEn": "",
+      "id": "prj-nsfc-youth",
+      "type": "vertical",
+      "titleZh": "地钱损伤响应因子MpERF21抑制生长素信号调控再生的分子机制",
+      "titleEn": "Molecular mechanism by which MpERF21 suppresses auxin signaling to regulate regeneration in Marchantia",
+      "category": "国家自然科学基金·青年科学基金",
+      "agency": "国家自然科学基金委员会",
+      "grantNo": "",
+      "amount": "30万",
+      "period": "2027.01–2029.12",
+      "status": "拟立项",
       "lead": "梁元可",
-      "contentZh": "批准经费：30万\n项目起止年月：2027.01——2029.12",
+      "role": "主持",
+      "descZh": "以地钱为模型，解析ERF转录因子MpERF21调控植物创伤后高效再生的分子通路，揭示其抑制生长素信号、平衡再生与发育的作用机制。",
+      "descEn": "Using Marchantia as a model, this project dissects how the ERF transcription factor MpERF21 regulates efficient post-wounding regeneration, revealing its mechanism of suppressing auxin signaling to balance regeneration and development.",
+      "contentZh": "",
       "contentEn": "",
       "goalsZh": "",
       "goalsEn": "",
       "progressZh": "",
       "progressEn": "",
       "pillarId": "pillar-1784985245245",
+      "memberIds": [
+        "member-liang"
+      ],
+      "pubIds": [],
+      "images": [],
+      "logo": ""
+    },
+    {
+      "id": "prj-chunlu-cmchitosan",
+      "type": "horizontal",
+      "titleZh": "微生物源羧甲基壳聚糖的研发",
+      "titleEn": "R&D of Microbe-derived Carboxymethyl Chitosan",
+      "category": "企业技术开发委托",
+      "agency": "上海春露生物化学有限公司",
+      "grantNo": "",
+      "amount": "30万",
+      "period": "2026.08–2029.07",
+      "status": "在研",
+      "lead": "",
+      "role": "",
+      "partnerId": "partner-chunlu",
+      "descZh": "与上海春露生物化学有限公司合作，开展微生物源羧甲基壳聚糖的绿色生物制造与产业化关键技术研发，对接化妆品与功能材料需求。",
+      "descEn": "Collaboration with Shanghai Chunlu Biochemical Co., Ltd. on green bio-manufacturing and industrialization of microbe-derived carboxymethyl chitosan for cosmetics and functional materials.",
+      "contentZh": "",
+      "contentEn": "",
+      "goalsZh": "",
+      "goalsEn": "",
+      "progressZh": "",
+      "progressEn": "",
+      "pillarId": "pillar-enzyme",
       "memberIds": [
         "member-liang"
       ],
@@ -1573,7 +1631,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
 
 
 
-<script>(function(){var v="20260827170000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260827172000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1892,10 +1950,20 @@ function openDetail(type,id){
   }
   else if(type==="rproject"){
     var pr=find(d.projects,id);if(!pr)return showToast("未找到："+id);
-    html+=img(pr.logo,"modal-logo");
+    var t=pr.type==="horizontal"?"horizontal":"vertical", c=t==="horizontal"?"ph":"pv";
+    html+='<span class="proj-badge '+c+' proj-badge-lg">'+(t==="horizontal"?both("横向","Horizontal"):both("纵向","Vertical"))+'</span>';
     html+='<h2>'+both(pr.titleZh,pr.titleEn)+'</h2>';
-    if(pr.lead)html+='<p class="modal-role">'+both("负责人：","Lead: ")+esc(pr.lead)+'</p>';
-    if(pr.contentZh)html+='<div class="modal-block"><h3>'+both("项目内容","Content")+'</h3><p>'+both(pr.contentZh,pr.contentEn)+'</p></div>';
+    var rows=[];
+    if(pr.category)rows.push([both("类别","Category"),pr.category]);
+    if(pr.agency)rows.push([t==="vertical"?both("资助机构","Funding Agency"):both("委托单位","Client"),pr.agency]);
+    if(pr.grantNo)rows.push([both("项目编号","Grant No."),pr.grantNo]);
+    if(pr.amount)rows.push([both("经费","Amount"),pr.amount]);
+    if(pr.period)rows.push([both("起止年月","Period"),pr.period]);
+    if(pr.status)rows.push([both("状态","Status"),pr.status]);
+    if(pr.lead)rows.push([both("负责人","Lead"),pr.lead+(pr.role?' · '+pr.role:'')]);
+    if(rows.length)html+='<div class="modal-block proj-detail"><table class="modal-table">'+rows.map(function(r){return '<tr><th>'+r[0]+'</th><td>'+esc(r[1])+'</td></tr>';}).join("")+'</table></div>';
+    if(pr.descZh)html+='<div class="modal-block"><h3>'+both("项目内容","Content")+'</h3><p>'+both(pr.descZh,pr.descEn)+'</p></div>';
+    if(pr.contentZh)html+='<div class="modal-block"><h3>'+both("项目内容(详)","Content")+'</h3><p>'+both(pr.contentZh,pr.contentEn)+'</p></div>';
     if(pr.goalsZh)html+='<div class="modal-block"><h3>'+both("项目目标","Goals")+'</h3><p>'+both(pr.goalsZh,pr.goalsEn)+'</p></div>';
     if(pr.progressZh)html+='<div class="modal-block"><h3>'+both("项目进展","Progress")+'</h3><p>'+both(pr.progressZh,pr.progressEn)+'</p></div>';
     if(pr.images&&pr.images.length){
@@ -2309,21 +2377,46 @@ function renderAll(d){
     }
   })();
 
-  // projects（独立基金项目展示，置于论文成果之后）
+  // projects（基金项目：纵向/横向）
   (function(){
     var arr=d.projects||[];
-    var inner=arr.length?('<div class="research-grid">'+arr.map(function(pr){
-      return'<article class="research-card clickable" data-open="rproject" data-id="'+esc(pr.id)+'" data-search-item data-search-text="'+esc((pr.titleZh||"")+(pr.titleEn||"")+(pr.lead||""))+'">'+
-        (pr.logo?img(pr.logo,"proj-thumb"):"")+
-        '<h3 style="margin:0 0 6px;">'+both(pr.titleZh,pr.titleEn)+'</h3>'+
-        (pr.lead?'<p style="margin:0;color:var(--light-text-color);font-size:13px;">'+esc(pr.lead)+'</p>':"")+
-        (pr.contentZh?'<p style="margin:8px 0 0;color:var(--light-text-color);font-size:13px;">'+esc((pr.contentZh||"").slice(0,48))+'…</p>':"")+
+    function isV(pr){return pr.type!=="horizontal";}
+    function badge(t){return t==="horizontal"?both("横向","Horizontal"):both("纵向","Vertical");}
+    function cls(t){return t==="horizontal"?"ph":"pv";}
+    var tabs='<div class="partner-tabs proj-tabs">'+
+      '<button type="button" class="ptab active" data-ptype="all">'+both("全部","All")+'</button>'+
+      '<button type="button" class="ptab" data-ptype="vertical">'+both("纵向课题","Vertical")+'</button>'+
+      '<button type="button" class="ptab" data-ptype="horizontal">'+both("横向课题","Horizontal")+'</button></div>';
+    var inner=arr.length?('<div class="research-grid proj-grid">'+arr.map(function(pr){
+      var t=isV(pr)?"vertical":"horizontal", c=cls(t);
+      var meta=[];
+      if(pr.agency)meta.push('<i class="fas '+(t==="vertical"?"fa-university":"fa-building")+'"></i> '+esc(pr.agency));
+      if(pr.amount)meta.push('<i class="fas fa-yen"></i> '+esc(pr.amount));
+      if(pr.period)meta.push('<i class="fas fa-calendar-alt"></i> '+esc(pr.period));
+      if(pr.status)meta.push('<i class="fas fa-circle"></i> '+esc(pr.status));
+      return'<article class="research-card project-card clickable '+c+'" data-open="rproject" data-id="'+esc(pr.id)+'" data-ptype="'+t+'" data-search-item data-search-text="'+esc((pr.titleZh||"")+(pr.titleEn||"")+(pr.lead||"")+(pr.agency||"")+(pr.category||""))+'">'+
+        '<div class="proj-top"><span class="proj-badge '+c+'">'+badge(t)+'</span>'+(pr.category?'<span class="proj-cat">'+esc(pr.category)+'</span>':'')+'</div>'+
+        '<h3 style="margin:6px 0 0;">'+both(pr.titleZh,pr.titleEn)+'</h3>'+
+        (pr.agency?'<p class="proj-meta"><i class="fas '+(t==="vertical"?"fa-university":"fa-building")+'"></i> '+esc(pr.agency)+'</p>':'')+
+        (meta.length?'<p class="proj-meta proj-meta-row">'+meta.join(' &middot; ')+'</p>':'')+
+        (pr.lead?'<p class="proj-lead">'+both("负责人：","Lead: ")+esc(pr.lead)+(pr.role?' · '+esc(pr.role):'')+'</p>':'')+
         '</article>';}).join("")+'</div>')
       :'<p style="text-align:center;color:var(--light-text-color);padding:10px 0;">'+both("基金项目持续更新中…","Projects coming soon")+'</p>';
     document.getElementById("projects").innerHTML=
-      '<div class="search-bar"><input type="search" class="js-search" placeholder="'+esc(bothText("搜索项目（标题/负责人）…","Search projects…"))+'"></div>'+
-      '<h2>'+both("基金项目","Projects")+'</h2>'+inner+
+      '<div class="search-bar"><input type="search" class="js-search" placeholder="'+esc(bothText("搜索项目（标题/负责人/单位）…","Search projects…"))+'"></div>'+
+      '<h2>'+both("基金项目","Projects & Funding")+'</h2>'+
+      '<p class="section-eyebrow">'+both("纵向：政府科研经费　·　横向：企业委托 / 产学研","Vertical: government grants　·　Horizontal: industry-commissioned")+'</p>'+
+      tabs+inner+
       '<p class="search-empty" style="display:none;text-align:center;color:var(--light-text-color);padding:20px 0;">'+both("没有匹配的项目","No matching projects")+'</p>';
+    var sec=document.getElementById("projects");
+    sec.querySelectorAll(".proj-tabs .ptab").forEach(function(b){
+      b.addEventListener("click",function(){
+        sec.querySelectorAll(".proj-tabs .ptab").forEach(function(x){x.classList.remove("active");});
+        b.classList.add("active");
+        var tp=b.getAttribute("data-ptype");
+        sec.querySelectorAll(".project-card").forEach(function(card){ card.style.display=(tp==="all"||card.getAttribute("data-ptype")===tp)?"":"none"; });
+      });
+    });
   })();
 
   // honors
@@ -2444,7 +2537,7 @@ function renderAll(d){
 // 详情页预取：卡片悬停/聚焦即预取对应静态页，点击 window.open 时命中缓存秒开（零压缩、纯代码优化）
 function __prefetchDetail(type,id){
   if(type!=="news"&&type!=="member")return;
-  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827170000";
+  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827172000";
   var done=__prefetchDetail._c||(__prefetchDetail._c={});
   if(done[url])return;          // 去重，避免重复注入
   done[url]=1;
@@ -2452,8 +2545,8 @@ function __prefetchDetail(type,id){
 }
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827170000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827170000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827172000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827172000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -2477,9 +2570,13 @@ function bindSearch(){
       var total=items.length;
       if(!total){ var e0=section.querySelector('.search-empty'); if(e0)e0.style.display='none'; return; }
       var visible=0;
+      var activeTab=section.querySelector('.proj-tabs .ptab.active');
+      var tabType=activeTab?activeTab.getAttribute('data-ptype'):'all';
       items.forEach(function(it){
         var txt=(it.getAttribute('data-search-text')||'').toLowerCase();
-        var ok=!q||txt.indexOf(q)>=0;
+        var ptype=it.getAttribute('data-ptype');
+        var tabOk=!activeTab||tabType==='all'||ptype===tabType;
+        var ok=(!q||txt.indexOf(q)>=0)&&tabOk;
         it.style.display=ok?'':'none';
         if(ok)visible++;
       });
@@ -2493,8 +2590,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827170000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827170000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827172000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827172000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -3506,7 +3603,8 @@ function openBlockEditor(type,label){
     members:(d.members||[]).map(function(m){return {id:m.id,name:m.nameZh||m.nameEn||m.id};}),
     pubs:(d.publications||[]).map(function(p){return {id:p.id,name:p.titleZh||p.titleEn||p.id};}),
     projs:(d.research.projects||[]).map(function(pr){return {id:pr.id,name:pr.titleZh||pr.titleEn||pr.id};}),
-    pillars:(d.research.pillars||[]).map(function(p){return {id:p.id,name:p.zh||p.en||p.id};})
+    pillars:(d.research.pillars||[]).map(function(p){return {id:p.id,name:p.zh||p.en||p.id};}),
+    partners:(d.partners.items||[]).map(function(p){return {id:p.id,name:p.nameZh||p.nameEn||p.id};})
   };
   if(type==="hero"){
     h+=field("lab.name","实验室名称",d.lab.name);
@@ -3655,14 +3753,25 @@ function openBlockEditor(type,label){
     });
     h+='<button class="ap-add" data-add="publications">+ 添加论文</button>';
   }else if(type==="projects"){
-    h+='<p style="color:#6e6e73;font-size:12px;margin:0 0 8px;">基金项目（可增删，独立于「研究主题」中的在研课题，集中展示于论文成果之后）</p>';
+    h+='<p style="color:#6e6e73;font-size:12px;margin:0 0 8px;">基金项目（纵向=政府科研经费，横向=企业委托/产学研；可增删，集中展示于论文成果之后）</p>';
     d.projects.forEach(function(pr,i){
       h+=itemBox("项目 "+(i+1)+": "+(pr.titleZh||""),[
+        relSingleField("projects."+i+".type","类型（纵向/横向）",[{id:"vertical",name:"纵向"},{id:"horizontal",name:"横向"}],pr.type||"vertical"),
         field("projects."+i+".titleZh","标题(中)",pr.titleZh),
         field("projects."+i+".titleEn","标题(英)",pr.titleEn),
+        field("projects."+i+".category","类别（如 国家自然科学基金·青年科学基金 / 企业技术开发委托）",pr.category,"text"),
+        field("projects."+i+".agency","资助机构(纵向)/委托单位(横向)",pr.agency,"text"),
+        field("projects."+i+".grantNo","项目编号/合同编号",pr.grantNo,"text"),
+        field("projects."+i+".amount","经费（如 30万）",pr.amount,"text"),
+        field("projects."+i+".period","起止年月（如 2027.01–2029.12）",pr.period,"text"),
+        field("projects."+i+".status","状态（在研/结题/拟立项）",pr.status,"text"),
         field("projects."+i+".lead","负责人",pr.lead,"text"),
-        field("projects."+i+".contentZh","项目内容(中)",pr.contentZh,"textarea"),
-        field("projects."+i+".contentEn","项目内容(英)",pr.contentEn,"textarea"),
+        field("projects."+i+".role","角色（主持/参与）",pr.role,"text"),
+        relSingleField("projects."+i+".partnerId","关联合作单位(横向)",relOpts.partners||[],pr.partnerId),
+        field("projects."+i+".descZh","项目内容简述(中)",pr.descZh,"textarea"),
+        field("projects."+i+".descEn","项目内容简述(英)",pr.descEn,"textarea"),
+        field("projects."+i+".contentZh","项目内容(详·中)",pr.contentZh,"textarea"),
+        field("projects."+i+".contentEn","项目内容(详·英)",pr.contentEn,"textarea"),
         field("projects."+i+".goalsZh","项目目标(中)",pr.goalsZh,"textarea"),
         field("projects."+i+".goalsEn","项目目标(英)",pr.goalsEn,"textarea"),
         field("projects."+i+".progressZh","项目进展(中)",pr.progressZh,"textarea"),
@@ -3869,7 +3978,7 @@ function bindBlockEditorEvents(){
       else if(path==="facilities")tpl={id:"fac-"+Date.now(),icon:"fa-microscope",zh:"新设施",en:"",descZh:"",descEn:"",introZh:"",introEn:"",image:"",pillarId:"",memberIds:[]};
       else if(path==="members")tpl={id:"m-"+Date.now(),nameZh:"新成员",nameEn:"",roleZh:"",roleEn:"",group:"phd",bioZh:"",bioEn:"",introZh:"",introEn:"",introImage:"",eduZh:"",eduEn:"",achZh:"",achEn:"",confZh:"",confEn:"",recruitZh:"",recruitEn:"",wordsZh:"",wordsEn:"",contactZh:"",contactEn:"",photo:"",researchZh:"",researchEn:"",repPubsZh:"",repPubsEn:""};
       else if(path==="publications")tpl={id:"p-"+Date.now(),authors:"",titleZh:"",titleEn:"",journal:"",year:"",doi:"#",abstractZh:"",abstractEn:"",image:"",projectIds:[],memberIds:[]};
-      else if(path==="projects")tpl={id:"prj-"+Date.now(),titleZh:"新项目",titleEn:"",lead:"",contentZh:"",contentEn:"",goalsZh:"",goalsEn:"",progressZh:"",progressEn:"",pillarId:"",memberIds:[],pubIds:[],images:[],logo:""};
+      else if(path==="projects")tpl={id:"prj-"+Date.now(),type:"vertical",titleZh:"新项目",titleEn:"",category:"",agency:"",grantNo:"",amount:"",period:"",status:"",lead:"",role:"",partnerId:"",descZh:"",descEn:"",contentZh:"",contentEn:"",goalsZh:"",goalsEn:"",progressZh:"",progressEn:"",pillarId:"",memberIds:[],pubIds:[],images:[],logo:""};
       else if(path==="honors")tpl={id:"hon-"+Date.now(),titleZh:"新荣誉",titleEn:"",org:"",date:"",descZh:"",descEn:"",image:""};
       else if(path==="competitions")tpl={id:"comp-"+Date.now(),titleZh:"新竞赛",titleEn:"",statusZh:"",statusEn:"",org:"",date:"",teamZh:"",teamEn:"",advisorZh:"",advisorEn:"",leaderZh:"",leaderEn:"",membersZh:"",membersEn:"",descZh:"",descEn:"",image:""};
       else if(path==="news")tpl={id:"n-"+Date.now(),titleZh:"",titleEn:"",day:"1",month:"01",blocks:[{type:"text",zh:"",en:""}]};
@@ -4529,7 +4638,7 @@ __BODY__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827170000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827172000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -4904,7 +5013,7 @@ __CONTENT__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827170000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827172000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
