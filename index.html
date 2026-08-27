@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260827104210">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260827104539">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
 <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
@@ -1350,7 +1350,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
     }
   ]
 };</script>
-<script>(function(){var v="20260827104210";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260827104539";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1998,7 +1998,7 @@ function renderAll(d){
     '<div class="travel-gallery">'+d.labLife.map(function(s){return'<div class="gallery-item">'+img(s,"")+'</div>';}).join("")+'</div>';
 
   // join
-  var jv=d.join.video?('<div class="join-video"><video id="joinVideo" src="'+esc(d.join.video)+'" autoplay muted loop playsinline preload="metadata"'+(d.join.videoPoster?' poster="'+esc(d.join.videoPoster)+'"':'')+'></video><button class="join-video-sound" type="button" onclick="(function(b){var v=document.getElementById(\'joinVideo\');if(!v)return;v.muted=!v.muted;b.textContent=v.muted?\'🔇 开启声音\':\'🔊 关闭声音\';if(!v.muted)v.play().catch(function(){});})(this)">🔇 开启声音</button></div>'):"";
+  var jv=d.join.video?('<div class="join-video"><video id="joinVideo" controls src="'+esc(d.join.video)+'" autoplay muted loop playsinline preload="metadata"'+(d.join.videoPoster?' poster="'+esc(d.join.videoPoster)+'"':'')+'></video><button class="join-video-sound" type="button" onclick="(function(b){var v=document.getElementById(\'joinVideo\');if(!v)return;v.muted=!v.muted;b.textContent=v.muted?\'🔇 开启声音\':\'🔊 关闭声音\';if(!v.muted)v.play().catch(function(){});})(this)">🔇 开启声音</button></div>'):"";
   var jg=d.join.images&&d.join.images.length?('<div class="join-gallery">'+d.join.images.map(function(s){return img(s,"");}).join("")+'</div>'):"";
   document.getElementById("join").innerHTML=
     '<p class="section-eyebrow">'+both("加入我们","Join Us")+'</p><h2>'+both("招新","Join Us")+'</h2>'+
@@ -2036,7 +2036,7 @@ function renderAll(d){
 // 详情页预取：卡片悬停/聚焦即预取对应静态页，点击 window.open 时命中缓存秒开（零压缩、纯代码优化）
 function __prefetchDetail(type,id){
   if(type!=="news"&&type!=="member")return;
-  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827104210";
+  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827104539";
   var done=__prefetchDetail._c||(__prefetchDetail._c={});
   if(done[url])return;          // 去重，避免重复注入
   done[url]=1;
@@ -2044,8 +2044,8 @@ function __prefetchDetail(type,id){
 }
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104210","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104210","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104539","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104539","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -2085,8 +2085,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104210","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104210","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104539","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827104539","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -4121,7 +4121,7 @@ __BODY__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827104210";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827104539";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -4496,7 +4496,7 @@ __CONTENT__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827104210";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827104539";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
