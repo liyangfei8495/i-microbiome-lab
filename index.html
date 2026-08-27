@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260827161300">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260827163100">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
 <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
@@ -163,6 +163,12 @@ section h2{font-size:34px;text-align:center;margin:0 0 14px}
 .social-links{list-style:none;padding:0;display:flex;gap:12px;margin-top:14px}
 .social-links li a{display:block;width:48px;height:48px;border-radius:12px;background:var(--section-bg);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:20px;transition:.2s}
 .social-links li a:hover{background:var(--primary);color:#fff}
+.contact-right{display:flex;flex-direction:column;gap:20px;justify-content:center}
+.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start;justify-items:center}
+.qr-item{display:flex;flex-direction:column;align-items:center;gap:8px}
+.qr-item img{width:100%;max-width:120px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);transition:transform .3s ease,box-shadow .3s ease;background:#fff}
+.qr-item:hover img{transform:scale(1.06);box-shadow:0 12px 32px rgba(0,0,0,.18)}
+.qr-label{font-size:13px;color:var(--light-text-color);text-align:center;line-height:1.3}
 
 /* modal */
 .modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center}
@@ -412,7 +418,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
 
 
 
-<script>(function(){var v="20260827161300";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260827163100";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -1257,13 +1263,19 @@ function renderAll(d){
   var socials=d.contact.socials&&d.contact.socials.length?
     '<div class="social-container"><h3 style="margin:0 0 10px;">'+both("关注我们","Connect")+'</h3><ul class="social-links">'+
     d.contact.socials.map(function(s){return'<li><a href="'+esc(z(s.url||"#"))+'" aria-label="'+esc(z(s.type))+'"><i class="fas fa-link"></i></a></li>';}).join("")+'</ul></div>':"";
+  var qrGrid='<div class="qr-grid">'+
+    '<div class="qr-item"><img src="images/contact/qr-wechat-personal.jpg" alt="'+esc('个人微信')+'" loading="lazy" decoding="async"><span class="qr-label">'+both("个人微信","WeChat")+'</span></div>'+
+    '<div class="qr-item"><img src="images/contact/qr-xiaohongshu.jpg" alt="'+esc('小红书')+'" loading="lazy" decoding="async"><span class="qr-label">'+both("小红书","Xiaohongshu")+'</span></div>'+
+    '<div class="qr-item"><img src="images/contact/qr-wechat-official.jpg" alt="'+esc('微信公众号')+'" loading="lazy" decoding="async"><span class="qr-label">'+both("微信公众号","Official Account")+'</span></div>'+
+  '</div>';
   document.getElementById("contact").innerHTML=
     '<h2>'+both("联系我们","Contact Us")+'</h2>'+
     '<div class="contact-container">'+
       '<div>'+
         '<div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:'+esc(z(d.contact.email))+'">'+esc(z(d.contact.email))+'</a></div>'+
         '<div class="contact-item"><i class="fas fa-map-marker-alt"></i><span>'+both(d.contact.addressZh,d.contact.addressEn)+'</span></div>'+
-      '</div>'+socials+
+      '</div>'+
+      '<div class="contact-right">'+(socials||'')+qrGrid+'</div>'+
     '</div>';
 
   bindAll();
@@ -1277,7 +1289,7 @@ function renderAll(d){
 // 详情页预取：卡片悬停/聚焦即预取对应静态页，点击 window.open 时命中缓存秒开（零压缩、纯代码优化）
 function __prefetchDetail(type,id){
   if(type!=="news"&&type!=="member")return;
-  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827161300";
+  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827163100";
   var done=__prefetchDetail._c||(__prefetchDetail._c={});
   if(done[url])return;          // 去重，避免重复注入
   done[url]=1;
@@ -1285,8 +1297,8 @@ function __prefetchDetail(type,id){
 }
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827161300","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827161300","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827163100","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827163100","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -1326,8 +1338,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827161300","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827161300","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827163100","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827163100","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -3362,7 +3374,7 @@ __BODY__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827161300";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827163100";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -3737,7 +3749,7 @@ __CONTENT__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827161300";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827163100";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
