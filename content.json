@@ -1017,124 +1017,92 @@
   ],
   "items": [
    {
-    "id": "partner-1",
-    "nameZh": "上海某生物科技有限公司",
-    "nameEn": "BioTech Co., Shanghai",
+    "id": "partner-chunlu",
     "category": "enterprise",
+    "nameZh": "上海春露有限责任公司",
+    "nameEn": "Shanghai Chunlu Co., Ltd.",
     "region": "上海",
     "country": "中国",
+    "province": "CN-SH",
     "coords": [
      121.47,
      31.23
     ],
-    "descZh": "在微生物菌剂产业化方面开展联合攻关。",
-    "descEn": "Joint R&D on microbial inoculant commercialization.",
-    "url": "https://example.com"
+    "descZh": "围绕农业微生物菌剂与生物制造开展产业化合作。",
+    "descEn": "Industry collaboration on agricultural microbial agents and bio-manufacturing.",
+    "url": ""
    },
    {
-    "id": "partner-2",
-    "nameZh": "北京某农业集团",
-    "nameEn": "Agri Group, Beijing",
+    "id": "partner-hechuang",
     "category": "enterprise",
-    "region": "北京",
+    "nameZh": "四川禾创种业有限责任公司",
+    "nameEn": "Sichuan Hechuang Seed Co., Ltd.",
+    "region": "四川",
     "country": "中国",
+    "province": "CN-SC",
     "coords": [
-     116.4,
-     39.9
+     104.07,
+     30.67
     ],
-    "descZh": "高蛋白玉米 SynCom 田间示范与推广。",
-    "descEn": "Field trials and extension of high-protein maize SynCom.",
-    "url": "https://example.com"
+    "descZh": "高蛋白玉米等作物良种与微生物协同增效的联合研发与示范。",
+    "descEn": "Joint R&D and demonstration of elite crop varieties and microbiome synergy for high-protein maize.",
+    "url": ""
    },
    {
-    "id": "partner-3",
-    "nameZh": "深圳某环保企业",
-    "nameEn": "EcoTech, Shenzhen",
-    "category": "enterprise",
-    "region": "深圳",
-    "country": "中国",
-    "coords": [
-     114.06,
-     22.54
-    ],
-    "descZh": "有机废弃物微生物转化技术研发。",
-    "descEn": "R&D on microbial conversion of organic waste.",
-    "url": "https://example.com"
-   },
-   {
-    "id": "partner-4",
-    "nameZh": "广州某食品公司",
-    "nameEn": "Food Co., Guangzhou",
-    "category": "enterprise",
-    "region": "广州",
-    "country": "中国",
-    "coords": [
-     113.26,
-     23.13
-    ],
-    "descZh": "功能性发酵食品联合开发。",
-    "descEn": "Co-development of functional fermented foods.",
-    "url": "https://example.com"
-   },
-   {
-    "id": "partner-5",
-    "nameZh": "加州大学戴维斯分校",
-    "nameEn": "UC Davis",
+    "id": "partner-shengshi",
     "category": "international",
-    "region": "戴维斯",
-    "country": "美国",
-    "coords": [
-     -121.74,
-     38.54
-    ],
-    "descZh": "植物-微生物互作前沿合作研究。",
-    "descEn": "Frontier collaboration on plant-microbe interactions.",
-    "url": "https://example.com"
-   },
-   {
-    "id": "partner-6",
-    "nameZh": "瓦赫宁根大学",
-    "nameEn": "Wageningen University",
-    "category": "international",
-    "region": "瓦赫宁根",
-    "country": "荷兰",
-    "coords": [
-     5.67,
-     51.97
-    ],
-    "descZh": "土壤微生物组与可持续农业交流。",
-    "descEn": "Exchange on soil microbiome and sustainable agriculture.",
-    "url": "https://example.com"
-   },
-   {
-    "id": "partner-7",
-    "nameZh": "澳大利亚联邦科工组织",
-    "nameEn": "CSIRO",
-    "category": "international",
-    "region": "墨尔本",
-    "country": "澳大利亚",
-    "coords": [
-     144.96,
-     -37.81
-    ],
-    "descZh": "环境微生物组监测技术合作。",
-    "descEn": "Collaboration on environmental microbiome monitoring.",
-    "url": "https://example.com"
-   },
-   {
-    "id": "partner-8",
-    "nameZh": "东京大学",
-    "nameEn": "University of Tokyo",
-    "category": "international",
-    "region": "东京",
-    "country": "日本",
-    "coords": [
-     139.69,
-     35.69
-    ],
-    "descZh": "合成菌群建模与定量解析。",
-    "descEn": "Synthetic community modeling and quantitative analysis.",
-    "url": "https://example.com"
+    "nameZh": "晟氏集团",
+    "nameEn": "Shengshi Group",
+    "descZh": "跨越布隆迪、德国、比利时、瑞士、巴基斯坦的微生物资源与农业生物技术合作网络。",
+    "descEn": "A cross-border collaboration network in microbial resources and agri-biotech spanning Burundi, Germany, Belgium, Switzerland and Pakistan.",
+    "url": "",
+    "places": [
+     {
+      "region": "布隆迪",
+      "country": "布隆迪",
+      "iso": "BI",
+      "coords": [
+       29.36,
+       -3.36
+      ]
+     },
+     {
+      "region": "德国马普所",
+      "country": "德国",
+      "iso": "DE",
+      "coords": [
+       11.58,
+       48.14
+      ]
+     },
+     {
+      "region": "比利时",
+      "country": "比利时",
+      "iso": "BE",
+      "coords": [
+       4.35,
+       50.85
+      ]
+     },
+     {
+      "region": "瑞士",
+      "country": "瑞士",
+      "iso": "CH",
+      "coords": [
+       8.54,
+       47.37
+      ]
+     },
+     {
+      "region": "巴基斯坦",
+      "country": "巴基斯坦",
+      "iso": "PK",
+      "coords": [
+       73.05,
+       33.69
+      ]
+     }
+    ]
    }
   ],
   "homeProv": "CN-SC",
