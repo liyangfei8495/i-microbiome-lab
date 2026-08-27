@@ -218,7 +218,9 @@ def render_page(m, data):
     role_zh = m.get("roleZh") or ""
     role_en = m.get("roleEn") or ""
     photo = m.get("photo") or ""
-    if photo.startswith("http"):
+    if photo and not photo.startswith("http"):
+        photo = SITE.rstrip("/") + "/" + photo.lstrip("/")
+    if photo:
         hero = ('<img class="avatar" src="%s" alt="%s">' % (esc_attr(photo), esc_attr(name_zh)))
     else:
         photo = DEFAULT_OG
