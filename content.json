@@ -1019,8 +1019,8 @@
       {
         "id": "partner-chunlu",
         "category": "enterprise",
-        "nameZh": "上海春露有限责任公司",
-        "nameEn": "Shanghai Chunlu Co., Ltd.",
+        "nameZh": "上海春露生物化学有限公司",
+        "nameEn": "Shanghai Chunlu Biochemical Co., Ltd.",
         "region": "上海",
         "country": "中国",
         "province": "CN-SH",
@@ -1028,40 +1028,40 @@
           121.47,
           31.23
         ],
-        "descZh": "围绕农业微生物菌剂与生物制造开展产业化合作。",
-        "descEn": "Industry collaboration on agricultural microbial agents and bio-manufacturing.",
-        "url": ""
+        "descZh": "始创于1996年，位于上海嘉定，专注羧甲基壳聚糖（CM-chitosan）等生物化学原料的研发与产业化，拥有5项国家发明专利，并作为核心起草单位牵头制定《化妆品用原料 羧甲基脱乙酰壳多糖》团体标准。双方围绕壳聚糖基生物刺激素与农业微生物菌剂的协同开发开展合作。",
+        "descEn": "Founded in 1996 and based in Shanghai's Jiading District, Chunlu specializes in carboxymethyl chitosan and biochemical raw materials, holding 5 national invention patents and leading the industry group standard for CM-chitosan. Collaboration focuses on chitosan-based biostimulants synergized with agricultural microbial agents.",
+        "url": "http://www.chunlushenghua.cn"
       },
       {
         "id": "partner-hechuang",
         "category": "enterprise",
-        "nameZh": "四川禾创种业有限责任公司",
+        "nameZh": "四川禾创种业有限公司",
         "nameEn": "Sichuan Hechuang Seed Co., Ltd.",
-        "region": "四川",
+        "region": "四川·绵阳",
         "country": "中国",
         "province": "CN-SC",
         "coords": [
-          104.07,
-          30.67
+          104.77,
+          31.46
         ],
-        "descZh": "高蛋白玉米等作物良种与微生物协同增效的联合研发与示范。",
-        "descEn": "Joint R&D and demonstration of elite crop varieties and microbiome synergy for high-protein maize.",
+        "descZh": "成立于2017年，位于四川绵阳游仙区，国家级科技型中小企业、市级农业产业化重点龙头企业，持有农作物种子生产经营许可证，自育玉米/油菜/小麦等良种20余个，主推高蛋白玉米'禾创599'（高蛋白、无穗腐）。双方围绕高蛋白玉米与微生物合成群落（SynCom）促氮的联合选育与田间示范开展合作。",
+        "descEn": "Founded in 2017 in Mianyang, Sichuan, a national high-tech SME and municipal leading agricultural enterprise with a seed production license. It has developed 20+ proprietary crop varieties including the high-protein maize 'Hechuang 599'. Collaboration focuses on joint breeding and field demonstration of high-protein maize with microbiome SynCom for nitrogen promotion.",
         "url": ""
       },
       {
         "id": "partner-shengshi",
         "category": "enterprise",
-        "nameZh": "晟氏集团",
-        "nameEn": "Shengshi Group",
-        "region": "四川·成都",
+        "nameZh": "绵阳晟氏健康科技有限公司",
+        "nameEn": "Mianyang Shengshi Health Technology Co., Ltd.",
+        "region": "四川·绵阳北川",
         "country": "中国",
         "province": "CN-SC",
         "coords": [
-          104.07,
-          30.57
+          104.43,
+          31.83
         ],
-        "descZh": "依托合成生物学与手性氨基酸产业化平台，围绕微生物资源与功能食品原料开展联合研发与生产合作。",
-        "descEn": "Joint R&D and production on microbial resources and functional-food ingredients via its synthetic-biology and chiral-amino-acid platforms.",
+        "descZh": "成立于2020年，基地位于绵阳北川合成生物产业园，国家高新技术企业、四川省瞪羚企业，拥有合成生物学体系GMP生产线与原料药生产许可证，专注手性氨基酸、功能食品原料与抗衰因子，产品出口海内外。双方围绕微生物资源挖掘与功能食品原料的联合研发与生产开展合作。",
+        "descEn": "Founded in 2020 with a base in the Mianyang Beichuan synthetic-biology industrial park, Shengshi is a national high-tech enterprise and Sichuan gazelle firm, operating GMP lines and an API license, focused on chiral amino acids and functional-food ingredients. Collaboration targets joint R&D and production on microbial resources and functional-food raw materials.",
         "url": "http://www.biosheng.cn"
       },
       {
@@ -1076,14 +1076,14 @@
           29.36,
           -3.36
         ],
-        "descZh": "围绕微生物资源与农业生物技术的国际合作。",
-        "descEn": "International collaboration on microbial resources and agri-biotechnology.",
+        "descZh": "东非以小规模玉米种植为主的农业国。双方围绕土壤健康与蚯蚓粪源微生物菌剂、以及高蛋白玉米在非洲小农体系的适应性，开展国际合作与田间示范，服务小农增产与粮食安全。",
+        "descEn": "An East African agriculture-based nation centered on smallholder maize. Collaboration focuses on soil health, earthworm-cast microbial agents, and the adaptation of high-protein maize for smallholder systems to support yield gains and food security.",
         "url": ""
       },
       {
         "id": "partner-mpg",
         "category": "international",
-        "nameZh": "德国马普所",
+        "nameZh": "德国马克斯·普朗克学会",
         "nameEn": "Max Planck Society, Germany",
         "region": "德国",
         "country": "德国",
@@ -1092,9 +1092,9 @@
           11.58,
           48.14
         ],
-        "descZh": "前沿微生物学与合成生物学的学术交流与合作。",
-        "descEn": "Academic exchange and collaboration in frontier microbiology and synthetic biology.",
-        "url": ""
+        "descZh": "与德国马克斯·普朗克学会（Max Planck Society）相关研究所开展前沿微生物学与合成生物学学术交流，聚焦植物-微生物互作、微生物组机制与人工合成群落的前沿探索。",
+        "descEn": "Academic exchange with institutes of the Max Planck Society on frontier microbiology and synthetic biology, focusing on plant–microbe interactions, microbiome mechanisms, and synthetic community exploration.",
+        "url": "https://www.mpg.de/en"
       },
       {
         "id": "partner-belgium",
@@ -1108,8 +1108,8 @@
           4.35,
           50.85
         ],
-        "descZh": "微生物组与农业生物技术的国际合作交流。",
-        "descEn": "International collaboration on microbiome and agri-biotechnology.",
+        "descZh": "比利时在植物生物技术与根际微生物组领域研究实力雄厚（如根际微生物互作前沿团队）。双方围绕根际促生微生物与作物氮素高效利用开展国际合作与交流。",
+        "descEn": "Belgium is a powerhouse in plant biotechnology and rhizosphere microbiome. Collaboration focuses on plant-growth-promoting microbes and nitrogen-use efficiency in crops.",
         "url": ""
       },
       {
@@ -1124,8 +1124,8 @@
           8.54,
           47.37
         ],
-        "descZh": "微生物组与农业生物技术的国际合作交流。",
-        "descEn": "International collaboration on microbiome and agri-biotechnology.",
+        "descZh": "瑞士在微生物生态与微生物组学领域国际领先（如苏黎世联邦理工等）。双方围绕微生物组功能解析与合成群落（SynCom）构建开展学术交流与合作。",
+        "descEn": "Switzerland leads in microbial ecology and microbiome science. Collaboration focuses on microbiome functional analysis and synthetic community (SynCom) construction.",
         "url": ""
       },
       {
@@ -1140,8 +1140,8 @@
           73.05,
           33.69
         ],
-        "descZh": "围绕微生物资源与农业生物技术的国际合作。",
-        "descEn": "International collaboration on microbial resources and agri-biotechnology.",
+        "descZh": "巴基斯坦农业微生物与根际促生菌（PGPR）研究活跃。双方围绕促生微生物资源挖掘与抗旱、低氮条件下作物促生机制开展国际合作。",
+        "descEn": "Pakistan has active research in agricultural microbiology and plant-growth-promoting rhizobacteria (PGPR). Collaboration targets growth-promoting microbial resources and mechanisms under drought and low-nitrogen conditions.",
         "url": ""
       }
     ],
