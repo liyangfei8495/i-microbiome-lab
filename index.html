@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260827185021">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260827191000">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
 <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
@@ -374,6 +374,11 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
   .world-svg .graticule{stroke:rgba(120,180,220,.10);stroke-width:.6;}
   .world-svg .land{fill:rgba(94,156,196,.16);stroke:rgba(125,195,232,.30);stroke-width:.5;transition:fill .3s ease,opacity .3s ease;}
   .world-svg .land.hl{fill:rgba(55,224,200,.26);stroke:rgba(55,224,200,.65);stroke-width:.9;}
+  .world-svg .land.hl{cursor:pointer;}
+  .world-svg .land.hl:hover{fill:rgba(55,224,200,.42);stroke:rgba(55,224,200,.95);}
+  .world-svg .cn-region{cursor:pointer;}
+  .world-svg .cn-region:hover{fill:rgba(55,224,200,.42);stroke:rgba(55,224,200,1);}
+
   .world-svg.mode-focus .land:not(.hl){opacity:.2;}
   .world-svg.mode-focus .graticule{opacity:.12;}
   .world-svg .region-glow{fill:url(#regionGlow);opacity:0;transform-box:fill-box;transform-origin:center;pointer-events:none;}
@@ -397,12 +402,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
   @keyframes pulse{0%{opacity:.55;transform:scale(.4);}70%{opacity:0;transform:scale(2.4);}100%{opacity:0;transform:scale(2.4);}}
   .world-svg .map-point.hl .core{fill:#ffd166;}
   .world-svg .map-point.dim{opacity:.1 !important;}
-  .world-svg .map-label text{fill:var(--map-label);font-family:inherit;font-size:10px;font-weight:600;letter-spacing:.2px;pointer-events:none;}
-  .world-svg .map-label-bg{fill:var(--map-chip);stroke:var(--map-chip-border);stroke-width:.6;pointer-events:none;}
   .world-svg .home-point{fill:#ffd166;filter:url(#glow);}
-  .world-svg .home-label{fill:var(--map-home);font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.2px;paint-order:stroke;stroke:var(--map-label-halo);stroke-width:3px;stroke-linejoin:round;pointer-events:none;}
-  .world-svg .home-label-bg{fill:var(--map-chip-home);stroke:var(--map-chip-border);stroke-width:.6;pointer-events:none;}
-  .world-svg .map-leader{stroke:rgba(55,224,200,.5);stroke-width:.8;pointer-events:none;}
   .partner-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:18px;margin-top:6px;}
   .partner-card{display:flex;gap:14px;padding:18px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;}
   .partner-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.20);border-color:var(--accent);}
@@ -443,7 +443,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
 
 
 
-<script>(function(){var v="20260827185021";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260827191000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -895,42 +895,19 @@ function initPartnersMap(){
   litProv.forEach(function(pv){ var dd=""; (CN[pv]||[]).forEach(function(rg){ dd+=ringPath(rg); }); cnreg+='<path class="cn-region" data-prov="'+esc(pv)+'" fill-rule="evenodd" d="'+dd+'"/>'; });
   s+='<g class="cn-regions">'+cnreg+'</g>';
   var H=proj(home[0],home[1]);
-  var li=0, labels=[];
+  var li=0;
   for(var i=0;i<items.length;i++){ var p=items[i]; var locs=locsOf(p);
     for(var L=0;L<locs.length;L++){ var pl=locs[L]; if(!pl.coords||pl.coords.length<2)continue;
       var q=proj(pl.coords[0],pl.coords[1]);
       var cx=(q[0]+H[0])/2, cy=(q[1]+H[1])/2 - Math.sqrt(Math.pow(q[0]-H[0],2)+Math.pow(q[1]-H[1],2))*0.18;
       s+='<path class="map-arc" d="M '+H[0].toFixed(1)+' '+H[1].toFixed(1)+' Q '+cx.toFixed(1)+' '+cy.toFixed(1)+' '+q[0].toFixed(1)+' '+q[1].toFixed(1)+'"/>';
-      var lbl=esc(pl.region||"");
-      labels.push({q:q,text:lbl,lw:Math.max(16,lbl.length*6.8+12),pid:p.id,cat:p.category,home:false});
+      s+='<g class="map-point" data-pid="'+esc(p.id)+'" data-cat="'+esc(p.category)+'" style="transition-delay:'+(li*0.12).toFixed(2)+'s">'+
+         '<circle class="halo" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="5" style="animation-delay:'+(li*0.12).toFixed(2)+'s"/>'+
+         '<circle class="core" cx="'+q[0].toFixed(1)+' cy="'+q[1].toFixed(1)+'" r="3.4"/></g>';
       li++;
     }
   }
   s+='<circle class="home-point" cx="'+H[0].toFixed(1)+'" cy="'+H[1].toFixed(1)+'" r="4.2"/>';
-  var hlabel=both("实验室","Lab");
-  labels.push({q:H,text:hlabel,lw:Math.max(20,hlabel.length*6.8+12),pid:null,cat:null,home:true});
-  // ---- 标签防重叠布局（带引线） ----
-  var LBLH=15, GAP=4, TOPM=3, BOTM=497, MARG=4;
-  function boxOverlap(a,b){ return !(a.x+a.w+MARG<=b.x||b.x+b.w+MARG<=a.x||a.y+a.h+MARG<=b.y||b.y+b.h+MARG<=a.y); }
-  labels.sort(function(a,b){ return (a.q[1]-b.q[1])||(a.q[0]-b.q[0]); });
-  var placed=[];
-  for(var k=0;k<labels.length;k++){ var lb=labels[k];
-    var rightSide=(lb.q[0]+lb.lw+12)<=996;
-    var box={w:lb.lw,h:LBLH,home:lb.home};
-    box.x=rightSide?lb.q[0]+9:lb.q[0]-9-lb.lw;
-    var yTop=lb.q[1]-LBLH/2, guard=0;
-    while(placed.some(function(pb){return boxOverlap(box,pb);})){
-      yTop+=LBLH+GAP; if(yTop+LBLH>BOTM) yTop=TOPM;
-      box.y=yTop; if((++guard)>400)break;
-    }
-    box.y=yTop; placed.push(box);
-    var ax=rightSide?box.x:box.x+box.w, ay=box.y+LBLH/2;
-    s+='<g'+(lb.home?'':' class="map-point" data-pid="'+esc(lb.pid)+'" data-cat="'+esc(lb.cat)+'" style="transition-delay:'+(k*0.12).toFixed(2)+'s"')+'>'+
-       (lb.home?'':'<circle class="halo" cx="'+lb.q[0].toFixed(1)+'" cy="'+lb.q[1].toFixed(1)+'" r="5" style="animation-delay:'+(k*0.12).toFixed(2)+'s"/>'+
-       '<circle class="core" cx="'+lb.q[0].toFixed(1)+'" cy="'+lb.q[1].toFixed(1)+'" r="3.4"/>')+
-       '<line class="map-leader" x1="'+lb.q[0].toFixed(1)+'" y1="'+lb.q[1].toFixed(1)+'" x2="'+ax.toFixed(1)+'" y2="'+ay.toFixed(1)+'"/>'+
-       '<g class="'+(lb.home?'home-label-g':'map-label')+'" transform="translate('+box.x.toFixed(1)+','+box.y.toFixed(1)+')"><rect class="'+(lb.home?'home-label-bg':'map-label-bg')+'" x="0" y="0" width="'+box.w.toFixed(1)+'" height="'+LBLH+'" rx="4"/><text class="'+(lb.home?'home-label':'')+'" x="5" y="'+(LBLH/2+3.6).toFixed(1)+'">'+lb.text+'</text></g></g>';
-  }
   svg.innerHTML=s;
   var landEls=svg.querySelectorAll(".land");
   function setFocus(isoSet){
@@ -938,6 +915,24 @@ function initPartnersMap(){
     svg.classList.add("mode-focus");
     landEls.forEach(function(el){ el.classList.toggle("hl", isoSet.has(el.getAttribute("data-iso"))); });
   }
+  // ---- 区域点击查看合作信息 ----
+  function pidForRegion(iso,prov){
+    for(var i=0;i<items.length;i++){ var p=items[i];
+      if(prov && provOf(p)===prov) return p.id;
+      if(iso){ var ls=locsOf(p); for(var L=0;L<ls.length;L++){ if(isoOfLoc(ls[L])===iso) return p.id; } }
+    }
+    return null;
+  }
+  function lightPartnerRegions(){
+    svg.classList.remove("mode-focus");
+    var pisos=new Set();
+    items.forEach(function(p){ locsOf(p).forEach(function(pl){ var iso=isoOfLoc(pl); if(iso)pisos.add(iso); }); });
+    landEls.forEach(function(el){ el.classList.toggle("hl", pisos.has(el.getAttribute("data-iso"))); });
+    sec.querySelectorAll(".cn-region").forEach(function(rg){ rg.classList.remove("dim"); });
+  }
+  function openRegionPartner(pid){ var card=sec.querySelector('.partner-card[data-pid="'+pid+'"]'); if(card)card.click(); }
+  landEls.forEach(function(el){ el.style.cursor="pointer"; el.addEventListener("click",function(){ if(!el.classList.contains("hl"))return; var pid=pidForRegion(el.getAttribute("data-iso"),null); if(pid)openRegionPartner(pid); }); });
+  sec.querySelectorAll(".cn-region").forEach(function(rg){ rg.style.cursor="pointer"; rg.addEventListener("click",function(){ if(rg.classList.contains("dim"))return; var pid=pidForRegion(null,rg.getAttribute("data-prov")); if(pid)openRegionPartner(pid); }); });
   function zoomTo(isoSet){
     if(!isoSet||isoSet.size!==1){ setVB(FULL_VB); return; }
     var it=isoSet.values(); var iso=it.next().value, rings=W[iso]; if(!rings){ setVB(FULL_VB); return; }
@@ -958,6 +953,11 @@ function initPartnersMap(){
     vbRAF=requestAnimationFrame(step);
   }
   function applyCat(cat){
+    if(cat==="all"){ lightPartnerRegions();
+      sec.querySelectorAll(".partner-card").forEach(function(c){ c.style.display=""; });
+      sec.querySelectorAll(".map-point").forEach(function(pt){ pt.classList.remove("dim"); });
+      return;
+    }
     var set=new Set();
     var pset=new Set();
     if(cat!=="all"){ items.forEach(function(p){ if(p.category===cat){ locsOf(p).forEach(function(pl){ var iso=isoOfLoc(pl); if(iso)set.add(iso); }); } }); }
@@ -979,6 +979,7 @@ function initPartnersMap(){
     c.addEventListener("mouseleave",function(){ sec.querySelectorAll('.map-point[data-pid="'+id+'"]').forEach(function(pt){pt.classList.remove("hl");}); });
   });
   sec.querySelectorAll(".map-point").forEach(function(pt){ pt.addEventListener("click",function(){ var id=pt.getAttribute("data-pid"); var card=sec.querySelector('.partner-card[data-pid="'+id+'"]'); if(card)card.click(); }); });
+  lightPartnerRegions();
   if(window.__pmIo){ try{window.__pmIo.disconnect();}catch(e){} }
   if("IntersectionObserver" in window){
     window.__pmIo=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ svg.classList.add("lit"); window.__pmIo.disconnect(); } }); },{threshold:.18});
@@ -1368,7 +1369,7 @@ function renderAll(d){
 // 详情页预取：卡片悬停/聚焦即预取对应静态页，点击 window.open 时命中缓存秒开（零压缩、纯代码优化）
 function __prefetchDetail(type,id){
   if(type!=="news"&&type!=="member")return;
-  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827185021";
+  var url=(type==="news"?"news/":"members/")+id+".html?v=20260827191000";
   var done=__prefetchDetail._c||(__prefetchDetail._c={});
   if(done[url])return;          // 去重，避免重复注入
   done[url]=1;
@@ -1376,8 +1377,8 @@ function __prefetchDetail(type,id){
 }
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827185021","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827185021","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -1421,8 +1422,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827185021","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827185021","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260827191000","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -3469,7 +3470,7 @@ __BODY__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827185021";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827191000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -3844,7 +3845,7 @@ __CONTENT__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260827185021";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260827191000";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
