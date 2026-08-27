@@ -1000,8 +1000,8 @@
   "introZh": "我们与全球企业与科研机构携手，推动微生物组技术从实验室走向产业与前沿探索。地图上的点亮区域，标记着我们合作的足迹。",
   "introEn": "We partner with enterprises and research institutions worldwide to bring microbiome science from the lab into industry and frontier discovery. Lit regions on the map mark where we collaborate.",
   "home": [
-   120.15,
-   30.27
+   104.68,
+   31.47
   ],
   "categories": [
    {
@@ -1136,6 +1136,8 @@
     "descEn": "Synthetic community modeling and quantitative analysis.",
     "url": "https://example.com"
    }
-  ]
+  ],
+  "homeProv": "CN-SC",
+  "homeRegion": "绵阳"
  }
 }
