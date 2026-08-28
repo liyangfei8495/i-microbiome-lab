@@ -9,7 +9,7 @@
 <meta property="og:title" content="i-Microbiome Lab · 智能微生态与生物制造实验室">
 <meta property="og:description" content="聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。">
 <meta property="og:image" content="https://liang-lab.cn/images/site/1784990973538-4875.jpg">
-<meta property="og:url" content="https://liang-lab.cn/?v=20260828091200">
+<meta property="og:url" content="https://liang-lab.cn/?v=20260828092200">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
 <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
@@ -403,7 +403,11 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
   .world-svg .map-point.hl .core{fill:#ffd166;}
   .world-svg .map-point.dim{opacity:.1 !important;}
   .world-svg .home-point{fill:#ffd166;filter:url(#glow);}
-  .partner-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:18px;margin-top:6px;}
+  .partner-cards{display:none;}
+  .partner-stats{display:flex;justify-content:center;gap:48px;margin-top:28px;flex-wrap:wrap;}
+  .partner-stat{text-align:center;padding:18px 32px;border-radius:16px;background:var(--bg);border:1px solid var(--border-color);min-width:140px;}
+  .partner-stat-num{font-size:42px;font-weight:700;line-height:1;color:var(--primary);font-family:'Fraunces',serif;}
+  .partner-stat-label{margin-top:8px;font-size:14px;color:var(--light-text-color);}
   .partner-card{display:flex;gap:14px;padding:18px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;}
   .partner-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.20);border-color:var(--accent);}
   .partner-logo{width:54px;height:54px;flex:none;border-radius:12px;background:color-mix(in srgb,var(--accent) 16%,transparent);display:flex;align-items:center;justify-content:center;overflow:hidden;}
@@ -443,7 +447,7 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
 
 
 
-<script>(function(){var v="20260828091200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<script>(function(){var v="20260828092200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -845,7 +849,22 @@ function renderPartners(d){
   for(var c=0;c<cats.length;c++){ tabs+='<button type="button" class="ptab" data-cat="'+esc(cats[c].id)+'">'+both(cats[c].zh,cats[c].en)+'</button>'; }
   tabs+='</div>';
   var map='<div class="partners-map" id="partnersMap"><svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" class="world-svg" role="img" aria-label="'+esc(P.titleZh)+'"></svg></div>';
-  var cards='<div class="partner-cards">';
+  function uniqueRegions(arr){
+    var regs=new Set();
+    arr.forEach(function(p){
+      if(p.places&&p.places.length){ p.places.forEach(function(pl){ if(pl.region)regs.add(pl.region); }); }
+      else if(p.region){ regs.add(p.region); }
+    });
+    return regs.size;
+  }
+  function partnerStatsHTML(arr){
+    return '<div class="partner-stats" data-regions="'+uniqueRegions(arr)+'" data-partners="'+arr.length+'">'+
+      '<div class="partner-stat"><div class="partner-stat-num">'+uniqueRegions(arr)+'</div><div class="partner-stat-label">'+both("累计合作地区","Regions")+'</div></div>'+
+      '<div class="partner-stat"><div class="partner-stat-num">'+arr.length+'</div><div class="partner-stat-label">'+both("合作单位","Partners")+'</div></div>'+
+      '</div>';
+  }
+  var stats=partnerStatsHTML(items);
+  var cards='<div class="partner-cards" style="display:none">';
   for(var i=0;i<items.length;i++){ var p=items[i];
     cards+='<article class="partner-card clickable" data-open="partner" data-id="'+esc(p.id)+'" data-cat="'+esc(p.category)+'" data-pid="'+esc(p.id)+'">'+
       '<div class="partner-logo">'+(p.logo?'<img loading="lazy" decoding="async" src="'+esc(p.logo)+'" alt="">':'<span class="partner-initial">'+esc((p.nameZh||p.nameEn||"?").charAt(0))+'</span>')+'</div>'+
@@ -858,7 +877,7 @@ function renderPartners(d){
   return '<p class="section-eyebrow">'+both("开放共赢","Open & Global")+'</p>'+
     '<h2>'+both(P.titleZh,P.titleEn)+'</h2>'+
     (P.introZh?'<p class="partners-intro">'+both(P.introZh,P.introEn)+'</p>':'')+
-    tabs+map+cards;
+    tabs+map+stats+cards;
 }
 function initPartnersMap(){
   var sec=document.getElementById("partners"); if(!sec)return;
@@ -957,9 +976,20 @@ function initPartnersMap(){
       if(k<1){vbRAF=requestAnimationFrame(step);} else {vbRAF=null;} }
     vbRAF=requestAnimationFrame(step);
   }
+  function updateStats(filtered){
+    var st=sec.querySelector(".partner-stats"); if(!st)return;
+    var regs=new Set();
+    filtered.forEach(function(p){
+      if(p.places&&p.places.length){ p.places.forEach(function(pl){ if(pl.region)regs.add(pl.region); }); }
+      else if(p.region){ regs.add(p.region); }
+    });
+    var nums=st.querySelectorAll(".partner-stat-num");
+    if(nums[0])nums[0].textContent=regs.size;
+    if(nums[1])nums[1].textContent=filtered.length;
+  }
   function applyCat(cat){
     if(cat==="all"){ lightPartnerRegions();
-      sec.querySelectorAll(".partner-card").forEach(function(c){ c.style.display=""; });
+      updateStats(items);
       sec.querySelectorAll(".map-point").forEach(function(pt){ pt.classList.remove("dim"); });
       return;
     }
@@ -971,7 +1001,8 @@ function initPartnersMap(){
     if(cat==="enterprise"){ set=new Set(["CN"]); }
     setFocus(set); zoomTo(set);
     sec.querySelectorAll(".cn-region").forEach(function(rg){ rg.classList.toggle("dim", !pset.has(rg.getAttribute("data-prov"))); });
-    sec.querySelectorAll(".partner-card").forEach(function(c){ c.style.display=(cat==="all"||c.getAttribute("data-cat")===cat)?"":"none"; });
+    var filtered=items.filter(function(p){ return cat==="all"||p.category===cat; });
+    updateStats(filtered);
     sec.querySelectorAll(".map-point").forEach(function(pt){ pt.classList.toggle("dim", !(cat==="all"||pt.getAttribute("data-cat")===cat)); });
   }
   var tabs=sec.querySelectorAll(".ptab");
@@ -979,9 +1010,9 @@ function initPartnersMap(){
     tabs.forEach(function(x){x.classList.remove("active");}); t.classList.add("active");
     applyCat(t.getAttribute("data-cat"));
   }; });
-  sec.querySelectorAll(".partner-card").forEach(function(c){ var id=c.getAttribute("data-pid");
-    c.addEventListener("mouseenter",function(){ sec.querySelectorAll('.map-point[data-pid="'+id+'"]').forEach(function(pt){pt.classList.add("hl");}); });
-    c.addEventListener("mouseleave",function(){ sec.querySelectorAll('.map-point[data-pid="'+id+'"]').forEach(function(pt){pt.classList.remove("hl");}); });
+  /* 统计区 hover 高亮对应地图点 */
+  sec.querySelectorAll(".partner-stat").forEach(function(st){ st.addEventListener("mouseenter",function(){ sec.querySelectorAll(".map-point").forEach(function(pt){pt.classList.add("hl");}); });
+    st.addEventListener("mouseleave",function(){ sec.querySelectorAll(".map-point").forEach(function(pt){pt.classList.remove("hl");}); });
   });
   sec.querySelectorAll(".map-point").forEach(function(pt){ pt.addEventListener("click",function(){ var id=pt.getAttribute("data-pid"); var card=sec.querySelector('.partner-card[data-pid="'+id+'"]'); if(card)card.click(); }); });
   lightPartnerRegions();
@@ -1374,7 +1405,7 @@ function renderAll(d){
 // 详情页预取：卡片悬停/聚焦即预取对应静态页，点击 window.open 时命中缓存秒开（零压缩、纯代码优化）
 function __prefetchDetail(type,id){
   if(type!=="news"&&type!=="member")return;
-  var url=(type==="news"?"news/":"members/")+id+".html?v=20260828091200";
+  var url=(type==="news"?"news/":"members/")+id+".html?v=20260828092200";
   var done=__prefetchDetail._c||(__prefetchDetail._c={});
   if(done[url])return;          // 去重，避免重复注入
   done[url]=1;
@@ -1382,8 +1413,8 @@ function __prefetchDetail(type,id){
 }
 function bindAll(){
   document.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828091200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828091200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828092200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828092200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -1427,8 +1458,8 @@ function bindSearch(){
 function openModal(html){modalContent.innerHTML=html;modal.removeAttribute("hidden");requestAnimationFrame(function(){modal.classList.add("is-open");});document.body.classList.add("modal-open");var b=modal.querySelector(".modal-close");if(b)b.focus();try{window.__imgBup&&window.__imgBup();}catch(e){}
   // 绑定弹窗内 data-open 跳转（弹窗内容是动态插入的，bindAll 只在首次 renderAll 绑定首屏元素）
   modalContent.querySelectorAll("[data-open]").forEach(function(el){
-    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828091200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
-    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828091200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
+    el.onclick=function(e){if(e.target.tagName==="A")return;var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828092200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));};
+    el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();var __t=el.getAttribute("data-open");if(__t==="news"||__t==="member"){window.open((__t==="news"?"news/":"members/")+el.getAttribute("data-id")+".html?v=20260828092200","_blank");return;}openDetail(__t,el.getAttribute("data-id"));}};
     el.onmouseenter=function(){var __t=el.getAttribute("data-open");__prefetchDetail(__t,el.getAttribute("data-id"));};
     el.onfocus=el.onmouseenter;
     el.setAttribute("tabindex","0");
@@ -3543,7 +3574,7 @@ __BODY__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260828091200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260828092200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
@@ -3918,7 +3949,7 @@ __CONTENT__
     document.title=(l==="zh"?ZH_TITLE:EN_TITLE)+" | 智能微生态与生物制造实验室";
   }
   /* 自动给地址栏加版本参数：微信右上角分享时会按“新链接”重新抓取 OG 卡片，绕过微信对已缓存 404/旧版本的纯链接结果 */
-  (function(){var v="20260828091200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
+  (function(){var v="20260828092200";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();
   var savedLang=null;
   try{savedLang=localStorage.getItem(LK);}catch(e){}
   applyLang(savedLang||((navigator.language||"").toLowerCase().indexOf("zh")===0?"zh":"en"));
