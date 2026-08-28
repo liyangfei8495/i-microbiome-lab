@@ -154,7 +154,7 @@ __CONTENT__
       <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
     </div>
   </div>
-<script async src="https://busuanzi.9420.ltd/busuanzi.pure.mini.js"></script>
+<script async src="https://busuanzi.ibruce.info/busuanzi.pure.mini.js"></script>
 <script>
   var ZH_TITLE=__NAMEZH_ESC__, EN_TITLE=__NAMEEN_ESC__;
   var LK="iMicrobiomeLang";
