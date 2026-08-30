@@ -1176,6 +1176,38 @@
         "descZh": "巴基斯坦农业微生物与根际促生菌（PGPR）研究活跃。双方围绕促生微生物资源挖掘与抗旱、低氮条件下作物促生机制开展国际合作。",
         "descEn": "Pakistan has active research in agricultural microbiology and plant-growth-promoting rhizobacteria (PGPR). Collaboration targets growth-promoting microbial resources and mechanisms under drought and low-nitrogen conditions.",
         "url": ""
+      },
+      {
+        "id": "partner-gmi",
+        "category": "international",
+        "nameZh": "格雷戈尔·孟德尔研究所",
+        "nameEn": "Gregor Mendel Institute (GMI)",
+        "region": "奥地利·维也纳",
+        "country": "奥地利",
+        "iso": "AT",
+        "coords": [
+          16.37,
+          48.21
+        ],
+        "descZh": "与奥地利科学院格雷戈尔·孟德尔研究所（GMI，维也纳）开展学术交流与合作。GMI 的 Dolan 团队以地钱（Marchantia polymorpha）为模式，研究分生组织从头形成与细胞极性建立，与本实验室 ERF 转录因子驱动植物损伤后高效再生（MpERF15/MpERF21）方向高度互补。双方聚焦陆生植物再生机制的演化起源，以及作物抗逆再生性状的改良。",
+        "descEn": "Academic exchange and collaboration with the Gregor Mendel Institute (GMI) of the Austrian Academy of Sciences in Vienna. GMI's Dolan group uses Marchantia polymorpha to study de novo meristem formation and cell polarization, highly complementary to the lab's work on ERF transcription factor-driven wound-induced regeneration (MpERF15/MpERF21). Joint focus on the evolutionary origin of land-plant regeneration and on improving regeneration traits for crop resilience.",
+        "url": "https://www.oeaw.ac.at/gmi"
+      },
+      {
+        "id": "partner-jic",
+        "category": "international",
+        "nameZh": "约翰·英纳斯中心",
+        "nameEn": "John Innes Centre",
+        "region": "英国·诺里奇",
+        "country": "英国",
+        "iso": "GB",
+        "coords": [
+          1.22,
+          52.62
+        ],
+        "descZh": "与英国约翰·英纳斯中心（John Innes Centre，诺里奇）开展合作。JIC 是植物科学、遗传学与微生物学领域的国际顶尖研究所，在根际有益互作与作物养分高效方向积累深厚。双方围绕植物—微生物互作、丛枝菌根共生的养分响应调控，以及高蛋白玉米促氮合成菌群（SynCom）的组装原理与田间功效验证开展合作。",
+        "descEn": "Collaboration with the John Innes Centre (Norwich, UK), a world-leading institute in plant science, genetics and microbiology with deep expertise in beneficial root interactions and crop nutrient efficiency. Joint work centers on plant-microbe interactions, nutrient-responsive regulation of arbuscular mycorrhizal symbiosis, and the assembly principles and field validation of nitrogen-boosting synthetic communities (SynCom) for high-protein maize.",
+        "url": "https://johninnescentre.com"
       }
     ],
     "homeProv": "CN-SC",

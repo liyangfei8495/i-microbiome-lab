@@ -891,7 +891,7 @@ function initPartnersMap(){
   function ringPath(ring){ var t=""; for(var i=0;i<ring.length;i++){ var q=proj(ring[i][0],ring[i][1]); t+=(i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1)+" "; } return t+"Z"; }
   function bboxOf(rings){ var a=1e9,b=-1e9,c=1e9,e=-1e9; for(var i=0;i<rings.length;i++){var r=rings[i];for(var j=0;j<r.length;j++){var x=r[j][0],y=r[j][1]; if(x<a)a=x; if(x>b)b=x; if(y<c)c=y; if(y>e)e=y;}} return [a,c,b,e]; }
   var W=window.__WORLD||{};
-  var CN_ISO={"中国":"CN","美国":"US","荷兰":"NL","澳大利亚":"AU","日本":"JP","英国":"GB","德国":"DE","法国":"FR","加拿大":"CA","新加坡":"SG","韩国":"KR","印度":"IN","巴西":"BR","俄罗斯":"RU","布隆迪":"BI","比利时":"BE","瑞士":"CH","巴基斯坦":"PK"};
+  var CN_ISO={"中国":"CN","美国":"US","荷兰":"NL","澳大利亚":"AU","日本":"JP","英国":"GB","德国":"DE","法国":"FR","加拿大":"CA","新加坡":"SG","韩国":"KR","印度":"IN","巴西":"BR","俄罗斯":"RU","布隆迪":"BI","比利时":"BE","瑞士":"CH","奥地利":"AT","巴基斯坦":"PK"};
   function isoOf(p){ if(p.iso)return p.iso; return CN_ISO[p.country]||null; }
   var CN=window.__CN||{};
   var CITY_PROV={"上海":"CN-SH","北京":"CN-BJ","深圳":"CN-GD","广州":"CN-GD","杭州":"CN-ZJ","成都":"CN-SC","绵阳":"CN-SC","重庆":"CN-CQ","天津":"CN-TJ","南京":"CN-JS","武汉":"CN-HB","西安":"CN-SN","苏州":"CN-JS","青岛":"CN-SD","济南":"CN-SD","厦门":"CN-FJ","福州":"CN-FJ","长沙":"CN-HN","郑州":"CN-HEN","沈阳":"CN-LN","大连":"CN-LN","昆明":"CN-YN","哈尔滨":"CN-HLJ","长春":"CN-JL","石家庄":"CN-HEB","太原":"CN-SX","合肥":"CN-AH","南昌":"CN-JX","南宁":"CN-GX","贵阳":"CN-GZ","兰州":"CN-GS","海口":"CN-HI","银川":"CN-NX","西宁":"CN-QH","乌鲁木齐":"CN-XJ","拉萨":"CN-XZ","呼和浩特":"CN-NM","香港":"CN-HK","澳门":"CN-MO","台北":"CN-TW"};
