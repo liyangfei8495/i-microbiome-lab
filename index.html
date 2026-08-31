@@ -1754,7 +1754,7 @@ window.renderAll=renderAll; window.showToast=showToast;
 
 <style>
 /* ===== Admin modal base ===== */
-.admin-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px 16px;}
+.admin-modal{position:fixed;inset:0;z-index:100000;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px 16px;}
 .admin-modal[hidden]{display:none !important;}
 .admin-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.45);}
 .admin-dialog{position:relative;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);border-radius:18px;padding:0;box-shadow:0 24px 70px rgba(0,0,0,0.28);border:1px solid var(--border-color,#e5e5ea);display:flex;flex-direction:column;overflow:hidden;}
@@ -2045,14 +2045,14 @@ function apOpen(el){
 }
 function apClose(el){el.setAttribute("hidden","");el.style.display="none";}
 
-/* 隐藏入口：点击页脚版权 3 次（800ms 内）触发登录 */
+/* 隐藏入口：点击页脚版权 3 次触发登录（窗口 2500ms，容错手速） */
 var clickCount=0,clickTimer=null;
 var footer=document.querySelector("footer");
 if(footer){
   footer.addEventListener("click",function(){
     clickCount++;clearTimeout(clickTimer);
-    clickTimer=setTimeout(function(){clickCount=0;},800);
-    if(clickCount>=3){clickCount=0;apOpen(document.getElementById("admin-login"));}
+    clickTimer=setTimeout(function(){clickCount=0;},2500);
+    if(clickCount>=3){clickCount=0;clearTimeout(clickTimer);apOpen(document.getElementById("admin-login"));}
   });
 }
 /* 快捷键：Ctrl+Shift+E */
