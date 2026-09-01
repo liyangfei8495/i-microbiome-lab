@@ -448,6 +448,27 @@ section.reveal.visible .pi-card,.pillar-card,.member-card,.publication-item,.new
 
 
 <script>(function(){var v="20260901145455";if(location.search.indexOf("v="+v)<0){var s=(location.search?location.search+"&":"?")+"v="+v;history.replaceState(null,"",location.pathname+s+location.hash);}})();</script>
+<style id="antiscrape">
+/* 反爬：轻量防护（不破坏后台编辑与图片查看） */
+img,video{-webkit-user-drag:none;-webkit-user-select:none;user-select:none}
+body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+#admin-login,.admin-modal,[class^="ap-"],input,textarea,[contenteditable],.lightbox,.lightbox-backdrop,.news-detail,.member-detail{user-select:text;-webkit-user-select:text}
+</style>
+<script>
+(function(){
+  function ex(t){return !!(t&&t.closest&&t.closest('#admin-login,.admin-modal,[class^="ap-"],input,textarea,[contenteditable],.lightbox,.lightbox-backdrop,.news-detail,.member-detail'));}
+  var block=function(e){if(!ex(e.target))e.preventDefault();};
+  document.addEventListener('contextmenu',block,true);
+  document.addEventListener('dragstart',block,true);
+  ['copy','cut'].forEach(function(ev){document.addEventListener(ev,block,true);});
+  document.addEventListener('keydown',function(e){
+    if(ex(e.target))return;
+    var k=(e.key||'').toLowerCase();
+    if(k==='f12'){e.preventDefault();return;}
+    if(e.ctrlKey||e.metaKey){if(['u','s','p','a'].indexOf(k)>-1)e.preventDefault();}
+  },true);
+})();
+</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
