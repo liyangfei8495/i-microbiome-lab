@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://liang-lab.cn/sitemap.xml

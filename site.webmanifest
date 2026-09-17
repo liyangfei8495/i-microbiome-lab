@@ -1,0 +1,13 @@
+{
+  "name": "智能微生态与生物制造实验室",
+  "short_name": "i-Microbiome Lab",
+  "description": "聚焦植物-微生物互作、植物再生与损伤响应、AI+多组学驱动的生物制造。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e3a2b",
+  "theme_color": "#0e3a2b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
