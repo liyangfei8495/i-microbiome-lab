@@ -1777,19 +1777,19 @@ window.renderAll=renderAll; window.showToast=showToast;
       <h2 id="be-title"><i class="fas fa-edit" style="color:var(--primary,#0066cc);"></i> 编辑</h2>
     </div>
     <div id="be-body" class="admin-body"></div>
-    <details class="ap-pub-settings" open>
-      <summary>发布设置（GitHub Token / 代理）</summary>
+    <details class="ap-pub-settings">
+      <summary>高级 · 发布通道</summary>
       <div class="ap-pub-settings-inner">
         <div class="ap-pub-row">
-          <input id="gh-token" type="password" placeholder="GitHub Token（仅首次填，存本机浏览器，不公开）">
+          <input id="gh-token" type="password" placeholder="GitHub Token（可选·仅备用，存本机浏览器，不公开）">
           <button id="gh-token-save" class="ap-btn ap-btn-sec" title="记住 Token">记住</button>
         </div>
         <div class="ap-pub-row">
-          <input id="gh-proxy" placeholder="代理地址（可选，填空=直连。中国大陆建议填 Cloudflare Worker 地址）">
+          <input id="gh-proxy" placeholder="备用代理地址（可选，填空=直连 GitHub）">
           <button id="gh-proxy-save" class="ap-btn ap-btn-sec" title="记住代理地址">记住</button>
           <button id="gh-test" class="ap-btn ap-btn-sec" title="测试代理在你浏览器中能否访问" style="white-space:nowrap;">测试连接</button>
         </div>
-        <div class="ap-pub-hint">Token 需有该仓库 Contents 写权限。若直连 api.github.com 发布失败（国内常见），可填 Cloudflare Worker 代理地址。也可点「导出」把改好的网页下载下来发我，由我帮你发布。</div>
+        <div class="ap-pub-hint"><b>默认已走云服务器直发</b>：用管理员密码鉴权，发布即时生效，<b>无需填写任何 Token</b>。GitHub 仅作每 30 分钟自动备份（灾备）。仅当服务器不可达时，可填备用 GitHub Token/代理走 GitHub 兜底。</div>
         <div id="publish-status"></div>
       </div>
     </details>
@@ -1808,7 +1808,8 @@ window.renderAll=renderAll; window.showToast=showToast;
 .admin-modal{position:fixed;inset:0;z-index:100000;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px 16px;}
 .admin-modal[hidden]{display:none !important;}
 .admin-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.45);}
-.admin-dialog{position:relative;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);border-radius:18px;padding:0;box-shadow:0 24px 70px rgba(0,0,0,0.28);border:1px solid var(--border-color,#e5e5ea);display:flex;flex-direction:column;overflow:hidden;}
+.admin-dialog{position:relative;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);border-radius:18px;padding:0;box-shadow:0 24px 70px rgba(0,0,0,0.28);border:1px solid var(--border-color,#e5e5ea);display:flex;flex-direction:column;overflow:hidden;animation:modalIn .3s cubic-bezier(.2,.85,.25,1) both;}
+@keyframes modalIn{from{opacity:0;transform:translateY(-16px) scale(.97);}to{opacity:1;transform:none;}}
 .admin-close{position:absolute;top:14px;right:14px;background:var(--section-bg,#f5f5f7);border:none;font-size:16px;cursor:pointer;color:var(--light-text-color,#6e6e73);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:.15s;z-index:5;}
 .admin-close:hover{background:var(--hover-color,#f0f4f8);color:var(--text-color,#1d1d1f);}
 
@@ -1823,8 +1824,9 @@ window.renderAll=renderAll; window.showToast=showToast;
 .admin-login-body label:first-child{margin-top:0;}
 .admin-login-body input{width:100%;padding:11px 13px;border:1px solid var(--border-color,#e5e5ea);border-radius:10px;font-size:15px;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);box-sizing:border-box;transition:.15s;}
 .admin-login-body input:focus{outline:none;border-color:var(--primary,#0066cc);box-shadow:0 0 0 3px var(--focus-outline-color,rgba(0,102,204,.15));}
-#al-btn{width:100%;margin-top:18px;padding:11px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;border:none;background:var(--primary,#0066cc);color:#fff;transition:.15s;}
-#al-btn:hover{background:var(--primary-hover,#0052a3);}
+#al-btn{width:100%;margin-top:18px;padding:12px;border-radius:11px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;border:none;background:linear-gradient(135deg,var(--primary,#0066cc),var(--primary-hover,#0052a3));color:#fff;box-shadow:0 8px 20px rgba(0,102,204,.28);transition:.18s transform,.18s box-shadow,.18s background;}
+#al-btn:hover{background:linear-gradient(135deg,var(--primary-hover,#0052a3),#00407f);transform:translateY(-1px);box-shadow:0 12px 26px rgba(0,102,204,.36);}
+#al-btn:active{transform:translateY(0);}
 #al-logout{width:100%;margin-top:10px;padding:10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--light-text-color,#6e6e73);border:1px solid var(--border-color,#e5e5ea);display:none;}
 #al-logout:hover{background:var(--section-bg,#f5f5f7);}
 #al-err{color:#ff3b30;font-size:13px;min-height:18px;margin:10px 0 0;}
@@ -1837,12 +1839,14 @@ window.renderAll=renderAll; window.showToast=showToast;
 #block-editor .admin-footer{padding:14px 24px;border-top:1px solid var(--border-color,#e5e5ea);background:var(--section-bg,#f5f5f7);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;flex-shrink:0;}
 
 /* Buttons */
-.ap-btn{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border-color,#e5e5ea);font-family:inherit;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);transition:.15s;}
-.ap-btn:hover{background:var(--hover-color,#f0f4f8);border-color:var(--border-color,#d1d1d6);}
+.ap-btn{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border-color,#e5e5ea);font-family:inherit;background:var(--bg,#fff);color:var(--text-color,#1d1d1f);transition:.16s transform,.16s box-shadow,.16s background,.16s border-color;}
+.ap-btn:hover{background:var(--hover-color,#f0f4f8);border-color:var(--border-color,#d1d1d6);transform:translateY(-1px);}
 .ap-btn-pri{background:var(--primary,#0066cc);color:#fff;border-color:transparent;}
-.ap-btn-pri:hover{background:var(--primary-hover,#0052a3);}
+.ap-btn-pri:hover{background:var(--primary-hover,#0052a3);transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,102,204,.28);}
 .ap-btn-sec{background:var(--section-bg,#f5f5f7);color:var(--text-color,#1d1d1f);border-color:var(--border-color,#e5e5ea);}
 .ap-btn-sec:hover{background:var(--hover-color,#f0f4f8);}
+#be-publish{background:linear-gradient(135deg,#12a150,#0a7d3b)!important;box-shadow:0 8px 20px rgba(10,125,59,.3);font-size:14px;font-weight:600;padding:10px 20px;}
+#be-publish:hover{background:linear-gradient(135deg,#0f8f47,#096b33)!important;transform:translateY(-1px);box-shadow:0 12px 26px rgba(10,125,59,.4);}
 
 /* Form fields */
 .ap-field{margin:14px 0;}
