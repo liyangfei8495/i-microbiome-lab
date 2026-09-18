@@ -130,6 +130,8 @@ section h2{font-size:34px;text-align:center;margin:0 0 14px}
 .news-date{display:inline-block;background:var(--section-bg);border-radius:8px;padding:4px 10px;margin-bottom:10px;color:var(--primary);font-size:13px;font-weight:600}
 .news-date .day{font-size:18px;margin-right:4px}
 .news-collapsed{display:none}
+.news-views{display:flex;align-items:center;gap:5px;color:var(--light-text-color);font-size:13px}
+.news-views .fa-eye{font-size:13px}
 .news-more-wrap{text-align:center;margin-top:30px}
 .news-more-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border-color);background:var(--bg);color:var(--primary,#0066cc);font:inherit;font-size:14px;font-weight:600;padding:11px 26px;border-radius:999px;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,background .25s}
 .news-more-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.1);background:var(--section-bg)}
@@ -1267,7 +1269,8 @@ function renderAll(d){
         img(newsCover(n),"news-thumb")+
         '<div class="news-body"><div class="news-date"><span class="day">'+esc(z(n.day))+'</span><span>'+esc(z(n.month))+'</span></div>'+
         '<h3 style="margin:0 0 8px;">'+both(n.titleZh,n.titleEn)+'</h3>'+
-        '<p style="color:var(--light-text-color);margin:0;">'+esc(newsSummary(n))+'</p></div></article>';
+        '<p style="color:var(--light-text-color);margin:0 0 6px;">'+esc(newsSummary(n))+'</p>'+
+        '<div class="news-views"><i class="fas fa-eye"></i> <span data-view-path="/news/'+esc(n.id)+'.html" data-view-mode="count">0</span></div></div></article>';
     }).join("");
     var more=collapsed?'<div class="news-more-wrap" id="newsMoreWrap"><button type="button" class="news-more-btn" id="newsMoreBtn" data-expanded="0">'+both("更多动态","More news")+' <i class="fas fa-chevron-down"></i></button></div>':'';
     document.getElementById("news").innerHTML=
@@ -3520,6 +3523,7 @@ function renderNewsPage(n){
     .split("__BUILDVER__").join(build_ver)
     .split("__DATE__").join(news_esc(date))
     .split("__BODY__").join(body)
+    .split("__VIEWPATH__").join("/news/"+n.id+".html")
     .split("__SITE__").join(SITE);
 }
 
@@ -3539,6 +3543,8 @@ var NEWS_TPL = `<!DOCTYPE html>
 <meta name="twitter:title" content="__OGTITLE__">
 <meta name="twitter:description" content="__OGDESC__">
 <meta name="twitter:image" content="__OGIMAGE__">
+<meta name="description" content="__OGDESC__">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"__OGTITLE__","description":"__OGDESC__","image":"__OGIMAGE__","url":"__OGURL__","inLanguage":"zh-CN","publisher":{"@type":"Organization","name":"智能微生态与生物制造实验室"}}</script>
 <link rel="preload" as="style" href="../css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="../css/all.min.css"></noscript>
 <style>
@@ -3605,11 +3611,11 @@ __BODY__
       <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
     </div>
     <div class="foot">
-      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span></span></div>
+      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span class="vc-num" data-view-path="__VIEWPATH__">0</span></div>
       <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
     </div>
   </div>
-<script async src="https://busuanzi.ibruce.info/busuanzi.pure.mini.js"><\/script>
+<script src="../viewcount.js"><\/script>
 <script>
   var ZH_TITLE=__TITLEZH_ESC__, EN_TITLE=__TITLEEN_ESC__;
   /* ===== 语言切换 ===== */
@@ -3900,6 +3906,7 @@ function renderMemberPage(m,data){
     .split("__BUILDVER__").join(build_ver)
     .split("__HERO__").join(hero)
     .split("__CONTENT__").join(content)
+    .split("__VIEWPATH__").join("/members/"+m.id+".html")
     .split("__SITE__").join(SITE);
 }
 var MEMBER_TPL = `<!DOCTYPE html>
@@ -3918,6 +3925,8 @@ var MEMBER_TPL = `<!DOCTYPE html>
 <meta name="twitter:title" content="__OGTITLE__">
 <meta name="twitter:description" content="__OGDESC__">
 <meta name="twitter:image" content="__OGIMAGE__">
+<meta name="description" content="__OGDESC__">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"__OGTITLE__","description":"__OGDESC__","image":"__OGIMAGE__","url":"__OGURL__"}</script>
 <style>
   :root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;
         --border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;
@@ -3983,11 +3992,11 @@ __CONTENT__
       <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
     </div>
     <div class="foot">
-      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span></span></div>
+      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span class="vc-num" data-view-path="__VIEWPATH__">0</span></div>
       <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
     </div>
   </div>
-<script async src="https://busuanzi.ibruce.info/busuanzi.pure.mini.js"><\/script>
+<script src="../viewcount.js"><\/script>
 <script>
   var ZH_TITLE=__NAMEZH_ESC__, EN_TITLE=__NAMEEN_ESC__;
   var LK="iMicrobiomeLang";
@@ -4539,5 +4548,6 @@ body{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 }
 </style>
 
+<script src="viewcount.js"></script>
 </body>
 </html>

@@ -165,6 +165,8 @@ TPL = """<!DOCTYPE html>
 <meta name="twitter:title" content="__OGTITLE__">
 <meta name="twitter:description" content="__OGDESC__">
 <meta name="twitter:image" content="__OGIMAGE__">
+<meta name="description" content="__OGDESC__">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"__OGTITLE__","description":"__OGDESC__","image":"__OGIMAGE__","url":"__OGURL__","inLanguage":"zh-CN","publisher":{"@type":"Organization","name":"智能微生态与生物制造实验室"}}</script>
 <link rel="preload" as="style" href="../css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="../css/all.min.css"></noscript>
 <style>
@@ -231,11 +233,11 @@ __BODY__
       <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
     </div>
     <div class="foot">
-      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span></span></div>
+      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span class="vc-num" data-view-path="__VIEWPATH__">0</span></div>
       <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
     </div>
   </div>
-<script async src="https://busuanzi.ibruce.info/busuanzi.pure.mini.js"></script>
+<script src="../viewcount.js"></script>
 <script>
   var ZH_TITLE=__TITLEZH_ESC__, EN_TITLE=__TITLEEN_ESC__;
   /* ===== 语言切换 ===== */
@@ -349,6 +351,7 @@ def render_page(n):
             .replace("__BUILDVER__", build_ver)
             .replace("__DATE__", html.escape(date or ""))
             .replace("__BODY__", body)
+            .replace("__VIEWPATH__", "/news/%s.html" % n.get("id"))
             .replace("__SITE__", SITE))
 
 

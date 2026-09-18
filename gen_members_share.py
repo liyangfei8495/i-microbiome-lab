@@ -85,6 +85,8 @@ MEM_TPL = """<!DOCTYPE html>
 <meta name="twitter:title" content="__OGTITLE__">
 <meta name="twitter:description" content="__OGDESC__">
 <meta name="twitter:image" content="__OGIMAGE__">
+<meta name="description" content="__OGDESC__">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"__OGTITLE__","description":"__OGDESC__","image":"__OGIMAGE__","url":"__OGURL__"}</script>
 <style>
   :root{--primary:#0066cc;--primary-hover:#0052a3;--bg:#fff;--section-bg:#f5f5f7;
         --border-color:#e5e5ea;--text-color:#1d1d1f;--light-text-color:#6e6e73;
@@ -150,11 +152,11 @@ __CONTENT__
       <button class="share" id="shareBtn">🔗 <span class="zh">分享给朋友</span><span class="en">Share</span></button>
     </div>
     <div class="foot">
-      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span></span></div>
+      <div class="views" style="margin-bottom:10px"><i class="fas fa-eye"></i>&nbsp;<span class="zh">浏览量</span><span class="en">Views</span>&nbsp;<span class="vc-num" data-view-path="__VIEWPATH__">0</span></div>
       <span class="zh">来自</span><span class="en">From</span> <a href="__SITE__/">智能微生态与生物制造实验室</a>
     </div>
   </div>
-<script async src="https://busuanzi.ibruce.info/busuanzi.pure.mini.js"></script>
+<script src="../viewcount.js"></script>
 <script>
   var ZH_TITLE=__NAMEZH_ESC__, EN_TITLE=__NAMEEN_ESC__;
   var LK="iMicrobiomeLang";
@@ -264,6 +266,7 @@ def render_page(m, data):
             .replace("__BUILDVER__", build_ver)
             .replace("__HERO__", hero)
             .replace("__CONTENT__", content)
+            .replace("__VIEWPATH__", "/members/%s.html" % m.get("id"))
             .replace("__SITE__", SITE))
 
 
