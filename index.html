@@ -3421,7 +3421,8 @@ function getGhToken(){
 function getGhProxy(){
   var inp=document.getElementById("gh-proxy");
   var p=(inp&&inp.value)?inp.value.trim():(localStorage.getItem("GH_PROXY")||"");
-  if(!p){ p="https://github-proxy.liyangfei8495.workers.dev"; }
+  if(p&&p.indexOf("workers.dev")>=0){ p=""; localStorage.removeItem("GH_PROXY"); }
+  if(!p){ p="/api/github"; }
   if(p){ p=p.replace(/\/+$/,""); }
   return p;
 }
@@ -4254,7 +4255,7 @@ document.getElementById("be-publish").onclick=function(){
 };
 // 初始化填充已记住的 Token / 代理（代理可默认，Token 需用户自备，不硬编码进源码）
 (function(){
-  var p=localStorage.getItem("GH_PROXY"); if(!p){ p="https://github-proxy.liyangfei8495.workers.dev"; localStorage.setItem("GH_PROXY",p); }
+  var p=localStorage.getItem("GH_PROXY"); if(!p||p.indexOf("workers.dev")>=0){ p="/api/github"; localStorage.setItem("GH_PROXY",p); }
   var pinp=document.getElementById("gh-proxy"); if(pinp) pinp.value=p;
   var t=localStorage.getItem("GH_TOKEN"); if(t){ var inp=document.getElementById("gh-token"); if(inp) inp.value=t; }
 })();
