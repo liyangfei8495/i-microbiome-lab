@@ -3319,10 +3319,7 @@ function uploadFileToRepo(relPath, base64, onOk, onErr){
   var proxy=getGhProxy();
   var base=proxy||"https://api.github.com";
   function makeHeaders(extra){
-    var h={Accept:"application/vnd.github+json"};
-    if(extra && extra["Content-Type"]) h["Content-Type"]=extra["Content-Type"];
-    if(token) h.Authorization="Bearer "+token;
-    return h;
+    return pubHeaders(token, base, extra);
   }
   function put(sha){
     var body={ message:"site: 上传图片 "+relPath, content:base64 };
@@ -3690,10 +3687,7 @@ function pubHeaders(token, base, extra){
 function ghPutFile(base, token, repo, path, contentB64, message){
   var url=base+"/repos/"+repo+"/contents/"+path;
   function makeHeaders(extra){
-    var h={Accept:"application/vnd.github+json"};
-    if(extra && extra["Content-Type"]) h["Content-Type"]=extra["Content-Type"];
-    if(token) h.Authorization="Bearer "+token;
-    return h;
+    return pubHeaders(token, base, extra);
   }
   // 先 GET 取 sha（404 则新建），再带 sha PUT；与 tryPublish 中 content.json 路径一致，最可靠。
   // 代理（Cloudflare Worker + 共享 GITHUB_TOKEN）在批量写入时会被 GitHub 二级限流，
