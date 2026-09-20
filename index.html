@@ -146,6 +146,28 @@ section h2{font-size:34px;text-align:center;margin:0 0 14px}
 
 .more{display:inline-block;margin-top:10px;color:var(--primary);font-weight:600;font-size:13px}
 
+/* research orbit */
+.orbit-wrap{display:flex;justify-content:center;margin-top:36px}
+.orbit-stage{position:relative;width:600px;height:600px;transform:scale(var(--orbit-scale,1));transform-origin:center;flex:none}
+.orbit-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.orbit-svg .ring{fill:none;stroke:var(--border-color);stroke-width:1.2;opacity:.7}
+.orbit-svg .ring-dash{fill:none;stroke:var(--primary);stroke-width:1.4;stroke-dasharray:3 11;opacity:.5}
+.orbit-svg .spoke{stroke:var(--border-color);stroke-width:1.4;opacity:.5;transition:stroke .3s,opacity .3s}
+.orbit-svg .spoke.active{stroke:var(--primary);opacity:1}
+.orbit-core{position:absolute;top:50%;left:50%;width:210px;height:210px;transform:translate(-50%,-50%);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(circle at 50% 30%,var(--bg),var(--section-bg));border:1px solid var(--border-color);box-shadow:0 0 0 10px color-mix(in srgb,var(--primary) 10%,transparent),0 24px 60px rgba(0,0,0,.12);z-index:3}
+.orbit-core .core-icon{font-size:28px;color:var(--primary);margin-bottom:8px}
+.orbit-core .core-title{font-weight:700;font-size:16px;line-height:1.35}
+.orbit-core .core-sub{font-size:12px;color:var(--light-text-color);margin-top:8px;line-height:1.5;transition:opacity .25s}
+.orbit-ring{position:absolute;inset:0;animation:ringSpin 100s linear infinite}
+.orbit-node{position:absolute;top:50%;left:50%;width:0;height:0;transform:rotate(var(--a)) translateY(calc(-1 * var(--r)));z-index:2}
+.orbit-node-inner{position:absolute;left:50%;top:50%;width:122px;height:122px;margin:-61px 0 0 -61px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px;text-align:center;background:var(--bg);border:1px solid var(--border-color);border-radius:18px;box-shadow:0 10px 26px rgba(0,0,0,.08);cursor:pointer;color:var(--text-color);font:inherit;animation:ringSpin 100s linear infinite reverse;transition:box-shadow .3s,border-color .3s}
+.orbit-node-inner:hover,.orbit-node-inner:focus-visible{scale:1.08;border-color:var(--primary);box-shadow:0 18px 40px rgba(0,0,0,.16);outline:none}
+.orbit-node .n-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--section-bg);color:var(--primary);font-size:17px}
+.orbit-node .n-title{font-size:12.5px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@keyframes ringSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.orbit-ring,.orbit-node-inner{animation:none!important}}
+
+
 
 
 /* projects */
@@ -2382,19 +2404,60 @@ function renderAll(d){
 
   // research: pillars + projects
 
-  var pillarsHtml=d.research.pillars.map(function(p){
+  function orbitHtml(pillars){
+    var n=pillars.length, R=215, CX=300, CY=300;
+    var spokes=pillars.map(function(p,i){
+      var a=(-90 + i*360/n)*Math.PI/180;
+      var x=CX+R*Math.cos(a), y=CY+R*Math.sin(a);
+      return '<line class="spoke" data-spoke="'+esc(p.id)+'" x1="'+CX+'" y1="'+CY+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'"/>';
+    }).join("");
+    var nodes=pillars.map(function(p,i){
+      var ang=(-90 + i*360/n);
+      return '<button type="button" class="orbit-node" style="--a:'+ang+'deg;--r:'+R+'px" data-open="pillar" data-id="'+esc(p.id)+'" data-spoke="'+esc(p.id)+'" aria-label="'+esc(p.zh||p.en)+'">'
+        +'<span class="orbit-node-inner">'
+        +'<span class="n-icon"><i class="fas '+esc(z(p.icon))+'"></i></span>'
+        +'<span class="n-title">'+esc(p.zh||p.en)+'</span>'
+        +'</span></button>';
+    }).join("");
+    return '<div class="orbit-stage" id="orbitStage">'
+      +'<div class="orbit-core" id="orbitCore">'
+      +'<div class="core-icon"><i class="fas fa-microscope"></i></div>'
+      +'<div class="core-title">'+esc("智能微生态与生物制造")+'</div>'
+      +'<div class="core-sub" id="orbitCoreSub">'+esc("以微生物组为核心，六大方向协同")+'</div>'
+      +'</div>'
+      +'<div class="orbit-ring">'
+      +'<svg class="orbit-svg" viewBox="0 0 600 600" aria-hidden="true">'
+      +'<circle class="ring" cx="300" cy="300" r="'+R+'"/>'
+      +'<circle class="ring" cx="300" cy="300" r="'+(R-46)+'"/>'
+      +'<circle class="ring-dash" cx="300" cy="300" r="'+R+'"/>'
+      +spokes
+      +'</svg>'
+      +nodes
+      +'</div>'
+      +'</div>';
+  }
 
-    return'<article class="pillar-card clickable" data-open="pillar" data-id="'+esc(p.id)+'">'+
+  function bindOrbit(){
+    var stage=document.getElementById("orbitStage"); if(!stage) return;
+    var coreSub=document.getElementById("orbitCoreSub");
+    var defSub="以微生物组为核心，六大方向协同";
+    stage.querySelectorAll(".orbit-node").forEach(function(node){
+      var id=node.getAttribute("data-id");
+      var p=find(window.__DATA.research.pillars,id)||{};
+      node.addEventListener("mouseenter",function(){
+        var seg=(p.descZh||"").split("，")[0]; if(seg.length>42) seg=seg.slice(0,42)+"…";
+        if(coreSub) coreSub.textContent=seg||defSub;
+        var sp=stage.querySelector('.spoke[data-spoke="'+id+'"]'); if(sp) sp.classList.add("active");
+      });
+      node.addEventListener("mouseleave",function(){
+        if(coreSub) coreSub.textContent=defSub;
+        var sp=stage.querySelector('.spoke[data-spoke="'+id+'"]'); if(sp) sp.classList.remove("active");
+      });
+    });
+    function fit(){var wrap=stage.parentElement; var s=Math.min(1,(wrap.clientWidth-24)/600); stage.style.setProperty("--orbit-scale",s);}
+    fit(); window.addEventListener("resize",fit);
+  }
 
-      img(p.image,"pillar-img")+
-
-      '<div class="pillar-body"><div class="pillar-icon"><i class="fas '+esc(z(p.icon))+'"></i></div>'+
-
-      '<h3 style="margin:0 0 8px;">'+both(p.zh,p.en)+'</h3>'+
-
-      '<p style="color:var(--light-text-color);margin:0;">'+both(p.descZh,p.descEn)+'</p>'+
-
-      '<span class="more">'+both("查看详情","View detail")+' →</span></div></article>';}).join("");
 
   var projectsHtml=d.research.projects.map(function(pr){
 
@@ -2414,11 +2477,13 @@ function renderAll(d){
 
     (function(){var _n=(window.__DATA.research.pillars||[]).length;var _ez=(window.__DATA.research.eyebrowZh||"").trim();var _ee=(window.__DATA.research.eyebrowEn||"").trim();var _eye=_ez?both(_ez,_ee||_ez):both(_n+"大方向",_n+" Pillars");return '<p class="section-eyebrow">'+_eye+'</p><h2>'+both("我们的研究主题","Our Research Themes")+'</h2>';})()+
 
-    '<div class="pillars">'+pillarsHtml+'</div>'+
+    '<div class="orbit-wrap">'+orbitHtml(d.research.pillars)+'</div>'+
 
     '<h2 style="margin-top:70px;">'+both("在研课题","Ongoing Projects")+'</h2>'+
 
     '<div class="research-grid">'+projectsHtml+'</div>';
+
+try{bindOrbit();}catch(e){}
 
 
 
