@@ -491,6 +491,22 @@ body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-se
   "sameAs": []
 }
 </script>
+<style id="anti-scrape">
+  /* 内容展示区禁止选中复制（管理后台内恢复） */
+  #news, #members-root { -webkit-user-select:none; -moz-user-select:none; user-select:none; }
+  /* 图片禁止拖拽下载 */
+  img { -webkit-user-drag:none; -khtml-user-drag:none; user-drag:none; }
+  .admin-modal, .admin-modal * { -webkit-user-select:text; -moz-user-select:text; user-select:text; }
+  .admin-modal img { -webkit-user-drag:auto; user-drag:auto; }
+</style>
+<script id="anti-scrape">
+(function(){
+  try { if (!document.cookie.match(/(^|;\s*)imgok=/)) document.cookie="imgok=1; Path=/; Max-Age=3600; SameSite=Lax"; } catch(e){}
+  function inAdmin(t){ return !!(t && t.closest && t.closest('.admin-modal')); }
+  document.addEventListener('contextmenu', function(e){ if(!inAdmin(e.target)) e.preventDefault(); }, true);
+  document.addEventListener('dragstart', function(e){ if(!inAdmin(e.target) && e.target && e.target.tagName==='IMG') e.preventDefault(); }, true);
+})();
+</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
