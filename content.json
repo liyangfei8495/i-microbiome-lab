@@ -1216,37 +1216,29 @@
       {
         "icon": "fa-graduation-cap",
         "zh": "本科生科研训练",
-        "en": "Undergraduate Research",
-        "descZh": "面向大二大三学生，提供 6 个月以上实验室轮转！",
-        "descEn": "Open to 2nd/3rd-year undergraduates; 6+ month rotation."
+        "en": "Undergraduate Research Training",
+        "descZh": "面向西南科技大学生命科学与农林学院本科学生，提供专业的实验室训练！",
+        "descEn": "Provide professional laboratory training for undergraduates of the School of Life Sciences and Agriculture and Forestry of Southwest University of Science and Technology!"
       },
       {
         "icon": "fa-flask",
         "zh": "硕博研究生",
         "en": "Master/PhD Students",
-        "descZh": "提供 4-5 年系统性培养，覆盖实验技能、独立课题、职业发展。",
-        "descEn": "4-5 year systematic training covering experimental skills, independent projects, career development."
+        "descZh": "提供系统性培养，覆盖实验技能、独立课题、职业发展。",
+        "descEn": "Provide systematic training, covering experimental skills, independent projects, and career development."
       },
       {
         "icon": "fa-user-tie",
-        "zh": "工程师与博后",
+        "zh": "博后",
         "en": "Engineers & Postdocs",
-        "descZh": "欢迎具备工业经验或工程能力的工程师、博后来推进转化项目。",
-        "descEn": "Engineers and postdocs with industrial experience welcome for translational projects."
+        "descZh": "欢迎具备专业经验的博后来推进转化项目。",
+        "descEn": "Bo with professional experience is welcome to advance the conversion project."
       }
     ],
     "openings": [
       {
-        "zh": "合成生物学 / 代谢工程方向博士生 1 名",
-        "en": "1 PhD: Synthetic Biology / Metabolic Engineering"
-      },
-      {
-        "zh": "蛋白质设计与机器学习方向博士生 1 名",
-        "en": "1 PhD: Protein Design & ML"
-      },
-      {
-        "zh": "微生物组数据分析方向硕士生 1 名",
-        "en": "1 Master: Microbiome data analysis"
+        "zh": "2027级生物学硕士研究生若干名",
+        "en": "2027级生物学博士研究生若干名"
       }
     ],
     "video": "videos/recruitment/index.m3u8",
