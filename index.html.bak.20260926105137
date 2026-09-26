@@ -507,75 +507,6 @@ body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-se
   document.addEventListener('dragstart', function(e){ if(!inAdmin(e.target) && e.target && e.target.tagName==='IMG') e.preventDefault(); }, true);
 })();
 </script>
-<style id="rte-style">
-  /* 新闻文字块富文本编辑器 */
-  .ap-rte{margin:6px 0 2px;}
-  .rte-toolbar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:6px 8px;background:var(--section-bg,#f5f5f7);border:1px solid var(--border-color,#e5e5ea);border-bottom:none;border-radius:10px 10px 0 0;}
-  .rte-toolbar button{font:inherit;font-size:13px;line-height:1;min-width:30px;height:28px;padding:0 8px;border:1px solid var(--border-color,#e5e5ea);background:#fff;color:var(--text-color,#1d1d1f);border-radius:7px;cursor:pointer;}
-  .rte-toolbar button:hover{background:var(--hover-color,#f0f4f8);}
-  .rte-toolbar button b,.rte-toolbar button i,.rte-toolbar button u,.rte-toolbar button s{font-size:14px;}
-  .rte-sep{width:1px;height:18px;background:var(--border-color,#e5e5ea);margin:0 2px;}
-  .rte-area{min-height:90px;max-height:340px;overflow:auto;padding:12px 14px;border:1px solid var(--border-color,#e5e5ea);border-radius:0 0 10px 10px;background:#fff;color:var(--text-color,#1d1d1f);font:inherit;line-height:1.7;outline:none;}
-  .rte-area:focus{border-color:var(--primary,#0066cc);box-shadow:0 0 0 3px rgba(0,102,204,.12);}
-  .rte-area p{margin:0 0 8px;}
-  .rte-area:empty:before{content:attr(data-ph);color:#9aa0a6;pointer-events:none;}
-  [data-theme="dark"] .rte-toolbar{background:#161b22;border-color:#30363d;}
-  [data-theme="dark"] .rte-toolbar button{background:#0d1117;color:#e6edf3;border-color:#30363d;}
-  [data-theme="dark"] .rte-area{background:#0d1117;color:#e6edf3;border-color:#30363d;}
-</style>
-<script>
-/* 新闻文字块富文本：白名单 sanitize + 渲染（全局函数，供编辑与发布脚本共用） */
-function newsSanitize(html){
-  html = (html==null) ? "" : String(html);
-  var box = document.createElement("div");
-  box.innerHTML = html;
-  var inline = {B:1,STRONG:1,I:1,EM:1,U:1,S:1,STRIKE:1,SUP:1,SUB:1,BR:1,SPAN:1,A:1};
-  var blockRe = /^(DIV|P|UL|OL|LI|BLOCKQUOTE|H1|H2|H3|H4|H5|H6|SECTION|ARTICLE|PRE)$/;
-  (function walk(node){
-    for(var i=node.childNodes.length-1;i>=0;i--){
-      var c=node.childNodes[i];
-      if(c.nodeType!==1) continue;
-      var tag=c.tagName;
-      if(!inline[tag]){
-        var isBlock=blockRe.test(tag);
-        while(c.firstChild){ node.insertBefore(c.firstChild,c); }
-        if(isBlock){ node.insertBefore(document.createElement("br"),c); }
-        node.removeChild(c);
-        continue;
-      }
-      for(var a=c.attributes.length-1;a>=0;a--){
-        var an=c.attributes[a].name.toLowerCase();
-        if(tag==="A" && an==="href"){
-          var v=c.getAttribute("href")||"";
-          if(/^\s*(javascript:|data:)/i.test(v)){ c.removeAttribute("href"); }
-        } else if(tag==="SPAN" && an==="class"){ /* 仅保留 class */ }
-        else { c.removeAttribute(an); }
-      }
-      if(tag==="A"){ c.setAttribute("target","_blank"); c.setAttribute("rel","noopener noreferrer"); }
-      walk(c);
-    }
-  })(box);
-  return box.innerHTML;
-}
-function stripTags(s){ return String(s==null?"":s).replace(/<[^>]+>/g,"").replace(/\s+/g," ").trim(); }
-function newsTextToHtml(raw, cls){
-  raw = String(raw==null?"":raw);
-  if(!raw.replace(/\s+/g,"").length) return "";
-  if(/<[a-z][\s\S]*>/i.test(raw)){
-    return '<p class="'+cls+'">'+newsSanitize(raw)+'</p>';
-  }
-  return raw.trim().split(/\n{2,}/).map(function(zp){
-    var p=zp.trim().replace(/\n/g,"<br>");
-    return '<p class="'+cls+'">'+p+'</p>';
-  }).join("\n");
-}
-function newsBlockTextHtml(zh,en){
-  var out="";
-  if(zh){ out+=newsTextToHtml(zh,"zh"); }
-  if(en){ out+=newsTextToHtml(en,"en"); }
-  return out;
-}
-</script>
 </head>
 <body class="lang-zh">
 <a href="#top" class="skip-link">Skip to main content</a>
@@ -779,7 +710,7 @@ function newsSummary(n,max){
   var txt="";
   if(n.blocks){
     for(var i=0;i<n.blocks.length;i++){
-      if(n.blocks[i].type==="text"){ txt+=stripTags(z(n.blocks[i].zh))+stripTags(z(n.blocks[i].en)); if(txt.length>=max) break; }
+      if(n.blocks[i].type==="text"){ txt+=(z(n.blocks[i].zh)||"")+(z(n.blocks[i].en)||""); if(txt.length>=max) break; }
     }
   }
   if(!txt) txt=(z(n.bodyZh)||"")+(z(n.bodyEn)||"");
@@ -796,7 +727,7 @@ function newsBlocksHtml(n){
   }
   return n.blocks.map(function(b){
     if(b.type==="image") return img(b.src,"modal-banner");
-    if(b.type==="text") return '<div class="modal-block">'+newsBlockTextHtml(b.zh,b.en)+'</div>';
+    if(b.type==="text") return '<div class="modal-block"><p>'+both(b.zh,b.en)+'</p></div>';
     return "";
   }).join("");
 }
@@ -1680,7 +1611,7 @@ function firstNewsSummary(n){
   for(var i=0;i<blocks.length;i++){
     var b=blocks[i];
     if(b.type==='text'){
-      var t=stripTags(b.zh||b.en||b.text||'').replace(/\s+/g,' ').trim();
+      var t=(b.zh||b.en||b.text||'').replace(/\s+/g,' ').trim();
       if(t) return t.substring(0,120);
     }
   }
@@ -2493,29 +2424,6 @@ function field(path,label,val,type){
   if(type==="textarea")return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<textarea data-path="'+path+'">'+ev+'</textarea>'+trBtn+'</div>';
   return'<div class="ap-field"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+'<input data-path="'+path+'" value="'+ev+'">'+trBtn+'</div>';
 }
-// ---- 新闻文字块富文本编辑器（加粗/斜体/下划线/删除线/上下标/链接/清除格式）----
-function rteField(path,label,val,lang){
-  lang=lang||"";
-  var langBadge=lang?'<span class="ap-lang '+lang+'">'+(lang==="zh"?"中":"EN")+'</span>':"";
-  var baseLabel=String(label||"").replace(/（中）|\(中\)|（英）|\(英\)/g,"");
-  var labHtml='<label>'+esc(baseLabel)+langBadge+'</label>';
-  var init=newsSanitize(val==null?"":val);
-  var cmds=''+
-    '<button type="button" data-cmd="bold" title="加粗"><b>B</b></button>'+
-    '<button type="button" data-cmd="italic" title="斜体"><i>I</i></button>'+
-    '<button type="button" data-cmd="underline" title="下划线"><u>U</u></button>'+
-    '<button type="button" data-cmd="strikeThrough" title="删除线"><s>S</s></button>'+
-    '<span class="rte-sep"></span>'+
-    '<button type="button" data-cmd="superscript" title="上标">x²</button>'+
-    '<button type="button" data-cmd="subscript" title="下标">x₂</button>'+
-    '<span class="rte-sep"></span>'+
-    '<button type="button" data-cmd="createLink" title="插入链接">🔗 链接</button>'+
-    '<button type="button" data-cmd="unformat" title="清除格式">清除格式</button>';
-  return '<div class="ap-field ap-rte"'+(lang?' data-lang="'+lang+'"':'')+'>'+labHtml+
-    '<div class="rte-toolbar" contenteditable="false">'+cmds+'</div>'+
-    '<div class="rte-area" contenteditable="true" data-rte="1" data-path="'+escAttr(path)+'" data-ph="在此输入文字，选中后可点上方按钮设置加粗 / 斜体 / 下划线等">'+(init||"")+'</div>'+
-    '</div>';
-}
 // ---- 中文自动翻译为英文（免费免密钥 MyMemory，浏览器直连，CORS 已开） ----
 function myMemoryTranslate(text, cb){
   if(!text||!text.trim()){cb("无中文内容",null);return;}
@@ -2537,7 +2445,7 @@ function enPathOf(zhPath){
 }
 function translateZhToEn(zhPath, btn){
   var zhInp=beBody.querySelector('[data-path="'+zhPath+'"]');
-  var zh=zhInp?(zhInp.getAttribute("data-rte")?zhInp.textContent.trim():zhInp.value.trim()):"";
+  var zh=zhInp?zhInp.value.trim():"";
   if(!zh){ if(btn) showToast("请先填写中文内容"); return; }
   var enPath=enPathOf(zhPath);
   if(!enPath){ if(btn) showToast("该字段无对应英文框"); return; }
@@ -2546,10 +2454,7 @@ function translateZhToEn(zhPath, btn){
     if(btn){ btn.disabled=false; btn.textContent="译→EN"; }
     if(err){ showToast("翻译失败："+err+"（可手动填英文）"); return; }
     var enInp=beBody.querySelector('[data-path="'+enPath+'"]');
-    if(enInp){
-      if(enInp.getAttribute("data-rte")){ enInp.innerHTML=esc(en); } else { enInp.value=en; }
-      setByPath(edData, enPath, en); showToast("已翻译并填入英文，可在英文框继续修正");
-    }
+    if(enInp){ enInp.value=en; setByPath(edData, enPath, en); showToast("已翻译并填入英文，可在英文框继续修正"); }
   });
 }
 function collectLangPairs(root){
@@ -2559,9 +2464,7 @@ function collectLangPairs(root){
     var en=enPathOf(p);
     if(!en) return;
     var enInp=root.querySelector('[data-path="'+en+'"]');
-    if(!enInp) return;
-    var enEmpty = enInp.getAttribute("data-rte") ? (enInp.textContent.trim()==="") : (enInp.value.trim()==="");
-    if(enEmpty) pairs.push({zh:p,en:en,zhInp:inp,enInp:enInp});
+    if(enInp && enInp.value.trim()==="") pairs.push({zh:p,en:en,zhInp:inp,enInp:enInp});
   });
   return pairs;
 }
@@ -2571,13 +2474,10 @@ function translateAll(pairs, btn){
   if(btn){ btn.disabled=true; btn.textContent="翻译中 0/"+total; }
   function step(){
     if(i>=pairs.length){ if(btn){ btn.disabled=false; btn.textContent="🌐 翻译全部英文"; } showToast("翻译完成，共 "+total+" 条，请核对英文后点「保存并发布」"); return; }
-    var pr=pairs[i]; var zh=pr.zhInp.getAttribute("data-rte")?pr.zhInp.textContent.trim():pr.zhInp.value.trim();
+    var pr=pairs[i]; var zh=pr.zhInp.value.trim();
     if(!zh){ i++; step(); return; }
     myMemoryTranslate(zh, function(err, en){
-      if(!err && en){
-        if(pr.enInp.getAttribute("data-rte")){ pr.enInp.innerHTML=esc(en); } else { pr.enInp.value=en; }
-        setByPath(edData, pr.en, en);
-      }
+      if(!err && en){ pr.enInp.value=en; setByPath(edData, pr.en, en); }
       i++; if(btn) btn.textContent="翻译中 "+i+"/"+total;
       step();
     });
@@ -2938,8 +2838,8 @@ function openBlockEditor(type,label){
             (b.src?'<img class="img-preview" src="'+escAttr(b.src)+'">':'')+
             '<input type="file" accept="image/*" hidden></div></div>';
         }else{
-          inner=rteField("news."+i+".blocks."+j+".zh","文字",b.zh,"zh")+
-                rteField("news."+i+".blocks."+j+".en","文字",b.en,"en");
+          inner=field("news."+i+".blocks."+j+".zh","文字(中)",b.zh,"textarea")+
+                field("news."+i+".blocks."+j+".en","文字(英)",b.en,"textarea");
         }
         return'<div class="blk-item" data-block-type="'+b.type+'">'+
           '<div class="blk-head"><span class="blk-tag">'+(b.type==="image"?"图片块":"文字块")+' #'+(j+1)+'</span>'+
@@ -3040,7 +2940,6 @@ function openBlockEditor(type,label){
 
 function bindBlockEditorEvents(){
   beBody.querySelectorAll("[data-path]").forEach(function(inp){
-    if(inp.getAttribute("data-rte")) return;   // 富文本由下方单独处理
     inp.oninput=function(){
       var path=this.getAttribute("data-path");
       var val=this.value;
@@ -3053,31 +2952,6 @@ function bindBlockEditorEvents(){
         setByPath(edData,path,val);
       }
     };
-  });
-  // 新闻文字块富文本：输入时把白名单 sanitize 后的 innerHTML 存回 edData
-  beBody.querySelectorAll("[data-rte]").forEach(function(el){
-    var save=function(){ var p=el.getAttribute("data-path"); if(p) setByPath(edData,p, newsSanitize(el.innerHTML)); };
-    el.oninput=save; el.onblur=save;
-  });
-  // 富文本工具栏按钮
-  beBody.querySelectorAll(".rte-toolbar button[data-cmd]").forEach(function(btn){
-    btn.addEventListener("mousedown", function(e){ e.preventDefault(); }); // 保留编辑区选中与焦点
-    btn.addEventListener("click", function(e){
-      e.preventDefault();
-      var rte=btn.closest(".ap-rte"); if(!rte) return;
-      var area=rte.querySelector(".rte-area"); if(!area) return;
-      area.focus();
-      var cmd=btn.getAttribute("data-cmd");
-      if(cmd==="createLink"){
-        var url=prompt("输入链接地址（例如 https://...）","https://");
-        if(url && url.trim() && url.trim()!=="https://"){ document.execCommand("createLink",false,url.trim()); }
-      } else if(cmd==="unformat"){
-        document.execCommand("removeFormat",false,null);
-      } else {
-        document.execCommand(cmd,false,null);
-      }
-      area.dispatchEvent(new Event("input"));
-    });
   });
   // 关联字段（多选 checkbox）
   beBody.querySelectorAll("[data-rel-multi]").forEach(function(cb){
@@ -3599,8 +3473,15 @@ function news_render_blocks(blocks){
       var zh=b.zh||b.text||""; var en=b.en||b.text||"";
       out.push('<h2><span class="zh">'+news_esc(zh)+'</span><span class="en">'+news_esc(en)+'</span></h2>');
     } else {
-      if(b.zh){ out.push(newsTextToHtml(b.zh,"zh")); }
-      if(b.en){ out.push(newsTextToHtml(b.en,"en")); }
+      var z=b.zh||""; var e=b.en||"";
+      if(z){
+        var zps=z.trim().split(/\n{2,}/);
+        for(var k=0;k<zps.length;k++){ var zp=zps[k].trim().replace(/\n/g,"<br>"); if(zp) out.push('<p class="zh">'+zp+'</p>'); }
+      }
+      if(e){
+        var eps=e.trim().split(/\n{2,}/);
+        for(var k2=0;k2<eps.length;k2++){ var ep=eps[k2].trim().replace(/\n/g,"<br>"); if(ep) out.push('<p class="en">'+ep+'</p>'); }
+      }
     }
   }
   return out.join("\n");
@@ -3628,7 +3509,7 @@ function news_first_summary(n,limit){
   for(var i=0;i<bs.length;i++){
     var b=bs[i];
     if((b.type==null||b.type==="text") && (b.zh||b.en)){
-      var s=stripTags(b.zh||b.en||"").trim().replace(/\s+/g," ");
+      var s=(b.zh||b.en||"").trim().replace(/\s+/g," ");
       return s.length>limit ? s.slice(0,limit)+"…" : s;
     }
   }
