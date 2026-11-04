@@ -1814,27 +1814,32 @@
    "nameZh": "量微",
    "nameEn": "Liangwei",
    "version": "1.0.0",
-   "summaryZh": "量微（Liangwei）是实验室自主研发的 Windows 桌面应用软件，当前版本 v1.0.0。",
-   "summaryEn": "Liangwei is a lab-developed Windows desktop application (current version v1.0.0).",
-   "descZh": "由 liyangfei lab 开发维护。具体功能与使用方法请见软件内说明，或联系负责人补充。",
-   "descEn": "Developed and maintained by liyangfei lab. For features and usage, see in-app documentation or contact the maintainer.",
+   "summaryZh": "量微（Liangwei）是面向照片与显微图像的定量测量桌面软件，由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。",
+   "summaryEn": "Liangwei is a desktop image-measurement tool for photographs and microscopy images, jointly developed and maintained by Fuzhu Education Consulting Studio and the Laboratory of Intelligent Microbiome and Biomanufacturing.",
+   "descZh": "量微（Liangwei）由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。面向照片与显微图像，提供比例尺标定、长度测量（直线/曲线）、面积与形态参数、阈值分割与颗粒分析、灰度直方图等定量测量功能，测量结果可编辑并导出 CSV。全部在本地完成，图像数据不出本机。",
+   "descEn": "Liangwei is jointly developed and maintained by Fuzhu Education Consulting Studio and the Laboratory of Intelligent Microbiome and Biomanufacturing. Built for photographs and microscopy images, it offers scale calibration, length measurement (straight/curved lines), area and shape parameters, threshold segmentation and particle analysis, and grayscale histograms. Measurement results are editable and exportable to CSV. All processing runs locally — image data never leaves the machine.",
    "platforms": [
     "Windows"
    ],
    "license": "实验室自有",
    "tags": [
-    "桌面应用",
-    "实验室软件",
+    "图像测量",
+    "显微图像",
+    "颗粒分析",
+    "比例尺标定",
+    "CSV导出",
+    "本地处理",
     "Electron"
    ],
-   "logo": "",
+   "logo": "https://liang-lab.cn/images/software/soft-liangwei.png",
    "screenshots": [],
    "downloadUrl": "https://github.com/liyangfei8495/liangwei/releases/download/v1.0.0/Liangwei-1.0.0-windows.zip",
-   "repoUrl": "https://github.com/liyangfei8495/liangwei",
+   "repoUrl": "",
    "docUrl": "",
    "memberIds": [
     "member-li"
    ]
   }
- ]
+ ],
+ "teaching": []
 }
