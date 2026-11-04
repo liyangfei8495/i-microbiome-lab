@@ -82,14 +82,37 @@ section h2{font-size:34px;text-align:center;margin:0 0 14px}
 .proj-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px;border-radius:10px;overflow:hidden}
 .proj-gallery img{width:100%;height:80px;object-fit:cover;background:var(--section-bg)}
 
-/* facilities */
-.facilities-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:24px;margin-top:30px}
-.resource-block + .resource-block{margin-top:48px;}
-.facility-card{padding:0;border:1px solid var(--border-color);border-radius:16px;background:var(--bg);cursor:pointer;overflow:hidden;transition:transform .25s,box-shadow .25s}
-.facility-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.08)}
-.facility-banner{width:100%;height:160px;object-fit:cover;background:var(--section-bg)}
-.facility-body{padding:20px}
-.facility-icon{width:44px;height:44px;background:var(--section-bg);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:18px;margin:-22px 0 10px;box-shadow:0 6px 18px rgba(0,0,0,.06);position:relative}
+/* ===== 实验资源：硬件 + 软件 统一卡片 ===== */
+.res-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:24px 0 28px}
+.res-tab{display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:30px;border:1px solid var(--border-color);background:var(--bg);color:var(--light-text-color);cursor:pointer;font-size:14px;font-weight:600;transition:all .25s}
+.res-tab:hover{border-color:var(--primary);color:var(--primary)}
+.res-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+[data-theme="dark"] .res-tab.active{color:#04121a}
+.res-tab .cnt{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 6px;border-radius:20px;background:var(--section-bg);font-size:12px;font-weight:700;color:var(--light-text-color)}
+.res-tab.active .cnt{background:rgba(255,255,255,.22);color:inherit}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:24px;align-items:stretch}
+.res-card{display:flex;flex-direction:column;padding:0;border:1px solid var(--border-color);border-radius:18px;background:var(--bg);cursor:pointer;overflow:hidden;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s,border-color .3s}
+.res-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.12);border-color:var(--primary)}
+.res-media{position:relative;height:180px;display:flex;align-items:center;justify-content:center;background:var(--section-bg);overflow:hidden}
+.res-media img{width:100%;height:100%;object-fit:cover;display:block}
+.res-media.ms-sw{background:linear-gradient(135deg,var(--section-bg),var(--bg))}
+.res-media.ms-sw img{width:auto;height:auto;max-width:58%;max-height:108px;object-fit:contain}
+.res-badge{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:30px;font-size:12px;font-weight:700;letter-spacing:.02em;background:rgba(255,255,255,.86);border:1px solid var(--border-color);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--text-color);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+[data-theme="dark"] .res-badge{background:rgba(22,27,34,.82)}
+.res-badge.hw i{color:var(--primary)}
+.res-badge.sw i{color:#0d9488}
+[data-theme="dark"] .res-badge.sw i{color:#2dd4bf}
+.res-body{display:flex;flex-direction:column;flex:1;padding:20px 22px 22px}
+.res-title{margin:0 0 8px;font-size:19px;font-weight:700;color:var(--text-color)}
+.res-desc{margin:0;color:var(--light-text-color);font-size:14px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.res-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.res-tag{padding:3px 10px;border-radius:8px;background:var(--section-bg);color:var(--light-text-color);font-size:12px}
+.res-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:16px}
+.res-meta{font-size:12px;color:var(--light-text-color);display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.res-meta .ver{font-weight:700;color:var(--primary)}
+.res-more{font-size:13px;font-weight:600;color:var(--primary);white-space:nowrap}
+.res-empty{text-align:center;color:var(--light-text-color);padding:40px 0}
+@media(max-width:520px){.res-media{height:160px}.res-tab{padding:8px 15px;font-size:13px}}
 
 /* members */
 .pi-card{display:flex;flex-wrap:wrap;gap:30px;padding:32px;border:1px solid var(--border-color);border-radius:20px;background:linear-gradient(135deg,#f5f5f7,#fff);cursor:pointer;transition:transform .25s,box-shadow .25s;margin-top:24px;align-items:center}
@@ -698,8 +721,8 @@ function applyFirstIndent(area){
     <li><a href="#publications"><span class="zh">论文成果</span><span class="en">Publications</span></a></li>
     <li><a href="#projects"><span class="zh">基金项目</span><span class="en">Projects</span></a></li>
     <li><a href="#teaching"><span class="zh">教学视频</span><span class="en">Teaching</span></a></li>
-    <li><a href="#about"><span class="zh">团队风采</span><span class="en">About</span></a></li>
     <li><a href="#news"><span class="zh">团队动态</span><span class="en">News</span></a></li>
+    <li><a href="#about"><span class="zh">团队风采</span><span class="en">About</span></a></li>
   </ul>
 </div></nav>
 
@@ -731,13 +754,13 @@ function applyFirstIndent(area){
   <section id="projects" class="reveal"></section>
   <section id="teaching" class="reveal"></section>
 
-  <!-- 团队风采（荣誉墙 + 学科竞赛 + 实验室生活 + 招新 合并） -->
-  <section id="about" class="reveal"></section>
-
   <section id="partners" class="reveal"></section>
 
   <!-- 团队动态 -->
   <section id="news" class="reveal"></section>
+
+  <!-- 团队风采（荣誉墙 + 学科竞赛 + 实验室生活 + 招新 合并）· 轻量内容沉到正文最末 -->
+  <section id="about" class="reveal"></section>
 
   <!-- 联系方式 -->
   <section id="contact" class="reveal"></section>
@@ -1320,27 +1343,58 @@ function initPartnersMap(){
 }
 
 // ============ 软件资源 Software ============
-function renderSoftware(d){
-  var arr=(d.software||[]);
-  if(!arr.length){
-    return '<h2>'+both("软件资源","Software & Tools")+'</h2>'+
-      '<p style="text-align:center;color:var(--light-text-color);padding:10px 0;">'+both("实验室自研软件持续整理中…","Lab-developed software coming soon")+'</p>';
-  }
-  var cards=arr.map(function(sw){
-    var tags=(sw.tags||[]).map(function(t){return '<span style="display:inline-block;padding:2px 8px;margin:2px 4px 2px 0;border:1px solid var(--border-color);border-radius:999px;font-size:12px;color:var(--light-text-color)">'+esc(z(t)||t)+'</span>';}).join("");
-    var plat=(sw.platforms&&sw.platforms.length)?'<div style="margin-top:8px;font-size:12px;color:var(--light-text-color)"><i class="fas fa-desktop"></i> '+esc(sw.platforms.join(" / "))+'</div>':"";
-    return'<article class="research-card clickable" data-open="software" data-id="'+esc(sw.id)+'" data-search-item data-search-text="'+esc((sw.nameZh||"")+(sw.nameEn||"")+(sw.summaryZh||"")+(sw.summaryEn||"")+(sw.version||""))+'">'+
-      (sw.logo?'<div style="margin-bottom:12px;">'+img(sw.logo,"")+'</div>':'')+
-      '<h3 style="margin:0 0 4px;">'+both(sw.nameZh,sw.nameEn)+'</h3>'+
-      (sw.version?'<span style="display:inline-block;font-size:13px;color:var(--accent-color,#3a7bd5);font-weight:600;">v'+esc(sw.version)+'</span>':'')+
-      '<p style="margin:8px 0;color:var(--light-text-color);font-size:14px;line-height:1.6;">'+esc(z(sw.summaryZh)||z(sw.summaryEn))+'</p>'+
-      (tags?'<div style="margin-bottom:4px;">'+tags+'</div>':'')+
-      plat+
-      '</article>';
+// ============ 实验资源（硬件设施 + 软件工具，统一卡片 + 分段筛选）============
+function renderResources(d){
+  var sec=document.getElementById("resources");
+  if(!sec)return;
+  var hw=(d.facilities||[]), sw=(d.software||[]);
+  var hwCards=hw.map(function(f){
+    return'<article class="res-card clickable" data-open="facility" data-id="'+esc(f.id)+'" data-res-type="hw">'+
+      '<div class="res-media">'+
+        (f.image?img(f.image,""):'<i class="fas '+esc(z(f.icon)||'fa-flask')+'" style="font-size:60px;color:var(--primary)"></i>')+
+        '<span class="res-badge hw"><i class="fas fa-microscope"></i> '+both("硬件设施","Hardware")+'</span>'+
+      '</div>'+
+      '<div class="res-body"><h3 class="res-title">'+both(f.zh,f.en)+'</h3>'+
+        '<p class="res-desc">'+both(f.descZh,f.descEn)+'</p>'+
+        '<div class="res-foot"><span class="res-meta"><i class="fas '+esc(z(f.icon)||'fa-flask')+'"></i> '+both("仪器与平台","Instruments & platforms")+'</span>'+
+        '<span class="res-more">'+both("查看详情","Details")+' →</span></div></div></article>';
   }).join("");
-  return '<h2>'+both("软件资源","Software & Tools")+'</h2>'+
-    '<p class="section-eyebrow">'+both("实验室原创研发工具 · 点击查看详情并下载安装","Original lab-developed tools — click for details & download")+'</p>'+
-    '<div class="research-grid">'+cards+'</div>';
+  var swCards=sw.map(function(s){
+    var tags=(s.tags||[]).slice(0,4).map(function(t){return '<span class="res-tag">'+esc(z(t)||t)+'</span>';}).join("");
+    var plat=(s.platforms&&s.platforms.length)?'<span><i class="fas fa-desktop"></i> '+esc(s.platforms.join(" / "))+'</span>':"";
+    return'<article class="res-card clickable" data-open="software" data-id="'+esc(s.id)+'" data-res-type="sw">'+
+      '<div class="res-media ms-sw">'+
+        (s.logo?img(s.logo,""):'<i class="fas fa-cube" style="font-size:60px;color:var(--primary)"></i>')+
+        '<span class="res-badge sw"><i class="fas fa-laptop-code"></i> '+both("软件工具","Software")+'</span>'+
+      '</div>'+
+      '<div class="res-body"><h3 class="res-title">'+both(s.nameZh,s.nameEn)+'</h3>'+
+        '<p class="res-desc">'+esc(z(s.summaryZh)||z(s.summaryEn))+'</p>'+
+        (tags?'<div class="res-tags">'+tags+'</div>':"")+
+        '<div class="res-foot"><span class="res-meta">'+(s.version?'<span class="ver">v'+esc(s.version)+'</span>':"")+plat+'</span>'+
+        '<span class="res-more">'+both("查看详情","Details")+' →</span></div></div></article>';
+  }).join("");
+  var nHw=hw.length, nSw=sw.length, nAll=nHw+nSw;
+  var tabs='<div class="res-tabs">'+
+    '<button class="res-tab active" data-rfilter="all">'+both("全部","All")+' <span class="cnt">'+nAll+'</span></button>'+
+    '<button class="res-tab" data-rfilter="hw"><i class="fas fa-microscope"></i> '+both("硬件设施","Hardware")+' <span class="cnt">'+nHw+'</span></button>'+
+    '<button class="res-tab" data-rfilter="sw"><i class="fas fa-laptop-code"></i> '+both("软件工具","Software")+' <span class="cnt">'+nSw+'</span></button>'+
+    '</div>';
+  var grid=nAll?('<div class="res-grid" id="res-grid">'+hwCards+swCards+'</div>')
+    :'<p class="res-empty">'+both("实验资源持续整理中…","Resources coming soon")+'</p>';
+  sec.innerHTML=
+    '<h2>'+both("实验资源","Resources")+'</h2>'+
+    '<p class="section-eyebrow">'+both("硬件平台与实验室自研软件工具","Hardware platforms & lab-developed software")+'</p>'+
+    tabs+grid;
+  sec.querySelectorAll(".res-tab").forEach(function(b){
+    b.addEventListener("click",function(){
+      sec.querySelectorAll(".res-tab").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+      var f=b.getAttribute("data-rfilter");
+      sec.querySelectorAll(".res-card").forEach(function(c){
+        c.style.display=(f==="all"||c.getAttribute("data-res-type")===f)?"":"none";
+      });
+    });
+  });
 }
 
 function renderTeaching(d){
@@ -1507,17 +1561,6 @@ function renderAll(d){
     '<h2 style="margin-top:70px;">'+both("在研课题","Ongoing Projects")+'</h2>'+
     '<div class="research-grid">'+projectsHtml+'</div>';
 
-  // 实验资源 · 硬件（实验室设施）
-  var facHtml=
-    '<p class="section-eyebrow">'+both("硬件支撑","Infrastructure")+'</p><h2>'+both("实验室设施","Lab Facilities")+'</h2>'+
-    '<div class="facilities-grid">'+d.facilities.map(function(f){
-      return'<article class="facility-card clickable" data-open="facility" data-id="'+esc(f.id)+'">'+
-        img(f.image,"facility-banner")+
-        '<div class="facility-body"><div class="facility-icon"><i class="fas '+esc(z(f.icon))+'"></i></div>'+
-        '<h3 style="margin:0 0 8px;">'+both(f.zh,f.en)+'</h3>'+
-        '<p style="color:var(--light-text-color);margin:0;">'+both(f.descZh,f.descEn)+'</p>'+
-        '<span class="more">'+both("查看详情","View detail")+' →</span></div></article>';}).join("")+'</div>';
-
   // members
   var root=document.getElementById("members-root");
   var h="",pi=find(d.members,"member-liang");
@@ -1636,17 +1679,7 @@ function renderAll(d){
     });
   })();
 
-  var swHtml = renderSoftware(d);
-  // 实验资源 assemble：硬件 + 软件 两个子块
-  (function(){
-    var resSec=document.getElementById("resources");
-    if(!resSec)return;
-    resSec.innerHTML=
-      '<h2>'+both("实验资源","Resources")+'</h2>'+
-      '<p class="section-eyebrow">'+both("硬件平台与自研软件工具","Hardware platforms & lab-developed software")+'</p>'+
-      '<div class="resource-block" id="resources-hardware">'+facHtml+'</div>'+
-      '<div class="resource-block" id="resources-software">'+swHtml+'</div>';
-  })();
+  renderResources(d);
   renderTeaching(d);
 
   // honors（合并入 #about-honors 子块）
@@ -2758,7 +2791,7 @@ function injectEditButtons(){
     {sel:"#hero",type:"hero",label:"首屏横幅"},
     {sel:"#home",type:"home",label:"关于我们"},
     {sel:"#research",type:"research",label:"研究主题"},
-    {sel:"#resources-hardware",type:"facilities",label:"实验室设施"},
+    {sel:"#resources",type:"facilities",label:"实验室设施"},
     {sel:"#members-root",type:"members",label:"团队成员"},
     {sel:"#publications",type:"publications",label:"论文成果"},
     {sel:"#projects",type:"projects",label:"基金项目"},
