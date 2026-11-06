@@ -1882,13 +1882,14 @@
    "id": "soft-liangwei",
    "nameZh": "量微",
    "nameEn": "QuantScope",
-   "version": "1.0.0",
+   "version": "1.4.1",
    "summaryZh": "量微（QuantScope）是面向照片与显微图像的定量测量桌面软件，由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。",
    "summaryEn": "QuantScope is a desktop image-measurement tool for photographs and microscopy images, jointly developed and maintained by Fuzhu Education Consulting Studio and the Laboratory of Intelligent Microbiome and Biomanufacturing.",
-   "descZh": "量微（QuantScope）由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。面向照片与显微图像，提供比例尺标定、长度测量（直线/曲线）、面积与形态参数、阈值分割与颗粒分析、灰度直方图等定量测量功能，测量结果可编辑并导出 CSV。全部在本地完成，图像数据不出本机。",
-   "descEn": "QuantScope is jointly developed and maintained by Fuzhu Education Consulting Studio and the Laboratory of Intelligent Microbiome and Biomanufacturing. Built for photographs and microscopy images, it offers scale calibration, length measurement (straight/curved lines), area and shape parameters, threshold segmentation and particle analysis, and grayscale histograms. Measurement results are editable and exportable to CSV. All processing runs locally — image data never leaves the machine.",
+   "descZh": "量微（QuantScope）由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。面向照片与显微图像，提供从标定、测量到分析的完整定量流程：先用已知尺度（如标尺、培养皿直径、血球计数板格距）标定比例尺，即可对任意结构测量直线或曲线长度；面积与形态参数可得到选区的大小、周长、圆度、长宽比等量化指标；阈值分割与颗粒分析能自动识别并统计图像中的颗粒、菌落或细胞数量与平均尺寸；灰度直方图则用于观察亮度分布与对比度。所有测量结果可在表格中逐条编辑、增删与备注，并一键导出 CSV 供 Excel / R / Python 进一步处理。软件全程在本地运行，图像数据不出本机，适合教学演示、科研计量与日常图像分析。",
+   "descEn": "QuantScope is jointly developed and maintained by Fuzhu Education Consulting Studio and the Laboratory of Intelligent Microbiome and Biomanufacturing. Built for photographs and microscopy images, it offers a complete quantitative pipeline from calibration to analysis: calibrate the scale bar using a known reference (a ruler, petri-dish diameter, or hemocytometer grid spacing), then measure straight or curved lengths of any structure; area and shape parameters report size, perimeter, circularity and aspect ratio of a selection; threshold segmentation and particle analysis automatically detect and count particles, colonies or cells with their average size; a grayscale histogram shows brightness distribution and contrast. Every measurement can be edited, added, removed and annotated row by row in a table, then exported to CSV for Excel / R / Python. Everything runs locally — image data never leaves the machine, making it suitable for teaching demonstrations, research metrology and everyday image analysis.",
    "platforms": [
-    "Windows"
+    "Windows",
+    "Android"
    ],
    "license": "实验室自有",
    "tags": [
@@ -1902,7 +1903,25 @@
    ],
    "logo": "https://liang-lab.cn/images/software/soft-liangwei.png",
    "screenshots": [],
-   "downloadUrl": "https://github.com/liyangfei8495/liangwei/releases/download/v1.0.0/Liangwei-1.0.0-windows.zip",
+   "downloadUrl": "https://github.com/liyangfei8495/liangwei/releases/download/v1.4.1/Liangwei-1.4.1-setup.exe",
+   "downloads": [
+    {
+     "labelZh": "Windows 安装版",
+     "labelEn": "Windows installer",
+     "noteZh": "Windows 10 / 11 · 73.9 MB · 双击安装，桌面生成图标",
+     "noteEn": "Windows 10 / 11 · 73.9 MB · Run the installer to add a desktop shortcut",
+     "icon": "fa-desktop",
+     "url": "https://github.com/liyangfei8495/liangwei/releases/download/v1.4.1/Liangwei-1.4.1-setup.exe"
+    },
+    {
+     "labelZh": "Android 调试版",
+     "labelEn": "Android debug build",
+     "noteZh": "Android 5.1 及以上 · 3.6 MB · 调试构建，需允许「未知来源」安装",
+     "noteEn": "Android 5.1+ · 3.6 MB · Debug build; enable installation from unknown sources",
+     "icon": "fa-mobile-alt",
+     "url": "https://liang-lab.cn/images/software/Liangwei-1.4.1-debug.apk"
+    }
+   ],
    "repoUrl": "",
    "docUrl": "",
    "memberIds": [
@@ -1913,11 +1932,11 @@
    "id": "soft-liangyan",
    "nameZh": "量言",
    "nameEn": "QuantScribe",
-   "version": "1.0.7",
+   "version": "1.0.9",
    "summaryZh": "量言（QuantScribe）是面向实验照片的本地记录与归档工具，提供 Windows 桌面版与 Android 手机版。可自动读取照片的拍摄时间、GPS 地点、设备与光圈快门 ISO 等信息，生成带实验信息栏的图片，并支持原图编辑、自动命名与 CSV / ZIP 导出。",
    "summaryEn": "QuantScribe is a local tool for recording and archiving lab photographs, available for Windows desktops and Android phones. It reads capture time, GPS location, camera model and exposure settings from photos, generates images with an experiment information bar, and supports original-image editing, automatic naming and CSV / ZIP export.",
-   "descZh": "量言（QuantScribe）面向实验照片的记录、标注与归档，全部数据只存在本机，程序不联网、不上传、不采集定位。支持两种工作方式：导入已有照片自动读出拍摄时间、地点、设备与光圈快门 ISO；或先填好实验名称、样品、操作人、备注，再实时拍照并自动按实验名归档。可在原图下方加白底信息栏生成新图（原图像素不变），支持单张或批量生成、信息栏字号调节、按「实验_样品_日期_操作人」自动命名；汇总表可导出 CSV 或打印为 PDF，可按相册打包 ZIP（图片 + manifest.json）或导出记录 JSON / CSV，导出图会写回机器可读的 EXIF 元数据（含亚秒级 GPS），便于 Windows 文件属性、ExifTool、Lightroom 检索。内置原图编辑器，支持旋转、翻转、裁剪、亮度 / 对比度 / 饱和度调整及画笔、箭头、矩形、圆形、文字标注，自动留底并可一键恢复原图。Windows 数据位于 %APPDATA%\\量言，Android 位于应用私有目录、「文档/量言/」与系统图库 LiangYan 相簿，卸载 Windows 版不删除数据。1.0.7 修复了手机端「存到相册」无响应：原生相册插件注册提前到 Capacitor 建桥之前并固化进插件注册表，保存改为系统图库、指定目录、系统分享三重保障，文件名与下载、ZIP 导出统一。",
-   "descEn": "QuantScribe records, annotates and archives lab photographs. All data stays on the device: the app does not connect to the internet, upload anything, or collect location data. Two workflows are supported: import existing photos to read capture time, location, camera and exposure settings automatically, or pre-fill experiment name, sample, operator and notes before taking a photo so the information is applied and filed automatically. A white information bar can be added below the original photo without changing its pixels, for one image or in batch, with adjustable font size and automatic Experiment_Sample_Date_Operator naming. A summary table exports CSV or prints to PDF; albums can be packed as ZIP (images + manifest.json) or records exported as JSON / CSV, and exported images carry machine-readable EXIF (including sub-second GPS) searchable in Windows file properties, ExifTool and Lightroom. The built-in editor supports rotate, flip, crop, brightness / contrast / saturation and brush, arrow, rectangle, circle and text annotations, with the original retained and restorable in one click. Windows data lives in %APPDATA%\\LiangYan; Android uses app-private storage, Documents/LiangYan/ and the LiangYan gallery album, and uninstalling the Windows build does not remove data. Version 1.0.7 fixes the unresponsive Save to Gallery action on phones by registering the native gallery plugin before the Capacitor bridge is built and pinning it in the plugin registry; saving now uses three fallbacks (system gallery, dedicated folder, system share sheet) with filenames unified across downloads and ZIP export.",
+   "descZh": "量言（QuantScribe）由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。面向实验照片的记录、标注与归档，全部数据只存在本机，程序不联网、不上传、不采集定位。支持两种工作方式：导入已有照片自动读出拍摄时间、地点、设备与光圈快门 ISO；或先填好实验名称、样品、操作人、备注，再实时拍照并自动按实验名归档。可在原图下方加白底信息栏生成新图（原图像素不变），支持单张或批量生成、信息栏字号调节、按「实验_样品_日期_操作人」自动命名；汇总表可导出 CSV 或打印为 PDF，可按相册打包 ZIP（图片 + manifest.json）或导出记录 JSON / CSV，导出图会写回机器可读的 EXIF 元数据（含亚秒级 GPS），便于 Windows 文件属性、ExifTool、Lightroom 检索。内置原图编辑器，支持旋转、翻转、裁剪、亮度 / 对比度 / 饱和度调整及画笔、箭头、矩形、圆形、文字标注，自动留底并可一键恢复原图。Windows 数据位于 %APPDATA%\\LiangYan，Android 位于应用私有目录、「文档/量言/」与系统图库 LiangYan 相簿，卸载 Windows 版不删除数据。1.0.7 修复了手机端「存到相册」无响应：原生相册插件注册提前到 Capacitor 建桥之前并固化进插件注册表，保存改为系统图库、指定目录、系统分享三重保障，文件名与下载、ZIP 导出统一。",
+   "descEn": "QuantScribe is jointly developed and maintained by Fuzhu Education Consulting Studio and the Laboratory of Intelligent Microbiome and Biomanufacturing. It records, annotates and archives lab photographs. All data stays on the device: the app does not connect to the internet, upload anything, or collect location data. Two workflows are supported: import existing photos to read capture time, location, camera and exposure settings automatically, or pre-fill experiment name, sample, operator and notes before taking a photo so the information is applied and filed automatically. A white information bar can be added below the original photo without changing its pixels, for one image or in batch, with adjustable font size and automatic Experiment_Sample_Date_Operator naming. A summary table exports CSV or prints to PDF; albums can be packed as ZIP (images + manifest.json) or records exported as JSON / CSV, and exported images carry machine-readable EXIF (including sub-second GPS) searchable in Windows file properties, ExifTool and Lightroom. The built-in editor supports rotate, flip, crop, brightness / contrast / saturation and brush, arrow, rectangle, circle and text annotations, with the original retained and restorable in one click. Windows data lives in %APPDATA%\\LiangYan; Android uses app-private storage, Documents/LiangYan/ and the LiangYan gallery album, and uninstalling the Windows build does not remove data. Version 1.0.7 fixes the unresponsive Save to Gallery action on phones by registering the native gallery plugin before the Capacitor bridge is built and pinning it in the plugin registry; saving now uses three fallbacks (system gallery, dedicated folder, system share sheet) with filenames unified across downloads and ZIP export.",
    "platforms": [
     "Windows",
     "Android"
@@ -1939,7 +1958,7 @@
     "https://liang-lab.cn/images/software/liangyan-shot-1.png",
     "https://liang-lab.cn/images/software/liangyan-shot-2.png"
    ],
-   "downloadUrl": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.7/LiangYan-1.0.7-windows-setup.exe",
+   "downloadUrl": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.9/LiangYan-1.0.9-windows-setup.exe",
    "downloads": [
     {
      "labelZh": "Windows 安装版",
@@ -1947,7 +1966,7 @@
      "noteZh": "Windows 10 / 11 · 78.8 MB · 双击安装，桌面生成图标",
      "noteEn": "Windows 10 / 11 · 78.8 MB · Run the installer to add a desktop shortcut",
      "icon": "fa-desktop",
-     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.7/LiangYan-1.0.7-windows-setup.exe"
+     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.9/LiangYan-1.0.9-windows-setup.exe"
     },
     {
      "labelZh": "Windows 便携版",
@@ -1955,7 +1974,7 @@
      "noteZh": "Windows 10 / 11 · 78.4 MB · 免安装，双击即用，可放 U 盘",
      "noteEn": "Windows 10 / 11 · 78.4 MB · No installation; run directly, USB-friendly",
      "icon": "fa-box-open",
-     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.7/LiangYan-1.0.7-windows-portable.exe"
+     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.9/LiangYan-1.0.9-windows-portable.exe"
     },
     {
      "labelZh": "Android 安装包",
@@ -1963,12 +1982,14 @@
      "noteZh": "Android 5.1 及以上 · 3.5 MB · 需允许「未知来源」安装",
      "noteEn": "Android 5.1+ · 3.5 MB · Enable installation from unknown sources",
      "icon": "fa-mobile-alt",
-     "url": "https://liang-lab.cn/images/software/LiangYan-1.0.7-android.apk"
+     "url": "https://liang-lab.cn/images/software/LiangYan-1.0.9-android.apk"
     }
    ],
    "repoUrl": "",
    "docUrl": "",
-   "memberIds": []
+   "memberIds": [
+    "member-li"
+   ]
   }
  ],
  "teaching": []
