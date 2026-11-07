@@ -1932,7 +1932,7 @@
    "id": "soft-liangyan",
    "nameZh": "量言",
    "nameEn": "QuantScribe",
-   "version": "1.0.9",
+   "version": "1.0.14",
    "summaryZh": "量言（QuantScribe）是面向实验照片的本地记录与归档工具，提供 Windows 桌面版与 Android 手机版。可自动读取照片的拍摄时间、GPS 地点、设备与光圈快门 ISO 等信息，生成带实验信息栏的图片，并支持原图编辑、自动命名与 CSV / ZIP 导出。",
    "summaryEn": "QuantScribe is a local tool for recording and archiving lab photographs, available for Windows desktops and Android phones. It reads capture time, GPS location, camera model and exposure settings from photos, generates images with an experiment information bar, and supports original-image editing, automatic naming and CSV / ZIP export.",
    "descZh": "量言（QuantScribe）由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。面向实验照片的记录、标注与归档，全部数据只存在本机，程序不联网、不上传、不采集定位。支持两种工作方式：导入已有照片自动读出拍摄时间、地点、设备与光圈快门 ISO；或先填好实验名称、样品、操作人、备注，再实时拍照并自动按实验名归档。可在原图下方加白底信息栏生成新图（原图像素不变），支持单张或批量生成、信息栏字号调节、按「实验_样品_日期_操作人」自动命名；汇总表可导出 CSV 或打印为 PDF，可按相册打包 ZIP（图片 + manifest.json）或导出记录 JSON / CSV，导出图会写回机器可读的 EXIF 元数据（含亚秒级 GPS），便于 Windows 文件属性、ExifTool、Lightroom 检索。内置原图编辑器，支持旋转、翻转、裁剪、亮度 / 对比度 / 饱和度调整及画笔、箭头、矩形、圆形、文字标注，自动留底并可一键恢复原图。Windows 数据位于 %APPDATA%\\LiangYan，Android 位于应用私有目录、「文档/量言/」与系统图库 LiangYan 相簿，卸载 Windows 版不删除数据。1.0.7 修复了手机端「存到相册」无响应：原生相册插件注册提前到 Capacitor 建桥之前并固化进插件注册表，保存改为系统图库、指定目录、系统分享三重保障，文件名与下载、ZIP 导出统一。",
@@ -1958,31 +1958,31 @@
     "https://liang-lab.cn/images/software/liangyan-shot-1.png",
     "https://liang-lab.cn/images/software/liangyan-shot-2.png"
    ],
-   "downloadUrl": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.9/LiangYan-1.0.9-windows-setup.exe",
+   "downloadUrl": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.14/LiangYan-1.0.14-windows-setup.exe",
    "downloads": [
     {
      "labelZh": "Windows 安装版",
      "labelEn": "Windows installer",
-     "noteZh": "Windows 10 / 11 · 78.8 MB · 双击安装，桌面生成图标",
-     "noteEn": "Windows 10 / 11 · 78.8 MB · Run the installer to add a desktop shortcut",
+     "noteZh": "Windows 10 / 11 · 82.6 MB · 双击安装，桌面生成图标",
+     "noteEn": "Windows 10 / 11 · 82.6 MB · Run the installer to add a desktop shortcut",
      "icon": "fa-desktop",
-     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.9/LiangYan-1.0.9-windows-setup.exe"
+     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.14/LiangYan-1.0.14-windows-setup.exe"
     },
     {
      "labelZh": "Windows 便携版",
      "labelEn": "Windows portable",
-     "noteZh": "Windows 10 / 11 · 78.4 MB · 免安装，双击即用，可放 U 盘",
-     "noteEn": "Windows 10 / 11 · 78.4 MB · No installation; run directly, USB-friendly",
+     "noteZh": "Windows 10 / 11 · 82.2 MB · 免安装，双击即用，可放 U 盘",
+     "noteEn": "Windows 10 / 11 · 82.2 MB · No installation; run directly, USB-friendly",
      "icon": "fa-box-open",
-     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.9/LiangYan-1.0.9-windows-portable.exe"
+     "url": "https://github.com/liyangfei8495/liangyan/releases/download/v1.0.14/LiangYan-1.0.14-windows-portable.exe"
     },
     {
      "labelZh": "Android 安装包",
      "labelEn": "Android APK",
-     "noteZh": "Android 5.1 及以上 · 3.5 MB · 需允许「未知来源」安装",
-     "noteEn": "Android 5.1+ · 3.5 MB · Enable installation from unknown sources",
+     "noteZh": "Android 5.1 及以上 · 3.7 MB · 需允许「未知来源」安装",
+     "noteEn": "Android 5.1+ · 3.7 MB · Enable installation from unknown sources",
      "icon": "fa-mobile-alt",
-     "url": "https://liang-lab.cn/images/software/LiangYan-1.0.9-android.apk"
+     "url": "https://liang-lab.cn/images/software/LiangYan-1.0.14-android.apk"
     }
    ],
    "repoUrl": "",
