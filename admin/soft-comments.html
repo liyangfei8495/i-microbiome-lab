@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>留言审核 · 智能微生态与生物制造实验室</title>
+<style>
+  :root{--primary:#0066cc;--bg:#fff;--section-bg:#f5f5f7;--border-color:#e5e5ea;
+        --text-color:#1d1d1f;--light-text-color:#6e6e73;--ok:#1a9d5a;--danger:#d12f2f;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       color:var(--text-color);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased}
+  [data-theme="dark"]{--primary:#4da3ff;--bg:#0d1117;--section-bg:#161b22;--border-color:#30363d;
+        --text-color:#e6edf3;--light-text-color:#8b949e;--ok:#3fbf7a;--danger:#ff6b6b;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;
+          border-bottom:1px solid var(--border-color)}
+  .topbar a{color:var(--light-text-color);text-decoration:none;font-size:14px}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 70px}
+  h1{font-size:22px;margin-bottom:6px}
+  .hint{color:var(--light-text-color);font-size:13px;margin-bottom:22px}
+  .login{border:1px solid var(--border-color);border-radius:14px;padding:20px;background:var(--section-bg)}
+  .login input{width:100%;font-family:inherit;font-size:15px;padding:11px 13px;border:1px solid var(--border-color);
+       border-radius:9px;background:var(--bg);color:var(--text-color)}
+  .btn{font-family:inherit;font-size:14px;border:none;border-radius:9px;padding:10px 20px;cursor:pointer;font-weight:600}
+  .btn-primary{background:var(--primary);color:#fff;margin-top:12px}
+  .btn-ok{background:var(--ok);color:#fff}
+  .btn-del{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .msg{font-size:13px;margin-top:10px;min-height:18px}
+  .msg.err{color:var(--danger)}
+  .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .badge{font-size:12px;color:var(--light-text-color);border:1px solid var(--border-color);
+         border-radius:999px;padding:3px 12px}
+  .badge.pending{color:var(--danger);border-color:var(--danger)}
+  .badge.approved{color:var(--ok);border-color:var(--ok)}
+  .list{display:flex;flex-direction:column;gap:14px}
+  .card{border:1px solid var(--border-color);border-radius:13px;padding:16px 18px}
+  .card .h{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .card .who{font-weight:600}
+  .card .meta{font-size:12px;color:var(--light-text-color)}
+  .card .body{font-size:14.5px;white-space:pre-wrap;word-break:break-word;margin-bottom:12px}
+  .card .ops{display:flex;gap:8px}
+  .empty{text-align:center;color:var(--light-text-color);padding:40px 0;font-size:14px}
+  .hidden{display:none}
+</style>
+<script>
+(function(){try{var t=localStorage.getItem('lab-theme');if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+</head>
+<body>
+<div class="topbar"><a href="https://liang-lab.cn/">← 返回网站</a><span style="font-size:13px;color:var(--light-text-color)">留言审核后台</span></div>
+<div class="wrap">
+  <h1>软件留言审核</h1>
+  <p class="hint">审核通过后才会在软件详情页公开显示。密码仅存于本标签页会话，不写入页面或服务器日志。</p>
+
+  <div id="loginBox" class="login">
+    <input id="pass" type="password" placeholder="输入管理员密码" autocomplete="current-password">
+    <button id="loginBtn" class="btn btn-primary" type="button">登录并加载留言</button>
+    <div id="loginMsg" class="msg err"></div>
+  </div>
+
+  <div id="mainBox" class="hidden">
+    <div class="toolbar">
+      <span id="cntAll" class="badge">全部 0</span>
+      <span id="cntPending" class="badge pending">待审 0</span>
+      <span id="cntApproved" class="badge approved">已公开 0</span>
+      <button id="refreshBtn" class="btn" style="margin-left:auto;background:var(--section-bg);color:var(--text-color)" type="button">刷新</button>
+      <button id="logoutBtn" class="btn" style="background:transparent;color:var(--light-text-color)" type="button">退出</button>
+    </div>
+    <div id="list" class="list"></div>
+  </div>
+</div>
+<script>
+var PASS = sessionStorage.getItem('soft_admin_pass') || '';
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+function hdr(){return {'Content-Type':'application/json','X-Admin-Pass':PASS};}
+function api(url,opt){
+  return fetch(url,opt).then(function(r){return r.json().then(function(d){return {s:r.status,d:d};});});
+}
+function when(ts){return new Date(ts*1000).toLocaleString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}
+function load(){
+  if(!PASS){showLogin();return;}
+  api('/api/soft/admin/comments',{headers:hdr()})
+    .then(function(x){
+      if(x.s===401){sessionStorage.removeItem('soft_admin_pass');PASS='';showLogin();document.getElementById('loginMsg').textContent='密码错误，请重试';return;}
+      if(x.s!==200)throw new Error('load '+x.s);
+      render(x.d.comments||[]);
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('mainBox').classList.remove('hidden');
+    })
+    .catch(function(){document.getElementById('loginMsg').textContent='加载失败，请刷新重试';});
+}
+function render(list){
+  var pend=list.filter(function(c){return c.status==='pending';}).length;
+  var appr=list.length-pend;
+  document.getElementById('cntAll').textContent='全部 '+list.length;
+  document.getElementById('cntPending').textContent='待审 '+pend;
+  document.getElementById('cntApproved').textContent='已公开 '+appr;
+  var box=document.getElementById('list');
+  if(!list.length){box.innerHTML='<div class="empty">暂无留言</div>';return;}
+  box.innerHTML=list.map(function(c){
+    var badge=c.status==='approved'
+      ? '<span class="badge approved">已公开</span>'
+      : '<span class="badge pending">待审核</span>';
+    var ops=c.status==='pending'
+      ? '<button class="btn btn-ok" data-act="approve" data-id="'+c.id+'">通过</button>'+
+        '<button class="btn btn-del" data-act="delete" data-id="'+c.id+'">删除</button>'
+      : '<button class="btn btn-del" data-act="delete" data-id="'+c.id+'">删除</button>';
+    return '<div class="card"><div class="h"><span class="who">'+esc(c.name)+'</span>'+badge+
+      '<span class="meta">'+esc(c.softId)+' · '+when(c.createdAt)+' · '+esc(c.ip)+'</span></div>'+
+      '<div class="body">'+esc(c.content)+'</div><div class="ops">'+ops+'</div></div>';
+  }).join('');
+  box.querySelectorAll('[data-act]').forEach(function(b){
+    b.onclick=function(){
+      var act=this.getAttribute('data-act'), id=this.getAttribute('data-id');
+      if(act==='delete'&&!confirm('确定删除这条留言？'))return;
+      var btn=this;btn.disabled=true;
+      api('/api/soft/admin/review',{method:'POST',headers:hdr(),body:JSON.stringify({id:id,action:act})})
+        .then(function(x){if(x.s===200)load();else alert('操作失败: '+(x.d.error||x.s));})
+        .catch(function(){alert('网络错误');});
+    };
+  });
+}
+function showLogin(){document.getElementById('mainBox').classList.add('hidden');document.getElementById('loginBox').classList.remove('hidden');}
+document.getElementById('loginBtn').onclick=function(){
+  var v=document.getElementById('pass').value.trim();
+  if(!v){document.getElementById('loginMsg').textContent='请输入密码';return;}
+  PASS=v;sessionStorage.setItem('soft_admin_pass',v);
+  document.getElementById('loginMsg').textContent='';load();
+};
+document.getElementById('refreshBtn').onclick=load;
+document.getElementById('logoutBtn').onclick=function(){
+  sessionStorage.removeItem('soft_admin_pass');PASS='';document.getElementById('pass').value='';showLogin();
+};
+if(PASS)load();
+</script>
+</body>
+</html>
