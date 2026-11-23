@@ -1,6 +1,6 @@
 {
-  "version": "1.7.7",
-  "date": "2026-11-20",
-  "notes": "目标测量前强制校验比例尺（未标定引导设定并按物理单位输出）；图上叠加长轴/宽轴测量线供核对",
+  "version": "1.7.9",
+  "date": "2026-11-23",
+  "notes": "修复非绿色叶片识别全错；GrabCut 双路校验自动回退；新增分水岭分离粘连目标",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
