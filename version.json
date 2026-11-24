@@ -1,6 +1,6 @@
 {
-  "version": "1.7.9",
-  "date": "2026-11-23",
-  "notes": "修复非绿色叶片识别全错；GrabCut 双路校验自动回退；新增分水岭分离粘连目标",
+  "version": "1.8.1",
+  "date": "2026-11-24",
+  "notes": "新增边缘识别模式：Sobel 梯度沿目标轮廓分割，不依赖颜色",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
