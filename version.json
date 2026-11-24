@@ -1,6 +1,6 @@
 {
-  "version": "1.8.6",
+  "version": "1.8.7",
   "date": "2026-11-24",
-  "notes": "叶片工具改为默认沿边缘自由手绘圈选；直线拖拽/Shift 保留拉框自动分割",
+  "notes": "手绘圈=识别区域：圈内自动按颜色识别精确边缘，黑底自动亮度阈值，禁用图割",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
