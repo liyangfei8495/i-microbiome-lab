@@ -1,6 +1,6 @@
 {
-  "version": "1.8.1",
+  "version": "1.8.2",
   "date": "2026-11-24",
-  "notes": "新增边缘识别模式：Sobel 梯度沿目标轮廓分割，不依赖颜色",
+  "notes": "骨架中线测量：弯曲叶片长=沿中线弧长（画中线折线），宽=中段垂直中线实测（端点在叶片内）",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
