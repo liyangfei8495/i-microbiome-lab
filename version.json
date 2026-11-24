@@ -1,6 +1,6 @@
 {
-  "version": "1.8.4",
+  "version": "1.8.6",
   "date": "2026-11-24",
-  "notes": "整图自动测量（一次测全图所有目标）+ 人工辅助修正（点选/重画替换/删除）",
+  "notes": "叶片工具改为默认沿边缘自由手绘圈选；直线拖拽/Shift 保留拉框自动分割",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
