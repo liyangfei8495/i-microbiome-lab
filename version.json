@@ -1,6 +1,6 @@
 {
-  "version": "1.8.3",
+  "version": "1.8.4",
   "date": "2026-11-24",
-  "notes": "新增手绘轮廓测量；结果表可编辑/删行；多格式导出 CSV/Excel/JSON/SVG轨迹/工程文件可复现",
+  "notes": "整图自动测量（一次测全图所有目标）+ 人工辅助修正（点选/重画替换/删除）",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
