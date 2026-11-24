@@ -1,6 +1,6 @@
 {
-  "version": "1.8.2",
+  "version": "1.8.3",
   "date": "2026-11-24",
-  "notes": "骨架中线测量：弯曲叶片长=沿中线弧长（画中线折线），宽=中段垂直中线实测（端点在叶片内）",
+  "notes": "新增手绘轮廓测量；结果表可编辑/删行；多格式导出 CSV/Excel/JSON/SVG轨迹/工程文件可复现",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
