@@ -1550,6 +1550,59 @@
           "en": "This report focuses on the study of mycorrhizal fungi and rhizosphere regulation to alleviate plant high temperature stress. It shares the relevant research progress of the team in recent years, provides new ideas for laboratory teachers and students in the research direction of rhizosphere microbial regulation crop stress resistance, and strongly promotes academic exchanges in the relevant direction."
         }
       ]
+    },
+    {
+      "id": "n-1795592650390",
+      "titleZh": "【国际合作】梁元可教授作为专家团队成员赴布隆迪参与农业科技合作",
+      "titleEn": "International Cooperation Update | Professor Liang Yuanke Travels to Burundi as a Member of an Expert Team to Participate in Agricultural Science and Technology Cooperation",
+      "day": "25",
+      "month": "11",
+      "blocks": [
+        {
+          "type": "text",
+          "zh": "近日，西南科技大学专家团队赴东非布隆迪共和国开展农业科技合作交流，完成中国 — 布隆迪种养循环科技小院、西南科技大学 — 布隆迪农业科学院高蛋白作物联合实验室揭牌。i-Microbiome Lab（智能微生态与生物制造实验室）负责人梁元可教授作为专家团队成员参与本次出访。",
+          "en": "Recently, an expert team from Southwest University of Science and Technology visited the Republic of Burundi in East Africa for agricultural science and technology cooperation and exchanges. They inaugurated the China–Burundi Crop–Livestock Circular Technology Small Courtyard and the Southwest University of Science and Technology–Burundi Academy of Agricultural Sciences Joint Laboratory for High-Protein Crops. Professor Liang Yuanke, head of the i-Microbiome Lab (Intelligent Microbiome and Biomanufacturing Laboratory), participated in the visit as a member of the expert team."
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1795592650390-1.jpg"
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1795592650390-2.jpg"
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1795592650390-3.jpg"
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1795592650390-4.jpg"
+        },
+        {
+          "type": "text",
+          "zh": "本次合作聚焦高蛋白玉米、优质水稻、小麦等作物品种引进、栽培示范，以及种养循环模式探索、本土农业人才培养等方向，依托中国援布隆迪农业示范中心实施相关工作，助力布隆迪粮食生产从 “吃得饱” 向 “吃得好” 转型。出访期间，专家团队与布隆迪大学、布隆迪农业科学院对接合作框架，开展田间技术示范与农户培训，搭建长期联合科研与人才培养机制。",
+          "en": "This collaboration focuses on the introduction and cultivation demonstration of crop varieties such as high-protein corn, high-quality rice, and wheat, as well as the exploration of crop-livestock integration models and the cultivation of local agricultural talent. Leveraging the China-aided Burundi Agricultural Demonstration Center, the initiative aims to facilitate Burundi's transition in food production from \"eating enough\" to \"eating well.\" During the visit, the expert team coordinated with the University of Burundi and the Burundi Agricultural Sciences Institute to establish a cooperation framework, conduct field technology demonstrations and farmer training, and develop a long-term mechanism for joint scientific research and talent development."
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1795592650390-6.jpg"
+        },
+        {
+          "type": "image",
+          "src": "https://liang-lab.cn/images/news/n-1795592650390-7.jpg"
+        },
+        {
+          "type": "text",
+          "zh": "梁元可教授长期从事高蛋白玉米根际微生物组、氮素高效利用相关研究。依托本次搭建的合作平台，实验室计划围绕热带农田微生物资源挖掘、作物微生态调控方向开展后续科研协作。",
+          "en": "Professor Liang Yuanke has long been engaged in research related to the rhizosphere microbiome of high-protein maize and the efficient use of nitrogen. Based on the collaborative platform established this time, the laboratory plans to carry out subsequent scientific research collaborations focused on the exploration of microbial resources in tropical farmlands and the regulation of crop microecology."
+        },
+        {
+          "type": "text",
+          "zh": "文字信息参考来源：西南科技大学官网、新浪新闻公开报道&nbsp;<div>图片来源：梁元可、生态农作创新团队、西南科技大学官网公开报道</div>",
+          "en": "Sources for text information: Southwest University of Science and Technology official website, Sina News public reports Image sources: Liang Yuanke, Ecological Farming Innovation Team, Southwest University of Science and Technology official website public reports"
+        }
+      ]
     }
   ],
   "join": {
@@ -1883,7 +1936,7 @@
       "id": "soft-liangwei",
       "nameZh": "量微",
       "nameEn": "QuantScope",
-      "version": "1.8.2",
+      "version": "1.8.7",
       "summaryZh": "量微（QuantScope）是面向照片与显微图像的定量测量桌面软件，由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。",
       "summaryEn": "QuantScope is a desktop image-measurement tool for photographs and microscopy images, jointly developed and maintained by Fuzhu Education Consulting Studio and the Laboratory of Intelligent Microbiome and Biomanufacturing.",
       "descZh": "量微（QuantScope）由付诸教育咨询工作室与智能微生态与生物制造实验室联合开发维护。面向照片与显微图像，提供从标定、测量到分析的完整定量流程：先用已知尺度（如标尺、培养皿直径、血球计数板格距）标定比例尺，即可对任意结构测量直线或曲线长度；面积与形态参数可得到选区的大小、周长、圆度、长宽比等量化指标；阈值分割与颗粒分析能自动识别并统计图像中的颗粒、菌落或细胞数量与平均尺寸；灰度直方图则用于观察亮度分布与对比度。所有测量结果可在表格中逐条编辑、增删与备注，并一键导出 CSV 供 Excel / R / Python 进一步处理。软件全程在本地运行，图像数据不出本机，适合教学演示、科研计量与日常图像分析。",
