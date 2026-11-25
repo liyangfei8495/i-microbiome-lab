@@ -1,6 +1,6 @@
 {
-  "version": "1.8.7",
-  "date": "2026-11-24",
-  "notes": "手绘圈=识别区域：圈内自动按颜色识别精确边缘，黑底自动亮度阈值，禁用图割",
+  "version": "1.9.0",
+  "date": "2026-11-25",
+  "notes": "长度=端到端最长主干：只取骨架最大连通段，端点几何极值对+BFS连通，无大幅拐弯",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
