@@ -1,6 +1,6 @@
 {
-  "version": "1.9.0",
-  "date": "2026-11-25",
-  "notes": "长度=端到端最长主干：只取骨架最大连通段，端点几何极值对+BFS连通，无大幅拐弯",
+  "version": "1.9.1",
+  "date": "2026-11-26",
+  "notes": "菌落等亮目标改用专用颜色识别（圈内Otsu取亮类）；叶片算法保持冻结不变",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
