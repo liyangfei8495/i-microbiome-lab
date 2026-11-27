@@ -1,6 +1,6 @@
 {
-  "version": "2.3.0",
+  "version": "2.4.0",
   "date": "2026-11-27",
-  "notes": "学术规范：标注显隐、点击目标联动选中数据、通用撤销栈、操作留痕+数据指纹、保存后修改强制另存为防覆盖",
+  "notes": "模块墙按检测对象重建：对齐 OpenPheno 对象化思路，8 类可真实测量对象分两组；麦穗/小穗/玉米果穗因需 YOLO 暂不列入以免虚标",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
