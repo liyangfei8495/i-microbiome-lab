@@ -1,6 +1,6 @@
 {
-  "version": "1.9.1",
-  "date": "2026-11-26",
-  "notes": "菌落等亮目标改用专用颜色识别（圈内Otsu取亮类）；叶片算法保持冻结不变",
+  "version": "1.9.2",
+  "date": "2026-11-27",
+  "notes": "菌落识别适配真实杂乱背景照片：修正Otsu反向分割，低分位背景基准抗反光；叶片算法冻结不变",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
