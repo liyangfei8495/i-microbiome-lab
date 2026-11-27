@@ -1,6 +1,6 @@
 {
-  "version": "1.9.2",
+  "version": "2.1.1",
   "date": "2026-11-27",
-  "notes": "菌落识别适配真实杂乱背景照片：修正Otsu反向分割，低分位背景基准抗反光；叶片算法冻结不变",
+  "notes": "首页重构为苹果式：超大左对齐标题+真实叶片大图+呼吸感留白",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
