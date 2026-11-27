@@ -1,6 +1,6 @@
 {
-  "version": "2.1.1",
+  "version": "2.2.0",
   "date": "2026-11-27",
-  "notes": "首页重构为苹果式：超大左对齐标题+真实叶片大图+呼吸感留白",
+  "notes": "工作区全盘重构：紧凑顶栏+模块切换chip、图标式工具条、响应式检查器抽屉，适配任意窗口；测量算法零改动",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
