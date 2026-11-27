@@ -1,6 +1,6 @@
 {
-  "version": "2.4.0",
+  "version": "2.5.0",
   "date": "2026-11-27",
-  "notes": "模块墙按检测对象重建：对齐 OpenPheno 对象化思路，8 类可真实测量对象分两组；麦穗/小穗/玉米果穗因需 YOLO 暂不列入以免虚标",
+  "notes": "玉米穗真集成：复用 CoreCount 的 best.onnx 本机推理自动数粒；9类检测对象，AI预计数+人工核对可溯源",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
