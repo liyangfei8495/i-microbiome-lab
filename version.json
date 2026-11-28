@@ -1,6 +1,6 @@
 {
-  "version": "2.5.1",
+  "version": "2.6.0",
   "date": "2026-11-28",
-  "notes": "玉米穗识别限制提示：贴边圈选引导、AI预计数请人工核对、文档明确黑底/纯背景适用与复杂地面误检限制；模型零改动",
+  "notes": "双端按 Apple Design Skill 深度重设计：苹果设计令牌/材质/弹簧动效，手机端新增对象选择首页与底部弹层手势；识别算法与canvas尺寸零改动",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
