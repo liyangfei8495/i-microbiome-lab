@@ -1,6 +1,6 @@
 {
-  "version": "2.5.0",
-  "date": "2026-11-27",
-  "notes": "玉米穗真集成：复用 CoreCount 的 best.onnx 本机推理自动数粒；9类检测对象，AI预计数+人工核对可溯源",
+  "version": "2.5.1",
+  "date": "2026-11-28",
+  "notes": "玉米穗识别限制提示：贴边圈选引导、AI预计数请人工核对、文档明确黑底/纯背景适用与复杂地面误检限制；模型零改动",
   "url": "https://liang-lab.cn/software/soft-liangwei.html"
 }
